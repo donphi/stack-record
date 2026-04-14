@@ -1,0 +1,968 @@
+# config/libraries.yaml — Complete library inventory for the UKB pipeline.
+#
+# PURPOSE: Single source of truth for every library, model, database,
+#          service, and ontology evaluated for the pipeline.
+# EDIT:    Add new entries here. Run sync_registry.py to update the DB.
+#
+# FIELDS:
+#   number       — original numbering from the survey
+#   name         — display name
+#   section      — must match an id in sections.yaml
+#   function     — what it does in the pipeline
+#   tool_type    — Model | Library | Database | Service | API | Ontology
+#   github_url   — canonical repository URL (or official website)
+#   pypi_name    — PyPI package name (null if not on PyPI)
+#   citation     — academic citation string
+#   pro          — strategic advantage
+#   con          — risk to mitigate
+#   alternatives — list of plan-B tools
+#   docs_tag     — optional path to a Stack Record page
+
+# ═══════════════════════════════════════════════════════════════
+#  SECTION 1: The "Eyes" (OCR, Layout & Vision)
+# ═══════════════════════════════════════════════════════════════
+
+- number: 1
+  name: "Surya OCR"
+  section: "eyes"
+  function: "Optical Character Recognition"
+  tool_type: "Model"
+  github_url: "https://github.com/datalab-to/surya"
+  pypi_name: "surya-ocr"
+  citation: "Paruchuri, V. (2024)."
+  pro: "Precision & Speed. Detects line-level bounding boxes in one GPU pass."
+  con: "Resource Heavy. Requires 16GB VRAM for efficiency."
+  alternatives: ["Tesseract", "PaddleOCR"]
+  docs_tag: null
+
+- number: 2
+  name: "Marker"
+  section: "eyes"
+  function: "Optical Character Recognition"
+  tool_type: "Model"
+  github_url: "https://github.com/datalab-to/marker"
+  pypi_name: "marker-pdf"
+  citation: "Datalab (2024)."
+  pro: "Math & Speed. Best-in-class at cleaning messy equations/headers into Markdown."
+  con: "Heuristic Limits. Struggles with complex table structures."
+  alternatives: ["Nougat", "MinerU"]
+  docs_tag: null
+
+- number: 3
+  name: "Docling"
+  section: "eyes"
+  function: "Optical Character Recognition"
+  tool_type: "Model"
+  github_url: "https://github.com/docling-project/docling"
+  pypi_name: "docling"
+  citation: "Auer, C., et al. (2024)."
+  pro: 'The "Second Opinion". A completely independent parsing engine (IBM).'
+  con: "Complexity. Complex setup adds a heavy dependency chain."
+  alternatives: ["Adobe Extract API"]
+  docs_tag: null
+
+- number: 4
+  name: "PP-StructureV3"
+  section: "eyes"
+  function: "Optical Character Recognition"
+  tool_type: "Model"
+  github_url: "https://github.com/PaddlePaddle/PaddleOCR"
+  pypi_name: "paddleocr"
+  citation: "Li, C., et al. (2022)."
+  pro: "Multilingual Robustness. Excellent at borderless tables."
+  con: "Ecosystem Lock. Uses PaddlePaddle (not PyTorch), requiring a separate container."
+  alternatives: ["TableFormer"]
+  docs_tag: null
+
+- number: 5
+  name: "Nougat"
+  section: "eyes"
+  function: "Optical Character Recognition"
+  tool_type: "Model"
+  github_url: "https://github.com/facebookresearch/nougat"
+  pypi_name: "nougat-ocr"
+  citation: "Blecher, L., et al. (2023)."
+  pro: "End-to-End. Good for pure math papers where layout doesn't matter."
+  con: "Hallucination Risk. Generates text without bounding boxes (unverifiable)."
+  alternatives: ["Marker"]
+  docs_tag: null
+
+- number: 6
+  name: "Donut"
+  section: "eyes"
+  function: "Optical Character Recognition"
+  tool_type: "Model"
+  github_url: "https://github.com/clovaai/donut"
+  pypi_name: null
+  citation: "Kim, G., et al. (2022)."
+  pro: "OCR-Free. Skips text recognition, goes straight to JSON."
+  con: "Fragile. Requires massive fine-tuning for each new document type."
+  alternatives: ["Pix2Struct"]
+  docs_tag: null
+
+- number: 7
+  name: "pytesseract"
+  section: "eyes"
+  function: "Ingestion Integrity Probe"
+  tool_type: "Library"
+  github_url: "https://github.com/madmaze/pytesseract"
+  pypi_name: "pytesseract"
+  citation: "Google (2024)."
+  pro: "Reliability. Used only to check page rotation before heavy models run."
+  con: "Accuracy. Too inaccurate for final data extraction."
+  alternatives: ["EasyOCR"]
+  docs_tag: null
+
+- number: 8
+  name: "Florence-2"
+  section: "eyes"
+  function: "Visual-Semantic Alignment"
+  tool_type: "Model"
+  github_url: "https://huggingface.co/microsoft/Florence-2-large"
+  pypi_name: null
+  citation: "Xiao, B., et al. (2024)."
+  pro: 'Semantic Vision. Can "look" at a page and find "Figure 1" without needing text.'
+  con: "Generative Risk. It can hallucinate if not strictly prompted."
+  alternatives: ["LayoutLMv3"]
+  docs_tag: null
+
+- number: 9
+  name: "Qwen2.5-VL"
+  section: "eyes"
+  function: "Inference Verification"
+  tool_type: "Model"
+  github_url: "https://github.com/QwenLM/Qwen2.5-VL"
+  pypi_name: null
+  citation: "Qwen Team (2024)."
+  pro: 'The Tie-Breaker. If Surya and Marker disagree, this model "looks" at the crop to decide.'
+  con: "Expensive. Very slow; only used on the <5% of data where conflicts exist."
+  alternatives: ["Llama-3.2-Vision"]
+  docs_tag: null
+
+- number: 10
+  name: "RT-DETR"
+  section: "eyes"
+  function: "Document Layout Analysis"
+  tool_type: "Model"
+  github_url: "https://github.com/lyuwenyu/RT-DETR"
+  pypi_name: null
+  citation: "Lv, W., et al. (2023)."
+  pro: "Real-Time Speed. Identifies headers/footers instantly."
+  con: 'Thresholding. Needs tuning to distinguish "Caption" from "Text".'
+  alternatives: ["YOLOv8"]
+  docs_tag: null
+
+- number: 11
+  name: "LayoutLMv3"
+  section: "eyes"
+  function: "Document Layout Analysis"
+  tool_type: "Model"
+  github_url: "https://github.com/microsoft/unilm/tree/master/layoutlmv3"
+  pypi_name: null
+  citation: "Huang, Y., et al. (2022)."
+  pro: 'Standard. The academic baseline for classifying "Title" vs "Paragraph".'
+  con: "Token Limit. Can't read a whole dense page (512 tokens max)."
+  alternatives: ["LiLT", "DiT"]
+  docs_tag: null
+
+- number: 12
+  name: "DiT"
+  section: "eyes"
+  function: "Document Layout Analysis"
+  tool_type: "Model"
+  github_url: "https://github.com/microsoft/unilm/tree/master/dit"
+  pypi_name: null
+  citation: "Li, J., et al. (2022)."
+  pro: "Vision Only. Classification without needing OCR text first."
+  con: "Blind spots. Can't read the text content to help classification."
+  alternatives: ["LayoutLMv3"]
+  docs_tag: null
+
+- number: 13
+  name: "PyMuPDF"
+  section: "eyes"
+  function: "PDF Analysis"
+  tool_type: "Library"
+  github_url: "https://github.com/pymupdf/PyMuPDF"
+  pypi_name: "pymupdf"
+  citation: "Artifex (2024)."
+  pro: "Speed. The fastest way to turn PDFs into images for the vision models."
+  con: "License. AGPL (strict), but acceptable for academic research."
+  alternatives: ["pdf2image"]
+  docs_tag: null
+
+- number: 14
+  name: "pdfplumber"
+  section: "eyes"
+  function: "PDF Analysis"
+  tool_type: "Library"
+  github_url: "https://github.com/jsvine/pdfplumber"
+  pypi_name: "pdfplumber"
+  citation: "Jsvine (2024)."
+  pro: 'Debuggability. Great for visualizing what the computer "sees".'
+  con: "Sluggish. Too slow for processing 100k+ pages."
+  alternatives: ["PyMuPDF"]
+  docs_tag: null
+
+- number: 15
+  name: "pdf2image"
+  section: "eyes"
+  function: "PDF Analysis"
+  tool_type: "Library"
+  github_url: "https://github.com/Belval/pdf2image"
+  pypi_name: "pdf2image"
+  citation: "Belval (2024)."
+  pro: "Simplicity. Just wraps Poppler. Rock solid."
+  con: "System Dep. Requires installing Poppler on the OS level."
+  alternatives: ["PyMuPDF"]
+  docs_tag: null
+
+- number: 16
+  name: "PyMuPDF"
+  section: "eyes"
+  function: "PDF Rotation & Structure"
+  tool_type: "Library"
+  github_url: "https://github.com/pymupdf/PyMuPDF"
+  pypi_name: "pymupdf"
+  citation: "Artifex (2024)."
+  pro: "Structure Preservation. Rotates pages without breaking the text layer."
+  con: "Ambiguity. Sometimes metadata rotation conflicts with visual rotation."
+  alternatives: ["QPDF"]
+  docs_tag: null
+
+# ═══════════════════════════════════════════════════════════════
+#  SECTION 2: The "Scientists" (Tables, Metadata & Logic)
+# ═══════════════════════════════════════════════════════════════
+
+- number: 17
+  name: "TATR-Detect"
+  section: "scientists"
+  function: "Table Detection"
+  tool_type: "Model"
+  github_url: "https://github.com/microsoft/table-transformer"
+  pypi_name: null
+  citation: "Smock, B. (2022)."
+  pro: "Scientific Bias. Trained on PubTables-1M, specifically for academic journals."
+  con: "Cropping. Requires perfect image crops; if we clip the edge, detection fails."
+  alternatives: ["YOLO-Table"]
+  docs_tag: null
+
+- number: 18
+  name: "TATR-Struct"
+  section: "scientists"
+  function: "Table Structure"
+  tool_type: "Model"
+  github_url: "https://github.com/microsoft/table-transformer"
+  pypi_name: null
+  citation: "Smock, B. (2022)."
+  pro: "Granularity. Recognizes row spans and column spans (complex headers)."
+  con: 'Textless. Returns boxes only; we must "inject" text back in from Surya.'
+  alternatives: ["TableFormer"]
+  docs_tag: null
+
+- number: 19
+  name: "TableFormer"
+  section: "scientists"
+  function: "Table Detection"
+  tool_type: "Model"
+  github_url: "https://github.com/docling-project/docling-ibm-models"
+  pypi_name: "docling-ibm-models"
+  citation: "Nassar, A. (2022)."
+  pro: 'Drift Resistance. Better at handling columns that "wave" or drift in scans.'
+  con: "Integrated. Hard to use outside of the Docling pipeline."
+  alternatives: ["TATR"]
+  docs_tag: null
+
+- number: 20
+  name: "GROBID"
+  section: "scientists"
+  function: "Metadata"
+  tool_type: "Service"
+  github_url: "https://github.com/kermitt2/grobid"
+  pypi_name: null
+  citation: "Lopez, P. (2009)."
+  pro: "The Specialist. Unbeaten precision for extracting Titles, DOIs, and Authors."
+  con: "Rigid. If the paper is a non-conventional preprint, it might fail silently."
+  alternatives: ["CERMINE"]
+  docs_tag: null
+
+- number: 21
+  name: "CERMINE"
+  section: "scientists"
+  function: "Metadata"
+  tool_type: "Model"
+  github_url: "https://github.com/CeON/CERMINE"
+  pypi_name: null
+  citation: "Tkaczyk, D. (2015)."
+  pro: "Backup. Good if GROBID fails on a specific layout."
+  con: "Java. Heavy memory usage (JVM)."
+  alternatives: ["CrossRef API"]
+  docs_tag: null
+
+- number: 22
+  name: "Pydantic"
+  section: "scientists"
+  function: "Validation"
+  tool_type: "Library"
+  github_url: "https://github.com/pydantic/pydantic"
+  pypi_name: "pydantic"
+  citation: "Colvin, S. (2024)."
+  pro: "Contract Enforcement. Ensures data fits the schema before it enters the DB."
+  con: "Strictness. Can cause pipelines to crash on minor whitespace errors."
+  alternatives: ["Marshmallow"]
+  docs_tag: null
+
+- number: 23
+  name: "Pandera"
+  section: "scientists"
+  function: "Validation"
+  tool_type: "Library"
+  github_url: "https://github.com/pandera-dev/pandera"
+  pypi_name: "pandera"
+  citation: "Bantilan, N. (2020)."
+  pro: 'Statistical Check. Checks values (e.g., "p-value must be < 1"), not just types.'
+  con: "Overhead. Slower on large DataFrames."
+  alternatives: ["GreatExpectations"]
+  docs_tag: null
+
+- number: 24
+  name: "Marshmallow"
+  section: "scientists"
+  function: "Validation"
+  tool_type: "Library"
+  github_url: "https://github.com/marshmallow-code/marshmallow"
+  pypi_name: "marshmallow"
+  citation: "Marshmallow (2024)."
+  pro: "Legacy. Good for simple serialization."
+  con: "Verbose. Requires more code than Pydantic."
+  alternatives: ["Pydantic"]
+  docs_tag: null
+
+- number: 25
+  name: "RapidFuzz"
+  section: "scientists"
+  function: "Text Match"
+  tool_type: "Library"
+  github_url: "https://github.com/rapidfuzz/RapidFuzz"
+  pypi_name: "rapidfuzz"
+  citation: "Bachmann, M. (2024)."
+  pro: "Verification. Uses Levenshtein distance to compare Surya vs Marker text."
+  con: "Dumb. Doesn't understand synonyms, only spelling."
+  alternatives: ["FuzzyWuzzy"]
+  docs_tag: null
+
+- number: 26
+  name: "FuzzyWuzzy"
+  section: "scientists"
+  function: "Text Match"
+  tool_type: "Library"
+  github_url: "https://github.com/seatgeek/fuzzywuzzy"
+  pypi_name: "fuzzywuzzy"
+  citation: "Cohen, A. (2024)."
+  pro: "Simple. Easy API."
+  con: "Slow. Pure Python (slow) vs RapidFuzz (C++)."
+  alternatives: ["RapidFuzz"]
+  docs_tag: null
+
+# ═══════════════════════════════════════════════════════════════
+#  SECTION 3: The "Biologists" (NER, Ontology & Linking)
+# ═══════════════════════════════════════════════════════════════
+
+- number: 27
+  name: "BERN2"
+  section: "biologists"
+  function: "Named Entity Recognition"
+  tool_type: "Model"
+  github_url: "https://github.com/dmis-lab/bern2"
+  pypi_name: null
+  citation: "Sung, M. (2022)."
+  pro: "Breadth. Recognizes 9 types (Gene, Drug, Disease) simultaneously."
+  con: "Rate Limits. The public API is throttled; local setup is hard."
+  alternatives: ["BioBERT"]
+  docs_tag: null
+
+- number: 28
+  name: "HunFlair2"
+  section: "biologists"
+  function: "Named Entity Recognition"
+  tool_type: "Model"
+  github_url: "https://github.com/flairNLP/flair"
+  pypi_name: "flair"
+  citation: "Sänger, M. (2024)."
+  pro: "Consensus. Uses a different architecture (Flair); great for voting against BERN2."
+  con: "Speed. Slower than transformer-only models."
+  alternatives: ["scispaCy"]
+  docs_tag: null
+
+- number: 29
+  name: "MedCAT"
+  section: "biologists"
+  function: "Named Entity Recognition"
+  tool_type: "Model"
+  github_url: "https://github.com/CogStack/MedCAT"
+  pypi_name: "medcat"
+  citation: "Kraljevic, Z. (2021)."
+  pro: "Hospital Grade. The SOTA for mapping text to SNOMED-CT/UMLS."
+  con: 'Learning Curve. Requires training on the specific "Meta-Annotation" concept.'
+  alternatives: ["cTAKES"]
+  docs_tag: null
+
+- number: 30
+  name: "PubMedBERT"
+  section: "biologists"
+  function: "Named Entity Recognition"
+  tool_type: "Model"
+  github_url: "https://huggingface.co/microsoft/BiomedNLP-PubMedBERT-base-uncased-abstract-fulltext"
+  pypi_name: null
+  citation: "Gu, Y. (2022)."
+  pro: "Vocabulary. Trained only on medical text (no Wikipedia), so it understands jargon."
+  con: "Assembly. Requires fine-tuning to actually do NER."
+  alternatives: ["BioBERT"]
+  docs_tag: null
+
+- number: 31
+  name: "BioBERT"
+  section: "biologists"
+  function: "Named Entity Recognition"
+  tool_type: "Model"
+  github_url: "https://github.com/dmis-lab/biobert"
+  pypi_name: null
+  citation: "Lee, J. (2020)."
+  pro: "Baseline. The standard comparison point."
+  con: "Outdated. Outperformed by PubMedBERT in 2024 benchmarks."
+  alternatives: ["BlueBERT"]
+  docs_tag: null
+
+- number: 32
+  name: "PubTator"
+  section: "biologists"
+  function: "Named Entity Recognition"
+  tool_type: "API"
+  github_url: "https://www.ncbi.nlm.nih.gov/research/pubtator/"
+  pypi_name: null
+  citation: "Wei, C. (2019)."
+  pro: "Gold Standard. Pre-annotated by NCBI."
+  con: "Coverage. Only covers papers already in PubMed."
+  alternatives: ["BERN2"]
+  docs_tag: null
+
+- number: 33
+  name: "GLiNER"
+  section: "biologists"
+  function: "Named Entity Recognition (Zero-Shot)"
+  tool_type: "Model"
+  github_url: "https://github.com/urchade/GLiNER"
+  pypi_name: "gliner"
+  citation: "Zaratiana, U. (2024)."
+  pro: 'Flexibility. Can find new entities (e.g., "Cohort Size") without retraining.'
+  con: "Newness. Less battle-tested than BERT."
+  alternatives: ["ChatGPT (API)"]
+  docs_tag: null
+
+- number: 34
+  name: "scispaCy"
+  section: "biologists"
+  function: "Named Entity Recognition (Light)"
+  tool_type: "Library"
+  github_url: "https://github.com/allenai/scispacy"
+  pypi_name: "scispacy"
+  citation: "Neumann, M. (2019)."
+  pro: "Preprocessing. Fast enough to run on millions of sentences for filtering."
+  con: "Recall. Misses complex entities that BERN2 catches."
+  alternatives: ["Spacy-Transformers"]
+  docs_tag: null
+
+- number: 35
+  name: "DOID"
+  section: "biologists"
+  function: "Disease Ontology"
+  tool_type: "Ontology"
+  github_url: "https://github.com/DiseaseOntology/HumanDiseaseOntology"
+  pypi_name: null
+  repo_aliases: ["Human Disease Ontology", "DiseaseOntology"]
+  citation: "Schriml, L. (2022)."
+  pro: "Hierarchy. Good for high-level classification (Cancer vs Viral)."
+  con: "Narrow. Less granular than MONDO."
+  alternatives: ["ICD-10"]
+  docs_tag: null
+
+- number: 36
+  name: "MONDO"
+  section: "biologists"
+  function: "Disease Ontology"
+  tool_type: "Ontology"
+  github_url: "https://github.com/monarch-initiative/mondo"
+  pypi_name: null
+  citation: "Vasilevsky, N. (2022)."
+  pro: 'Unification. The "Rosetta Stone" connecting OMIM, DOID, and ORPHA IDs.'
+  con: "Flux. IDs can change between versions."
+  alternatives: ["DOID"]
+  docs_tag: null
+
+- number: 37
+  name: "HPO"
+  section: "biologists"
+  function: "Phenotype Ontology"
+  tool_type: "Ontology"
+  github_url: "https://github.com/obophenotype/human-phenotype-ontology"
+  pypi_name: null
+  repo_aliases: ["Human Phenotype Ontology", "human-phenotype-ontology"]
+  citation: "Köhler, S. (2021)."
+  pro: 'Symptoms. The standard for "Human Phenotypes" (e.g., HP:000123).'
+  con: "Incomplete. Not every disease has a full HPO mapping."
+  alternatives: ["SNOMED"]
+  docs_tag: null
+
+- number: 38
+  name: "SNOMED-CT"
+  section: "biologists"
+  function: "Clinical Ontology"
+  tool_type: "Ontology"
+  github_url: "https://www.snomed.org/"
+  pypi_name: null
+  citation: "SNOMED Int. (2024)."
+  pro: "Clinical. Essential if working with hospital records (EHR)."
+  con: "License. Requires a license for use."
+  alternatives: ["UMLS"]
+  docs_tag: null
+
+- number: 39
+  name: "spaCy"
+  section: "biologists"
+  function: "NLP Framework"
+  tool_type: "Library"
+  github_url: "https://github.com/explosion/spaCy"
+  pypi_name: "spacy"
+  citation: "Explosion AI."
+  pro: 'Engineering. The "Chassis" that holds the NER models together.'
+  con: "Generic. Needs plugins (scispaCy) for bio work."
+  alternatives: ["Stanza"]
+  docs_tag: null
+
+- number: 40
+  name: "Flair"
+  section: "biologists"
+  function: "NLP Framework"
+  tool_type: "Library"
+  github_url: "https://github.com/flairNLP/flair"
+  pypi_name: "flair"
+  citation: "Akbik, A. (2019)."
+  pro: "State of Art. Research-grade sequence labeling."
+  con: 'Academic. Less "production ready" tooling than spaCy.'
+  alternatives: ["AllenNLP"]
+  docs_tag: null
+
+# ═══════════════════════════════════════════════════════════════
+#  SECTION 4: The "Brain" (Retrieval, Storage & Analytics)
+# ═══════════════════════════════════════════════════════════════
+
+- number: 41
+  name: "ColBERTv2"
+  section: "brain"
+  function: "Search & Retrieval"
+  tool_type: "Model"
+  github_url: "https://github.com/stanford-futuredata/ColBERT"
+  pypi_name: "colbert-ai"
+  citation: "Santhanam, K. (2021)."
+  pro: 'Precision. Uses "Late Interaction" to match exact numbers/units.'
+  con: "Storage. Index is 10x larger than standard vectors."
+  alternatives: ["Splade"]
+  docs_tag: null
+
+- number: 42
+  name: "Elasticsearch"
+  section: "brain"
+  function: "Search & Retrieval"
+  tool_type: "Database"
+  github_url: "https://github.com/elastic/elasticsearch"
+  pypi_name: "elasticsearch"
+  citation: "Elastic (2024)."
+  pro: "Features. The most robust engine for full-text search (BM25)."
+  con: "Maintenance. Heavy Java process; overkill for small data."
+  alternatives: ["MeiliSearch"]
+  docs_tag: null
+
+- number: 43
+  name: "FAISS"
+  section: "brain"
+  function: "Search & Retrieval"
+  tool_type: "Library"
+  github_url: "https://github.com/facebookresearch/faiss"
+  pypi_name: "faiss-cpu"
+  citation: "Johnson, J. (2019)."
+  pro: "Scale. Can search 1 Billion vectors in milliseconds."
+  con: "Complexity. Low-level C++; hard to debug."
+  alternatives: ["Qdrant"]
+  docs_tag: null
+
+- number: 44
+  name: "OpenSearch"
+  section: "brain"
+  function: "Search & Retrieval"
+  tool_type: "Database"
+  github_url: "https://github.com/opensearch-project/OpenSearch"
+  pypi_name: "opensearch-py"
+  citation: "OpenSearch (2024)."
+  pro: "Open Source. A truly open fork of Elasticsearch."
+  con: "Lag. Features lag behind the proprietary Elastic."
+  alternatives: ["Solr"]
+  docs_tag: null
+
+- number: 45
+  name: "Typesense"
+  section: "brain"
+  function: "Search & Retrieval"
+  tool_type: "Database"
+  github_url: "https://github.com/typesense/typesense"
+  pypi_name: "typesense"
+  citation: "Typesense (2024)."
+  pro: "UX. Typo-tolerance out of the box."
+  con: "Scale. Not built for massive scientific aggregation."
+  alternatives: ["Algolia"]
+  docs_tag: null
+
+- number: 46
+  name: "Milvus"
+  section: "brain"
+  function: "Search & Retrieval"
+  tool_type: "Database"
+  github_url: "https://github.com/milvus-io/milvus"
+  pypi_name: "pymilvus"
+  citation: "Milvus (2024)."
+  pro: "Cloud Native. Good if we move to a cluster later."
+  con: "Overkill. Too complex for a single PhD server."
+  alternatives: ["Weaviate"]
+  docs_tag: null
+
+- number: 47
+  name: "Qdrant"
+  section: "brain"
+  function: "Search & Retrieval"
+  tool_type: "Database"
+  github_url: "https://github.com/qdrant/qdrant"
+  pypi_name: "qdrant-client"
+  citation: "Qdrant (2024)."
+  pro: "Rust. Fast and safe; good filter support."
+  con: "Niche. Less documentation than FAISS."
+  alternatives: ["Chroma"]
+  docs_tag: null
+
+- number: 48
+  name: "Pinecone"
+  section: "brain"
+  function: "Search & Retrieval"
+  tool_type: "Service"
+  github_url: "https://github.com/pinecone-io/pinecone-python-client"
+  pypi_name: "pinecone"
+  citation: "Pinecone (2024)."
+  pro: "Easy. Managed service."
+  con: "Cost. Expensive for millions of vectors."
+  alternatives: ["Milvus"]
+  docs_tag: null
+
+- number: 49
+  name: "DuckDB"
+  section: "brain"
+  function: "Analytics Engine"
+  tool_type: "Database"
+  github_url: "https://github.com/duckdb/duckdb"
+  pypi_name: "duckdb"
+  citation: "Raasveldt, M. (2019)."
+  pro: "Local Power. Processes millions of rows on a laptop (Columnar). No server needed."
+  con: "Concurrency. Only one process can write at a time."
+  alternatives: ["ClickHouse"]
+  docs_tag: null
+
+- number: 50
+  name: "KuzuDB"
+  section: "brain"
+  function: "Graph Store"
+  tool_type: "Database"
+  github_url: "https://github.com/kuzudb/kuzu"
+  pypi_name: "kuzu"
+  citation: "Kuzu Team (2024)."
+  pro: "Simplicity. An embedded Graph DB (like DuckDB but for graphs)."
+  con: "New. Smaller community than Neo4j."
+  alternatives: ["Neo4j"]
+  docs_tag: null
+
+- number: 51
+  name: "PostgreSQL"
+  section: "brain"
+  function: "Relational Store"
+  tool_type: "Database"
+  github_url: "https://github.com/pgvector/pgvector"
+  pypi_name: "psycopg"
+  citation: "Postgres Group."
+  pro: "Safety. The reliable place to store user data and job status."
+  con: "Slow Analytics. Bad for querying millions of gene rows."
+  alternatives: ["MySQL"]
+  docs_tag: null
+
+- number: 52
+  name: "SBERT"
+  section: "brain"
+  function: "Embedding Model"
+  tool_type: "Library"
+  github_url: "https://github.com/UKPLab/sentence-transformers"
+  pypi_name: "sentence-transformers"
+  citation: "Reimers, N. (2019)."
+  pro: "Baseline. Fast, standard embeddings for general similarity."
+  con: "Lossy. Compresses too much detail for scientific use."
+  alternatives: ["Instructor-XL"]
+  docs_tag: null
+
+# ═══════════════════════════════════════════════════════════════
+#  SECTION 5: The "Lab Manager" (Ops, Stats & Eval)
+# ═══════════════════════════════════════════════════════════════
+
+- number: 53
+  name: "Prefect"
+  section: "lab_manager"
+  function: "Workflow Orchestration"
+  tool_type: "Service"
+  github_url: "https://github.com/PrefectHQ/prefect"
+  pypi_name: "prefect"
+  citation: "Prefect (2024)."
+  pro: "Modern. Python-native workflow management; handles retries automatically."
+  con: "Backend. Requires setting up a server for the UI."
+  alternatives: ["Airflow"]
+  docs_tag: null
+
+- number: 54
+  name: "Airflow"
+  section: "lab_manager"
+  function: "Workflow Orchestration"
+  tool_type: "Service"
+  github_url: "https://github.com/apache/airflow"
+  pypi_name: "apache-airflow"
+  citation: "Apache (2024)."
+  pro: 'Enterprise. The "Big Corp" standard.'
+  con: "Heavy. Overkill for a single researcher."
+  alternatives: ["Prefect"]
+  docs_tag: null
+
+- number: 55
+  name: "Dagster"
+  section: "lab_manager"
+  function: "Workflow Orchestration"
+  tool_type: "Service"
+  github_url: "https://github.com/dagster-io/dagster"
+  pypi_name: "dagster"
+  citation: "Dagster Labs (2024)."
+  pro: 'Data. Focuses on the "Asset" rather than the "Task".'
+  con: "Niche. Steeper learning curve."
+  alternatives: ["Prefect"]
+  docs_tag: null
+
+- number: 56
+  name: "RabbitMQ"
+  section: "lab_manager"
+  function: "Message Queue"
+  tool_type: "Service"
+  github_url: "https://github.com/rabbitmq/rabbitmq-server"
+  pypi_name: null
+  citation: "VMware (2024)."
+  pro: "Decoupling. Buffers jobs so the GPU doesn't crash if 1000 PDFs arrive at once."
+  con: "Ops. Another service to manage/monitor."
+  alternatives: ["Redis Queue"]
+  docs_tag: null
+
+- number: 57
+  name: "Pandas"
+  section: "lab_manager"
+  function: "Data Processing"
+  tool_type: "Library"
+  github_url: "https://github.com/pandas-dev/pandas"
+  pypi_name: "pandas"
+  citation: "McKinney, W. (2010)."
+  pro: "Universal. Every library speaks Pandas."
+  con: "Memory. Can blow up RAM on large datasets."
+  alternatives: ["Polars"]
+  docs_tag: null
+
+- number: 58
+  name: "Polars"
+  section: "lab_manager"
+  function: "Data Processing"
+  tool_type: "Library"
+  github_url: "https://github.com/pola-rs/polars"
+  pypi_name: "polars"
+  citation: "Vink, R. (2024)."
+  pro: "Performance. Multi-threaded speed for the heavy data lifting."
+  con: "API. Syntax is different from Pandas."
+  alternatives: ["Dask"]
+  docs_tag: null
+
+- number: 59
+  name: "NumPy"
+  section: "lab_manager"
+  function: "Data Processing"
+  tool_type: "Library"
+  github_url: "https://github.com/numpy/numpy"
+  pypi_name: "numpy"
+  citation: "Harris, C. (2020)."
+  pro: "Foundation. The bedrock of all scientific computing in Python."
+  con: "Low Level. We rarely touch it directly, but everything depends on it."
+  alternatives: ["CuPy"]
+  docs_tag: null
+
+- number: 60
+  name: "Ragas"
+  section: "lab_manager"
+  function: "Evaluation & Validation"
+  tool_type: "Library"
+  github_url: "https://github.com/explodinggradients/ragas"
+  pypi_name: "ragas"
+  citation: "Es, S. (2024)."
+  pro: 'Methodology. Algorithmically scores "Faithfulness" (Did we hallucinate?).'
+  con: "LLM Dep. Relies on an LLM to do the grading."
+  alternatives: ["TruLens"]
+  docs_tag: null
+
+- number: 61
+  name: "PyTorch"
+  section: "lab_manager"
+  function: "Modeling & ML"
+  tool_type: "Library"
+  github_url: "https://github.com/pytorch/pytorch"
+  pypi_name: "torch"
+  citation: "Paszke, A. (2019)."
+  pro: "Research. The standard for all modern AI models."
+  con: "Versions. CUDA version mismatches are a pain."
+  alternatives: ["TensorFlow"]
+  docs_tag: null
+
+- number: 62
+  name: "Transformers"
+  section: "lab_manager"
+  function: "Modeling & ML"
+  tool_type: "Library"
+  github_url: "https://github.com/huggingface/transformers"
+  pypi_name: "transformers"
+  citation: "Wolf, T. (2020)."
+  pro: "Hub. Access to 100k+ models (HuggingFace)."
+  con: "Bloat. The library is huge and changes often."
+  alternatives: ["Timm"]
+  docs_tag: null
+
+- number: 63
+  name: "scipy.stats"
+  section: "lab_manager"
+  function: "Modeling & ML"
+  tool_type: "Library"
+  github_url: "https://github.com/scipy/scipy"
+  pypi_name: "scipy"
+  citation: "Virtanen, P. (2020)."
+  pro: "Tests. Standard t-tests and distributions."
+  con: "CPU. Not accelerated for massive data."
+  alternatives: ["Statsmodels"]
+  docs_tag: null
+
+- number: 64
+  name: "statsmodels"
+  section: "lab_manager"
+  function: "Modeling & ML"
+  tool_type: "Library"
+  github_url: "https://github.com/statsmodels/statsmodels"
+  pypi_name: "statsmodels"
+  citation: "Seabold, S. (2010)."
+  pro: "Diagnostics. Deep statistical checks (p-values, R-squared)."
+  con: "Slow. Slower than sklearn."
+  alternatives: ["Scikit-Learn"]
+  docs_tag: null
+
+- number: 65
+  name: "scikit-learn"
+  section: "lab_manager"
+  function: "Modeling & ML"
+  tool_type: "Library"
+  github_url: "https://github.com/scikit-learn/scikit-learn"
+  pypi_name: "scikit-learn"
+  citation: "Pedregosa, F. (2011)."
+  pro: "Toolbox. Feature selection and basic ML."
+  con: "Simple. Not for Deep Learning."
+  alternatives: ["XGBoost"]
+  docs_tag: null
+
+- number: 66
+  name: "Matplotlib"
+  section: "lab_manager"
+  function: "Visualisation"
+  tool_type: "Library"
+  github_url: "https://github.com/matplotlib/matplotlib"
+  pypi_name: "matplotlib"
+  citation: "Hunter, J. (2007)."
+  pro: "Publication. Total control over every pixel for the thesis."
+  con: "Ugly. Default plots look dated."
+  alternatives: ["Seaborn"]
+  docs_tag: null
+
+- number: 67
+  name: "Seaborn"
+  section: "lab_manager"
+  function: "Visualisation"
+  tool_type: "Library"
+  github_url: "https://github.com/mwaskom/seaborn"
+  pypi_name: "seaborn"
+  citation: "Waskom, M. (2021)."
+  pro: "Quick. Beautiful statistical plots instantly."
+  con: "Limited. Hard to customize deeply."
+  alternatives: ["Altair"]
+  docs_tag: null
+
+- number: 68
+  name: "Rich"
+  section: "lab_manager"
+  function: "Visualisation"
+  tool_type: "Library"
+  github_url: "https://github.com/Textualize/rich"
+  pypi_name: "rich"
+  citation: "McGugan, W. (2024)."
+  pro: "Monitoring. Live progress bars in the terminal."
+  con: "Local. Only visible if watching the screen."
+  alternatives: ["tqdm"]
+  docs_tag: null
+
+# ═══════════════════════════════════════════════════════════════
+#  EXTRAS (mentioned at bottom of libs.md)
+# ═══════════════════════════════════════════════════════════════
+
+- number: 69
+  name: "MinerU"
+  section: "eyes"
+  function: "Optical Character Recognition"
+  tool_type: "Model"
+  github_url: "https://github.com/opendatalab/MinerU"
+  pypi_name: "mineru"
+  citation: "OpenDataLab (2024)."
+  pro: "Comprehensive. Full-pipeline document parsing with layout analysis."
+  con: "New. Less battle-tested than Marker or Docling."
+  alternatives: ["Marker", "Docling"]
+  docs_tag: null
+
+- number: 70
+  name: "LayoutReader"
+  section: "eyes"
+  function: "Document Layout Analysis"
+  tool_type: "Model"
+  github_url: "https://github.com/microsoft/unilm/tree/master/layoutreader"
+  pypi_name: null
+  citation: "Microsoft (2024)."
+  pro: "Reading Order. Determines correct reading order from layout."
+  con: "Integration. Lives inside the unilm monorepo."
+  alternatives: ["RT-DETR"]
+  docs_tag: null
+
+- number: 71
+  name: "crowd-kit"
+  section: "lab_manager"
+  function: "Evaluation & Validation"
+  tool_type: "Library"
+  github_url: "https://github.com/Toloka/crowd-kit"
+  pypi_name: "crowd-kit"
+  citation: "Toloka (2024)."
+  pro: "Consensus. Aggregation algorithms for multi-annotator agreement."
+  con: "Niche. Designed for crowdsourcing, needs adaptation for model voting."
+  alternatives: ["Custom voting"]
+  docs_tag: null

@@ -1,0 +1,14 @@
+{
+  "title": "Library Registry",
+  "description": "Verified library and tool inventory for the UKB extraction pipeline.",
+  "id": "REF-LIBS-0001",
+  "type": "reference",
+  "domain": "tools",
+  "status": "active",
+  "tags": ["reference/libraries"],
+  "review_cycle": "monthly",
+  "last_reviewed": "2026-04-14",
+  "closure_score": 6,
+  "closure_status": "closed",
+  "open_questions": []
+}

@@ -1,0 +1,95 @@
+## What this method is
+
+A retrieval-combination method that merges ranked outputs from multiple judges using position rather than raw score comparability.
+
+## Why this is used
+
+Different retrieval systems often produce scores on incompatible scales. Rank fusion avoids pretending those scales are directly comparable.
+
+## Where this fits
+
+- Parent map: [[Method_Map]]
+- Uses concepts: [[rank_fusion]], [[score_distributions]]
+- Implemented in: [[rrf_pipeline]]
+- Used in project: [[ukb_pipeline]]
+
+## Inputs
+
+- ranked candidate lists
+- fusion constant
+
+## Outputs
+
+- fused ranked list
+- optional fused score
+
+## Procedure
+
+1. run multiple retrieval judges
+2. rank candidates within each judge
+3. convert rank to reciprocal contribution
+4. sum contributions across judges
+
+## Formal rule or formula
+
+$$
+RRF(d) = \sum_i \frac{1}{k + rank_i(d)}
+$$
+
+## Why it works
+
+Agreement across judges is preserved without assuming that raw score scales are directly compatible.
+
+## Code sketch
+
+```python
+def rrf(rank_lists: list[list[str]], k: int = 60) -> dict[str, float]:
+    scores: dict[str, float] = {}
+    for ranking in rank_lists:
+        for idx, item in enumerate(ranking, start=1):
+            scores[item] = scores.get(item, 0.0) + 1.0 / (k + idx)
+    return dict(sorted(scores.items(), key=lambda x: x[1], reverse=True))
+```
+
+## Benefits
+
+* robust across incompatible scorers
+* simple to reason about
+
+## Drawbacks
+
+* discards magnitude information
+* depends on upstream ranking quality
+
+## Failure modes
+
+* mixing boolean gates into continuous fusion
+* too few candidates from one judge
+* poor diversity across judges
+
+## Where I have used it
+
+* [[ukb_pipeline]] — combining multiple semantic judges
+
+## Validation and evidence
+
+* [[two_judge_evaluation]] — precision-oriented validation
+
+## Questions this note answers
+
+* How do I combine incompatible rankers?
+* Why not average raw scores?
+
+## Related notes
+
+* [[rank_fusion]]
+* [[rrf_pipeline]]
+* [[two_judge_evaluation]]
+
+## Open questions
+
+* Need a weighted-fusion comparison experiment.
+
+## Review
+
+* Next review target: add score-normalization comparison

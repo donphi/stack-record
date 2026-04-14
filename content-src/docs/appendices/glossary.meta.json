@@ -1,0 +1,14 @@
+{
+  "title": "Glossary",
+  "description": "Term definitions used across Stack Record.",
+  "id": "REF-GLOSS-0001",
+  "type": "reference",
+  "domain": "templates",
+  "status": "evergreen",
+  "tags": ["reference/glossary"],
+  "review_cycle": "yearly",
+  "last_reviewed": "2026-04-14",
+  "closure_score": 6,
+  "closure_status": "closed",
+  "open_questions": []
+}

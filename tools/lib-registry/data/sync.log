@@ -1,0 +1,8 @@
+sync_registry.py  —  2026-04-14T23:31:18.339869+00:00
+updated: 71  |  config_errors: 0  |  endpoint_failures: 1
+========================================================================
+
+[1] https://api.github.com/repos/QwenLM/Qwen2.5-VL/releases/latest
+    status: 0
+    error:  no release or tag found
+

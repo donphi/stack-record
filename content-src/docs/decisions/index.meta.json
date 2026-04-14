@@ -1,0 +1,15 @@
+{
+  "title": "Decisions",
+  "description": "Architectural decision records.",
+  "id": "MAP-DECISIONS-0001",
+  "type": "map",
+  "domain": "global",
+  "status": "evergreen",
+  "tags": ["map/decisions"],
+  "children": ["accepted", "rejected", "pending"],
+  "review_cycle": "quarterly",
+  "last_reviewed": "2026-04-14",
+  "closure_score": 6,
+  "closure_status": "closed",
+  "open_questions": []
+}

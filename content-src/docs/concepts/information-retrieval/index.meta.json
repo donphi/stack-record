@@ -1,0 +1,15 @@
+{
+  "title": "Information Retrieval",
+  "description": "Core retrieval concepts, similarity ideas, and ranking primitives.",
+  "id": "MAP-IR-0001",
+  "type": "map",
+  "domain": "information_retrieval",
+  "status": "evergreen",
+  "tags": ["map/ir"],
+  "children": ["cosine-similarity", "dot-product", "vector-similarity"],
+  "review_cycle": "quarterly",
+  "last_reviewed": "2026-04-14",
+  "closure_score": 6,
+  "closure_status": "closed",
+  "open_questions": ["Need ANN tradeoffs bridge note."]
+}

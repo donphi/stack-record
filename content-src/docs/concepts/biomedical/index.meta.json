@@ -1,0 +1,15 @@
+{
+  "title": "Biomedical",
+  "description": "DESCRIPTION",
+  "id": "MAP-BIO-0001",
+  "type": "map",
+  "domain": "biomedical",
+  "status": "evergreen",
+  "tags": ["map/bio"],
+  "children": [],
+  "review_cycle": "quarterly",
+  "last_reviewed": "2026-04-14",
+  "closure_score": 6,
+  "closure_status": "closed",
+  "open_questions": []
+}

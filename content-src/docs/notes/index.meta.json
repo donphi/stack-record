@@ -1,0 +1,15 @@
+{
+  "title": "Notes",
+  "description": "Inbox for raw captures, tool discoveries, and ideas not yet processed into typed notes.",
+  "id": "MAP-NOTES-0001",
+  "type": "map",
+  "domain": "global",
+  "status": "active",
+  "tags": ["map/notes"],
+  "children": ["ideas"],
+  "review_cycle": "weekly",
+  "last_reviewed": "2026-04-14",
+  "closure_score": 6,
+  "closure_status": "closed",
+  "open_questions": []
+}

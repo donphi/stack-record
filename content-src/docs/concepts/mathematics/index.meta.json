@@ -1,0 +1,15 @@
+{
+  "title": "Mathematics",
+  "description": "DESCRIPTION",
+  "id": "MAP-MATH-0001",
+  "type": "map",
+  "domain": "mathematics",
+  "status": "evergreen",
+  "tags": ["map/math"],
+  "children": [],
+  "review_cycle": "quarterly",
+  "last_reviewed": "2026-04-14",
+  "closure_score": 6,
+  "closure_status": "closed",
+  "open_questions": []
+}

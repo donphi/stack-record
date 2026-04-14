@@ -1,0 +1,14 @@
+{
+  "title": "Templates",
+  "description": "Authoring templates for body-only MDX and page-sidecar metadata.",
+  "id": "REF-TPL-0001",
+  "type": "reference",
+  "domain": "templates",
+  "status": "evergreen",
+  "tags": ["reference/templates"],
+  "review_cycle": "yearly",
+  "last_reviewed": "2026-04-14",
+  "closure_score": 6,
+  "closure_status": "closed",
+  "open_questions": []
+}

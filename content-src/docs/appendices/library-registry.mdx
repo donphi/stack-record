@@ -1,0 +1,14 @@
+## What this is
+
+A verified inventory of every library, model, database, service, and ontology evaluated for the UKB extraction pipeline. Each entry links to its canonical repository, shows the latest version and last-updated date, and is tagged by pipeline section and tool type.
+
+## How to update
+
+1. Edit `tools/lib-registry/config/libraries.yaml` to add or modify entries
+2. Run `docker compose run --rm lib-sync` inside `tools/lib-registry/`
+
+The JSON data file is written directly to this directory by the sync script.
+
+## Registry
+
+<LibraryTable />

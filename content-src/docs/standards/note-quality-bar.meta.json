@@ -1,0 +1,14 @@
+{
+  "title": "Note Quality Bar",
+  "description": "Minimum standard for promoting a note from draft to evergreen.",
+  "id": "STD-QUAL-0001",
+  "type": "standard",
+  "domain": "standards",
+  "status": "enforced",
+  "tags": ["standard/quality"],
+  "review_cycle": "yearly",
+  "last_reviewed": "2026-04-14",
+  "closure_score": 6,
+  "closure_status": "closed",
+  "open_questions": []
+}

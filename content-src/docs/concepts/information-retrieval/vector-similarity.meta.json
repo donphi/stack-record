@@ -1,0 +1,22 @@
+{
+  "title": "Vector Similarity",
+  "description": "The broader family of ways to compare vectors in embedding and retrieval systems.",
+  "id": "C-IR-0003",
+  "type": "concept",
+  "domain": "information_retrieval",
+  "status": "evergreen",
+  "tags": ["concept/ir"],
+  "aliases": ["embedding similarity"],
+  "parent_maps": ["MOC_Similarity_Metrics"],
+  "prerequisites": ["vectors", "distance_metrics"],
+  "children": ["cosine-similarity", "dot-product"],
+  "related_notes": ["dense_retrieval"],
+  "related_methods": ["dense_retrieval"],
+  "related_systems": ["faiss_setup"],
+  "related_projects": ["ukb_pipeline"],
+  "review_cycle": "monthly",
+  "last_reviewed": "2026-04-14",
+  "closure_score": 6,
+  "closure_status": "closed",
+  "open_questions": ["Which metrics behave best under biomedical embedding distributions?"]
+}

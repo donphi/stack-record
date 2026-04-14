@@ -1,0 +1,81 @@
+## What this map is
+
+The top-level orientation map for Stack Record. It connects the four child maps that organize all knowledge: domains (what you know), methods (how you do it), systems (what runs it), and open loops (what is incomplete).
+
+Every note in Stack Record traces back to this map through at most two hops. When a new topic arrives, this map answers: is it a concept, a method, a system, or something else? That answer determines where it lives.
+
+## Why this matters
+
+A long-horizon knowledge system fails when it becomes a flat pile. Twenty years of notes on information retrieval, pipeline architecture, GPU compute, Docker patterns, security hardening, and biomedical NLP will drown without a navigational spine.
+
+This map is that spine. It does not contain knowledge itself. It contains the routing logic for where knowledge belongs and how the four domains of understanding connect:
+
+- **Concepts** are the ideas you reason with (cosine similarity, embedding manifolds, BM25 scoring).
+- **Methods** are the repeatable procedures you apply (RRF fusion, Jenks classification, contract-pattern pipelines).
+- **Systems** are the concrete implementations that run those methods (RabbitMQ brokers, FAISS indexes, Docker bootstrap scripts).
+- **Projects** tie all three together into real deliverables ([[ukb_pipeline]], [[StackRecord]]).
+
+The learning map ensures none of these layers exist in isolation.
+
+## Where this fits
+
+- Parent: [[StackRecord]]
+- Related maps: [[Domain_Map]], [[Method_Map]], [[System_Map]]
+- Tracks completeness via: [[Open_Loops]]
+
+## Structure
+
+```text
+Learning Map
+├── Domain Map          ← concepts organized by knowledge area
+│   ├── Mathematics
+│   ├── Statistics
+│   ├── Information Retrieval
+│   ├── Representation Learning
+│   ├── Machine Learning
+│   └── Biomedical
+├── Method Map          ← repeatable procedures by function
+│   ├── Extraction
+│   ├── Retrieval
+│   ├── Evaluation
+│   ├── Reproducibility
+│   └── Build
+├── System Map          ← concrete implementations by layer
+│   ├── Pipeline
+│   ├── Data
+│   ├── Compute
+│   ├── Runtime
+│   └── Security
+└── Open Loops          ← unresolved questions and missing notes
+```
+
+## What this map helps answer
+
+* A new topic came up in a conversation. Where does it go?
+* I learned something about embeddings. Is it a concept, a method, or a system note?
+* Which areas of my knowledge graph are thin or disconnected?
+* How does a theoretical idea (cosine similarity) connect to a running system (FAISS index) through a method (dense retrieval)?
+* What should I write next to close the most open loops?
+
+## Notes in this map
+
+* [[Domain_Map]] — groups the six concept domains: mathematics, statistics, information retrieval, representation learning, machine learning, biomedical
+* [[Method_Map]] — groups the five method families: extraction, retrieval, evaluation, reproducibility, build
+* [[System_Map]] — groups the five system layers: pipeline, data, compute, runtime, security
+* [[Open_Loops]] — surfaces every note below closure threshold and every unresolved question
+
+## Gaps and open loops
+
+* The Domain Map currently has deep coverage only in information retrieval (cosine similarity, dot product, vector similarity). Mathematics, statistics, representation learning, machine learning, and biomedical are stub domains awaiting their first concept notes.
+* Method coverage is concentrated in retrieval (RRF pipeline). Extraction, evaluation, reproducibility, and build methods are empty.
+* System coverage is concentrated in compute (RabbitMQ broker). Pipeline orchestration (Prefect DAG, contract pattern), data layer (FAISS, Backblaze B2), runtime (Docker bootstrap, GPU dispatch), and security (Infisical, VPS hardening) have no notes yet.
+* No decision or experiment notes exist anywhere in the system.
+* The coding principles document (zero defaults, 600-line max, structural consistency) has no corresponding standard or method note.
+* Gatehouse (code quality enforcement tool) needs at least a project note and a system note.
+* The review automation layer described in the overview is not yet built.
+
+## Review
+
+* Last reviewed: 2026-04-14
+* Next review target: populate at least one concept note in each of the five empty concept domains, then reassess coverage
+* Review cycle: quarterly

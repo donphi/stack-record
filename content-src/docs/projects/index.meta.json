@@ -1,0 +1,15 @@
+{
+  "title": "Projects",
+  "description": "Project-level synthesis notes.",
+  "id": "MAP-PROJECTS-0001",
+  "type": "map",
+  "domain": "project",
+  "status": "evergreen",
+  "tags": ["map/projects"],
+  "children": ["ukb-pipeline"],
+  "review_cycle": "quarterly",
+  "last_reviewed": "2026-04-14",
+  "closure_score": 6,
+  "closure_status": "closed",
+  "open_questions": []
+}

@@ -1,0 +1,14 @@
+{
+  "title": "Closure Rule",
+  "description": "Operational rule for determining whether a note is complete and connected.",
+  "id": "STD-CLS-0001",
+  "type": "standard",
+  "domain": "standards",
+  "status": "enforced",
+  "tags": ["standard/closure"],
+  "review_cycle": "yearly",
+  "last_reviewed": "2026-04-14",
+  "closure_score": 6,
+  "closure_status": "closed",
+  "open_questions": []
+}

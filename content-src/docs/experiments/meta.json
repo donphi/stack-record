@@ -1,0 +1,5 @@
+{
+  "title": "Experiments",
+  "icon": "Flask",
+  "pages": ["active", "completed", "failed"]
+}

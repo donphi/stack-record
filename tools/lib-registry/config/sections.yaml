@@ -1,0 +1,31 @@
+# config/sections.yaml — Section definitions for the library registry.
+#
+# PURPOSE: Defines the five pipeline sections, their display titles,
+#          strategic goals, and sort order.
+# EDIT:    Add new sections here. The sync script reads this file.
+
+sections:
+  - id: "eyes"
+    title: 'The "Eyes" (OCR, Layout & Vision)'
+    goal: "Convert pixels into trustworthy text with spatial proof (bounding boxes)."
+    sort_order: 1
+
+  - id: "scientists"
+    title: 'The "Scientists" (Tables, Metadata & Logic)'
+    goal: "Structure unstructured data (grids and headers)."
+    sort_order: 2
+
+  - id: "biologists"
+    title: 'The "Biologists" (NER, Ontology & Linking)'
+    goal: 'Understand that "brca1" is a gene and map it to a global ID.'
+    sort_order: 3
+
+  - id: "brain"
+    title: 'The "Brain" (Retrieval, Storage & Analytics)'
+    goal: "Store data efficiently and identify connections."
+    sort_order: 4
+
+  - id: "lab_manager"
+    title: 'The "Lab Manager" (Ops, Stats & Eval)'
+    goal: "Keep the pipeline running and prove that it works."
+    sort_order: 5

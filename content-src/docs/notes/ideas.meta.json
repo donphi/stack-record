@@ -1,0 +1,15 @@
+{
+  "title": "Ideas",
+  "description": "Raw tool discoveries, snippets, and ideas waiting to be processed into typed notes.",
+  "id": "NOTE-IDEAS-0001",
+  "type": "reference",
+  "domain": "global",
+  "status": "draft",
+  "tags": ["reference/inbox"],
+  "parent_maps": ["MAP-NOTES-0001"],
+  "review_cycle": "weekly",
+  "last_reviewed": "2026-04-14",
+  "closure_score": 1,
+  "closure_status": "open",
+  "open_questions": ["Process each section into a proper typed note"]
+}

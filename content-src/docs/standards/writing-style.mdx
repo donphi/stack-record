@@ -1,0 +1,782 @@
+## Purpose
+
+This standard defines how every note in Stack Record is written, including the seven mandatory writing rules, the MDX artifacts available for making content engaging and scannable, and where each artifact is practical across the nine note types.
+
+## Applies to
+
+All notes in all sections: concepts, methods, systems, decisions, experiments, projects, maps, standards, and references.
+
+## Quick navigation
+
+<Cards>
+  <Card title="Writing Rules" href="#the-seven-writing-rules">
+    The seven mandatory rules every note must follow: define first, stable order, plain English, examples, drawbacks, links, decision utility.
+  </Card>
+  <Card title="Type-Specific Additions" href="#type-specific-additions">
+    Extra requirements per note type: math notes need equations, method notes need procedures, system notes need architecture diagrams.
+  </Card>
+  <Card title="MDX Artifacts" href="#mdx-artifacts-available">
+    Live demos of every component: Callout, Steps, Tabs, Accordion, Files, TypeTable, ImageZoom, Cards, code blocks, KaTeX, and wiki-links.
+  </Card>
+  <Card title="Failure Conditions" href="#failure-conditions">
+    What breaks the build, what breaks rendering, and what prevents a note from reaching closure.
+  </Card>
+</Cards>
+
+## The seven writing rules
+
+<Steps>
+<Step>
+
+### Define before explaining
+
+State what the thing is in the first sentence. Do not build up to a definition. The reader should know what they are looking at within five seconds.
+
+</Step>
+<Step>
+
+### Use stable section order
+
+Every note type has a fixed template. Never reorder sections. A reader who has seen one concept note knows where to find the worked example in every other concept note.
+
+</Step>
+<Step>
+
+### Use plain-English interpretation
+
+After every equation, algorithm, or formal rule, write one sentence that says what it does in plain English. If you cannot explain it simply, you do not understand it well enough to record it.
+
+</Step>
+<Step>
+
+### Show one worked example
+
+Every concept, method, and system note must include at least one concrete example with real values. Abstract descriptions without examples are not complete.
+
+</Step>
+<Step>
+
+### Show drawbacks
+
+No note only sells the idea. Every concept has failure modes. Every method has limitations. Every system has tradeoffs. If the drawbacks section is empty, the note is not honest.
+
+</Step>
+<Step>
+
+### Link outward
+
+Every note must connect to at least two other notes. Isolated notes are orphans. Use `[[wiki_link]]` syntax for cross-references — the materialiser resolves them to real links at build time.
+
+</Step>
+<Step>
+
+### Write for decision utility
+
+The reader should leave every note knowing what to do. Not just what something is, but when to use it, when not to, and what to try next.
+
+</Step>
+</Steps>
+
+## Type-specific additions
+
+<Tabs items={['Concept / Math', 'Method', 'System', 'Decision', 'Experiment']}>
+<Tab value="Concept / Math">
+
+Math and concept notes additionally require:
+
+- Equation in `$$...$$` KaTeX block
+- Breakdown section with variable definitions
+- Plain-English interpretation of the equation
+- Worked example with real numbers
+- ASCII diagram where spatial relationships matter
+
+</Tab>
+<Tab value="Method">
+
+Method notes additionally require:
+
+- Inputs and outputs sections (what goes in, what comes out)
+- Procedure as numbered steps
+- Code sketch with a titled code block
+- Validation and evidence section
+
+</Tab>
+<Tab value="System">
+
+System notes additionally require:
+
+- Architecture diagram (ASCII or `<Files>` tree)
+- Configuration contract (what must match what)
+- Failure modes section
+- Monitoring section (what to watch)
+
+</Tab>
+<Tab value="Decision">
+
+Decision notes additionally require:
+
+- Options considered (at least two)
+- Why the chosen option won
+- Tradeoffs accepted (what you gave up)
+- Review trigger (when to revisit)
+
+</Tab>
+<Tab value="Experiment">
+
+Experiment notes additionally require:
+
+- Hypothesis stated before results
+- Setup and procedure separated
+- Threats to validity
+- What this changes (feedback to other notes)
+
+</Tab>
+</Tabs>
+
+## MDX artifacts available
+
+Every component listed below is registered globally in `components/mdx.tsx`. No imports are needed in any `.mdx` file — just use the JSX tags directly. Each section below shows the **live rendered result** first, then the code to produce it.
+
+### Callout
+
+Coloured boxes for tips, warnings, errors, and ideas. Five types available.
+
+<Callout title="Note" type="info">
+This is supplementary context the reader should be aware of.
+</Callout>
+
+<Callout title="Warning" type="warn">
+This assumption breaks under specific conditions.
+</Callout>
+
+<Callout title="Failure condition" type="error">
+If the queue name does not match, jobs will silently disappear.
+</Callout>
+
+<Callout title="Verified" type="success">
+This pattern has been validated in the UK Biobank pipeline.
+</Callout>
+
+<Callout title="Open question" type="idea">
+Should weighted fusion ever be justified when judges have incompatible biases?
+</Callout>
+
+<Accordions>
+<Accordion title="Show the code for Callouts">
+
+```mdx
+<Callout title="Note" type="info">
+  This is supplementary context the reader should be aware of.
+</Callout>
+
+<Callout title="Warning" type="warn">
+  This assumption breaks under specific conditions.
+</Callout>
+
+<Callout title="Failure condition" type="error">
+  If the queue name does not match, jobs will silently disappear.
+</Callout>
+
+<Callout title="Verified" type="success">
+  This pattern has been validated in the UK Biobank pipeline.
+</Callout>
+
+<Callout title="Open question" type="idea">
+  Should weighted fusion ever be justified when judges have incompatible biases?
+</Callout>
+```
+
+</Accordion>
+</Accordions>
+
+**Where to use Callouts by note type:**
+
+| Note type | Practical placement |
+|---|---|
+| Concept | `warn` in Drawbacks, `info` in Where this fits, `idea` in Open questions |
+| Method | `error` in Failure modes, `success` in Validation, `warn` in Drawbacks |
+| System | `error` in Failure modes, `warn` in Configuration contract, `info` in Monitoring |
+| Decision | `warn` in Tradeoffs accepted, `info` in Context |
+| Experiment | `idea` in Interpretation, `error` in Threats to validity |
+| Map | `info` in What this map helps answer, `warn` in Gaps and open loops |
+| Standard | `error` in Failure conditions, `warn` in Quality bar |
+
+### Steps
+
+Numbered step indicators with a vertical progress line. Ideal for procedures and sequential processes.
+
+<Steps>
+<Step>
+
+### Prepare the input data
+
+Load and validate the candidate lists from each retrieval judge.
+
+</Step>
+<Step>
+
+### Run the fusion
+
+Apply RRF across all ranked lists with $k = 60$.
+
+</Step>
+<Step>
+
+### Apply the threshold
+
+Use Jenks natural breaks to find the optimal precision-biased cut.
+
+</Step>
+</Steps>
+
+<Accordions>
+<Accordion title="Show the code for Steps">
+
+```mdx
+<Steps>
+<Step>
+
+### Prepare the input data
+
+Load and validate the candidate lists from each retrieval judge.
+
+</Step>
+<Step>
+
+### Run the fusion
+
+Apply RRF across all ranked lists with $k = 60$.
+
+</Step>
+<Step>
+
+### Apply the threshold
+
+Use Jenks natural breaks to find the optimal precision-biased cut.
+
+</Step>
+</Steps>
+```
+
+</Accordion>
+</Accordions>
+
+**Where to use Steps by note type:**
+
+| Note type | Practical placement |
+|---|---|
+| Method | `Procedure` section — the primary use case |
+| Experiment | `Setup` and `Procedure` sections |
+| System | `Architecture` section when describing a sequential boot or deploy process |
+| Standard | `Required sections` when listing the order a note must follow |
+
+### Tabs
+
+Switchable panels for showing alternatives, comparisons, or different views of the same content.
+
+<Tabs items={['Cosine Similarity', 'Dot Product', 'BM25']}>
+<Tab value="Cosine Similarity">
+
+Measures the angle between two vectors. Ignores magnitude — only direction matters.
+
+$$
+\cos(\theta) = \frac{\mathbf{a}\cdot\mathbf{b}}{\|\mathbf{a}\|\|\mathbf{b}\|}
+$$
+
+Best when: vectors are L2-normalised and you care about semantic direction, not confidence.
+
+</Tab>
+<Tab value="Dot Product">
+
+Combines direction and magnitude into a single score. Larger vectors score higher.
+
+$$
+\mathbf{a}\cdot\mathbf{b} = \sum_{i=1}^{n} a_i b_i
+$$
+
+Best when: vector norm carries meaningful signal (e.g. confidence or frequency).
+
+</Tab>
+<Tab value="BM25">
+
+A corpus-aware scoring function that uses term frequency, inverse document frequency, and document length normalisation.
+
+$$
+\text{BM25}(q, d) = \sum_{t \in q} \text{IDF}(t) \cdot \frac{f(t,d) \cdot (k_1 + 1)}{f(t,d) + k_1 \cdot (1 - b + b \cdot \frac{|d|}{\text{avgdl}})}
+$$
+
+Best when: you need corpus-level rarity signals that pretrained embeddings cannot provide.
+
+</Tab>
+</Tabs>
+
+<Accordions>
+<Accordion title="Show the code for Tabs">
+
+```mdx
+<Tabs items={['Cosine Similarity', 'Dot Product', 'BM25']}>
+<Tab value="Cosine Similarity">
+
+Measures the angle between two vectors. Ignores magnitude.
+
+$$
+\cos(\theta) = \frac{\mathbf{a}\cdot\mathbf{b}}{\|\mathbf{a}\|\|\mathbf{b}\|}
+$$
+
+</Tab>
+<Tab value="Dot Product">
+
+Combines direction and magnitude into a single score.
+
+</Tab>
+<Tab value="BM25">
+
+A corpus-aware scoring function using TF, IDF, and length normalisation.
+
+</Tab>
+</Tabs>
+```
+
+Use `groupId` to sync tab selection across the page and `persist` to remember the choice:
+
+```mdx
+<Tabs groupId="lang" items={['Python', 'Bash']} persist>
+```
+
+</Accordion>
+</Accordions>
+
+**Where to use Tabs by note type:**
+
+| Note type | Practical placement |
+|---|---|
+| Concept | Comparing two approaches (cosine vs dot product, BM25 vs embedding) |
+| Method | Code sketch in multiple languages or frameworks |
+| System | Configuration examples for different environments |
+| Decision | Options considered — one tab per alternative |
+| Standard | Body template vs sidecar template for each note type |
+
+### Accordion
+
+Expandable/collapsible sections for optional detail that would otherwise make the page too long. Click to expand.
+
+<Accordions>
+<Accordion title="Closure checklist for concept notes">
+
+- One parent map linked
+- Two related or prerequisite concepts linked
+- One child, example, or comparison linked
+- One related method or system linked
+- Drawbacks or failure modes stated
+- Review metadata present (status, cycle, last reviewed)
+
+Score: each satisfied = 1 point. Target: 5/6 minimum for evergreen.
+
+</Accordion>
+<Accordion title="Closure checklist for method notes">
+
+- One parent map linked
+- Concept dependencies listed
+- Implementation link to a system note
+- Validation or evidence link
+- Inputs and outputs documented
+- Review metadata present
+
+</Accordion>
+<Accordion title="Closure checklist for system notes">
+
+- One parent map linked
+- Implemented method linked
+- Dependency links documented
+- Architecture diagram present
+- Failure modes and monitoring documented
+- Review metadata present
+
+</Accordion>
+</Accordions>
+
+<Accordions>
+<Accordion title="Show the code for Accordions">
+
+```mdx
+<Accordions>
+<Accordion title="Closure checklist for concept notes">
+
+- One parent map linked
+- Two related or prerequisite concepts linked
+- One child, example, or comparison linked
+- One related method or system linked
+- Drawbacks or failure modes stated
+- Review metadata present
+
+</Accordion>
+<Accordion title="Closure checklist for method notes">
+
+- One parent map linked
+- Concept dependencies listed
+- Implementation link to a system note
+- Validation or evidence link
+
+</Accordion>
+</Accordions>
+```
+
+</Accordion>
+</Accordions>
+
+**Where to use Accordions by note type:**
+
+| Note type | Practical placement |
+|---|---|
+| Concept | Extended derivation or proof in Breakdown section |
+| Method | Detailed parameter tuning guidance in Procedure |
+| System | Full configuration file examples in Configuration contract |
+| Map | Per-domain or per-section detail in Notes in this map |
+| Standard | Per-type closure checklists |
+| Reference | Template examples for each note type (the templates page) |
+
+### Files
+
+Interactive file tree diagrams showing directory structure with expandable folders.
+
+<Files>
+  <Folder name="content-src" defaultOpen>
+    <Folder name="docs" defaultOpen>
+      <File name="meta.json" />
+      <Folder name="concepts" defaultOpen>
+        <File name="meta.json" />
+        <Folder name="information-retrieval" defaultOpen>
+          <File name="meta.json" />
+          <File name="cosine-similarity.mdx" />
+          <File name="cosine-similarity.meta.json" />
+          <File name="dot-product.mdx" />
+          <File name="dot-product.meta.json" />
+        </Folder>
+        <Folder name="mathematics">
+          <File name="meta.json" />
+        </Folder>
+        <Folder name="statistics">
+          <File name="meta.json" />
+        </Folder>
+      </Folder>
+      <Folder name="methods">
+        <Folder name="retrieval">
+          <File name="rrf-pipeline.mdx" />
+          <File name="rrf-pipeline.meta.json" />
+        </Folder>
+      </Folder>
+    </Folder>
+  </Folder>
+</Files>
+
+<Accordions>
+<Accordion title="Show the code for Files">
+
+```mdx
+<Files>
+  <Folder name="content-src" defaultOpen>
+    <Folder name="docs" defaultOpen>
+      <File name="meta.json" />
+      <Folder name="concepts" defaultOpen>
+        <File name="meta.json" />
+        <Folder name="information-retrieval" defaultOpen>
+          <File name="cosine-similarity.mdx" />
+          <File name="cosine-similarity.meta.json" />
+        </Folder>
+      </Folder>
+    </Folder>
+  </Folder>
+</Files>
+```
+
+</Accordion>
+</Accordions>
+
+**Where to use Files by note type:**
+
+| Note type | Practical placement |
+|---|---|
+| System | Architecture section showing directory layout or project structure |
+| Standard | Showing the expected file structure for a note type |
+| Map | Structure section as an alternative to ASCII trees |
+| Reference | Templates page showing the authoring tree |
+
+### TypeTable
+
+Structured property documentation tables with types, defaults, and descriptions.
+
+<TypeTable
+  type={{
+    title: {
+      description: 'The display name of the note.',
+      type: 'string',
+      required: true,
+    },
+    description: {
+      description: 'One-sentence summary shown in search results and cards.',
+      type: 'string',
+      required: true,
+    },
+    id: {
+      description: 'Unique identifier following the pattern PREFIX-CODE (e.g. C-IR-0007).',
+      type: 'string',
+      required: true,
+    },
+    type: {
+      description: 'One of: map, concept, method, system, decision, experiment, project, standard, reference.',
+      type: 'string',
+      required: true,
+    },
+    closure_score: {
+      description: 'Completeness score across 6 dimensions (U-L-D-A-E-M). Range 0–6.',
+      type: 'number',
+      default: 0,
+    },
+    review_cycle: {
+      description: 'How often this note should be revisited.',
+      type: 'weekly | monthly | quarterly | yearly | never',
+      default: 'monthly',
+    },
+  }}
+/>
+
+<Accordions>
+<Accordion title="Show the code for TypeTable">
+
+```mdx
+<TypeTable
+  type={{
+    title: {
+      description: 'The display name of the note.',
+      type: 'string',
+      required: true,
+    },
+    closure_score: {
+      description: 'Completeness score across 6 dimensions (U-L-D-A-E-M).',
+      type: 'number',
+      default: 0,
+    },
+    review_cycle: {
+      description: 'How often this note should be revisited.',
+      type: 'weekly | monthly | quarterly | yearly | never',
+      default: 'monthly',
+    },
+  }}
+/>
+```
+
+</Accordion>
+</Accordions>
+
+**Where to use TypeTable by note type:**
+
+| Note type | Practical placement |
+|---|---|
+| Standard | Metadata schema — documenting required and optional sidecar fields |
+| System | Configuration contract — documenting expected config keys |
+| Method | Inputs and Outputs — documenting parameter shapes |
+
+### ImageZoom
+
+Click-to-zoom images for architecture diagrams, screenshots, or any visual that benefits from full-screen viewing. Click the image below to try it.
+
+<ImageZoom src="/images/placeholder-architecture.svg" alt="RabbitMQ dispatch architecture — click to zoom" />
+
+<Callout type="info">
+Place your images in `public/images/`. Reference them with `/images/filename.png`. The placeholder above lives at `public/images/placeholder-architecture.svg` — replace it with your own diagrams.
+</Callout>
+
+<Accordions>
+<Accordion title="Show the code for ImageZoom">
+
+```mdx
+<ImageZoom src="/images/placeholder-architecture.svg" alt="RabbitMQ dispatch architecture" />
+```
+
+</Accordion>
+</Accordions>
+
+**Where to use ImageZoom by note type:**
+
+| Note type | Practical placement |
+|---|---|
+| System | Architecture diagrams |
+| Project | High-level system diagrams |
+| Experiment | Result charts or visualisations |
+
+### Cards
+
+Navigation link cards with descriptions. Click any card to navigate.
+
+<Cards>
+  <Card title="Cosine Similarity" href="/docs/concepts/information-retrieval/cosine-similarity">
+    Angle-based vector similarity measure. Foundation for normalised retrieval.
+  </Card>
+  <Card title="Dot Product" href="/docs/concepts/information-retrieval/dot-product">
+    Magnitude-aware similarity. Foundation for inner-product search.
+  </Card>
+  <Card title="RRF Pipeline" href="/docs/methods/retrieval/rrf-pipeline">
+    Threshold-free rank fusion combining multiple retrieval judges.
+  </Card>
+  <Card title="RabbitMQ Broker" href="/docs/systems/compute/rabbitmq-central-broker">
+    Central queue broker coordinating GPU and CPU workers.
+  </Card>
+</Cards>
+
+<Accordions>
+<Accordion title="Show the code for Cards">
+
+```mdx
+<Cards>
+  <Card title="Cosine Similarity" href="/docs/concepts/information-retrieval/cosine-similarity">
+    Angle-based vector similarity measure.
+  </Card>
+  <Card title="RRF Pipeline" href="/docs/methods/retrieval/rrf-pipeline">
+    Threshold-free rank fusion method.
+  </Card>
+</Cards>
+```
+
+</Accordion>
+</Accordions>
+
+**Where to use Cards by note type:**
+
+| Note type | Practical placement |
+|---|---|
+| Map | Notes in this map — as navigable cards instead of bullet lists |
+| Project | Key concepts, Key methods, Key systems sections |
+| Reference | Templates page — linking to each note type section |
+
+### Code blocks
+
+Built into the MDX pipeline. Supports titles, line numbers, highlighting, diffs, and focus.
+
+```python title="rrf.py" lineNumbers
+def rrf(rank_lists, k=60):
+    scores = {}
+    for ranking in rank_lists:
+        for idx, item in enumerate(ranking, start=1):
+            scores[item] = scores.get(item, 0.0) + 1.0 / (k + idx)  # [!code highlight]
+    return dict(sorted(scores.items(), key=lambda x: x[1], reverse=True))
+```
+
+Line diff annotations show additions and removals:
+
+```python title="config_loader.py"
+def validate(config, stage):
+    required = GLOBAL_REQUIRED_FIELDS  # [!code --]
+    required = STAGE_REQUIRED_FIELDS[stage]  # [!code ++]
+    for field in required:
+        if field not in config:
+            raise ValueError(f"Missing {field}")
+```
+
+Available annotations (place at end of line inside the code fence):
+
+| Annotation | Effect |
+|---|---|
+| `// [!code highlight]` | Highlights the line |
+| `// [!code ++]` | Shows the line as an addition (green) |
+| `// [!code --]` | Shows the line as a removal (red) |
+| `// [!code focus]` | Dims all other lines, focuses this one |
+| `// [!code word:term]` | Highlights every occurrence of `term` |
+
+**Where to use code blocks by note type:**
+
+| Note type | Practical placement |
+|---|---|
+| Method | Code sketch section — the primary use case |
+| System | Configuration contract, Architecture section |
+| Concept | Worked example when code clarifies the math |
+| Experiment | Setup and Procedure sections |
+
+## KaTeX math
+
+Provided by `remark-math` + `rehype-katex`. Use `$...$` for inline and `$$...$$` for display.
+
+Inline example: The RRF constant is typically $k = 60$, giving each rank position a contribution of $\frac{1}{60 + r}$.
+
+Display example:
+
+$$
+RRF(d) = \sum_{i=1}^{n} \frac{1}{k + rank_i(d)}
+$$
+
+$$
+\cos(\theta) = \frac{\mathbf{a}\cdot\mathbf{b}}{\|\mathbf{a}\|\|\mathbf{b}\|}
+$$
+
+<Accordions>
+<Accordion title="Show the code for KaTeX math">
+
+```mdx
+Inline: The RRF constant is typically $k = 60$.
+
+Display:
+
+$$
+RRF(d) = \sum_{i=1}^{n} \frac{1}{k + rank_i(d)}
+$$
+
+$$
+\cos(\theta) = \frac{\mathbf{a}\cdot\mathbf{b}}{\|\mathbf{a}\|\|\mathbf{b}\|}
+$$
+```
+
+</Accordion>
+</Accordions>
+
+**Where to use math by note type:**
+
+| Note type | Practical placement |
+|---|---|
+| Concept | Equation section, Breakdown section — the primary use case |
+| Method | Formal rule or formula section |
+| Experiment | Results section when presenting quantitative findings |
+
+## Wiki-links
+
+Use `[[wiki_name]]` syntax to link between notes. The materialiser resolves these to real markdown links at build time. If the target page exists, it becomes a clickable link with the page title. If it does not exist yet, it renders as plain text.
+
+**Resolved example** (these pages exist):
+
+- Parent map: [[Learning_Map]]
+- Related: [[cosine_similarity]], [[dot_product]]
+- Used in project: [[ukb_pipeline]]
+
+**Unresolved example** (these pages do not exist yet — renders as plain text):
+
+- Prerequisites: [[vectors]], [[magnitude]]
+- Related: [[dense_retrieval]], [[faiss_setup]]
+
+<Accordions>
+<Accordion title="Show the code for wiki-links">
+
+```mdx
+- Parent map: [[Learning_Map]]
+- Related: [[cosine_similarity]], [[dot_product]]
+- Used in project: [[ukb_pipeline]]
+- Prerequisites: [[vectors]], [[magnitude]]
+```
+
+</Accordion>
+</Accordions>
+
+Use wiki-links in every `Where this fits`, `Related notes`, `Notes in this map`, and `Where I have used it` section.
+
+## Failure conditions
+
+<Callout title="Build failure" type="error">
+The materialiser will reject any `.mdx` file under `content-src/` that begins with `---` (frontmatter). All metadata belongs in the `.meta.json` sidecar.
+</Callout>
+
+<Callout title="Silent rendering failure" type="warn">
+If a component tag is misspelled or not registered in `components/mdx.tsx`, it will render as plain text or cause a build error. Always use the exact tag names listed above.
+</Callout>
+
+- A note missing any of the seven writing rules is incomplete
+- A concept note without a worked example cannot reach closure
+- A method note without a procedure section cannot reach closure
+- A system note without failure modes cannot reach closure
+- Inline `style={}` props with hardcoded colours are forbidden — all styling comes from `app/global.css`

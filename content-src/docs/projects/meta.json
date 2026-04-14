@@ -1,0 +1,5 @@
+{
+  "title": "Projects",
+  "icon": "Report-Columns",
+  "pages": ["ukb-pipeline", "gatehouse", "stack-record"]
+}

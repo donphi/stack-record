@@ -1,0 +1,22 @@
+{
+  "title": "Dot Product",
+  "description": "A vector operation combining magnitude and alignment.",
+  "id": "C-MATH-0002",
+  "type": "concept",
+  "domain": "information_retrieval",
+  "status": "evergreen",
+  "tags": ["concept/ir", "concept/maths"],
+  "aliases": ["inner product"],
+  "parent_maps": ["MOC_Similarity_Metrics"],
+  "prerequisites": ["vectors", "magnitude"],
+  "children": ["cosine-similarity"],
+  "related_notes": ["vector-similarity"],
+  "related_methods": ["dense_retrieval"],
+  "related_systems": ["faiss_setup"],
+  "related_projects": ["ukb_pipeline"],
+  "review_cycle": "monthly",
+  "last_reviewed": "2026-04-14",
+  "closure_score": 6,
+  "closure_status": "closed",
+  "open_questions": ["When does raw vector norm contain useful semantic or confidence information?"]
+}

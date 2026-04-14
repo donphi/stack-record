@@ -1,0 +1,83 @@
+## What this system is
+
+A single central message broker coordinating job dispatch and worker consumption for pipeline stages.
+
+## Why this exists
+
+It decouples dispatch from execution and lets multiple workers compete for jobs without hardwiring producers to specific consumers.
+
+## Where this fits
+
+- Parent map: [[System_Map]]
+- Implements: [[gpu_dispatch]]
+- Used in project: [[ukb_pipeline]]
+
+## Architecture
+
+```text
+Dispatch Script
+    |
+    v
+[ RabbitMQ Queue ] ---> Worker A
+        |             Worker B
+        |             Worker C
+        v
+   Completion Signal / Sentinel
+```
+
+## Components
+
+* producer / dispatch layer
+* queue
+* consumers / workers
+
+## Configuration contract
+
+* queue name must match resources config
+* worker subscription must match exact queue name
+* payload schema must validate before execution
+
+## Why it is used
+
+It amortizes model loading and simplifies horizontal scale-out.
+
+## Benefits
+
+* scalable
+* decoupled
+* supports competing consumers
+
+## Drawbacks
+
+* naming mistakes are painful
+* distributed debugging is harder
+
+## Failure modes
+
+* wrong queue name
+* stale worker version
+* payload schema drift
+
+## Monitoring
+
+* queue depth
+* consumer count
+* average job latency
+
+## Where I have used it
+
+* [[ukb_pipeline]] — persistent GPU worker architecture
+
+## Related notes
+
+* [[gpu_dispatch]]
+* [[gpu_worker]]
+* [[naming_contracts]]
+
+## Open questions
+
+* Need dead-letter queue strategy note.
+
+## Review
+
+* Next review target: add retry topology

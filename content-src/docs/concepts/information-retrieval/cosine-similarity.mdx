@@ -1,0 +1,99 @@
+## What this is
+
+Cosine similarity measures alignment between two vectors. It captures direction more than raw magnitude.
+
+## Why this matters
+
+In many embedding systems, semantic similarity is better represented by direction than by vector length.
+
+## Where this fits
+
+- Parent map: [[MOC_Similarity_Metrics]]
+- Prerequisites: [[vectors]], [[dot_product]], [[magnitude]]
+- Used in method: [[dense_retrieval]]
+- Used in system: [[faiss_setup]]
+- Used in project: [[ukb_pipeline]]
+
+## Core idea
+
+Two vectors can have different sizes but still point in nearly the same direction. Cosine similarity captures that directional relationship.
+
+## Equation
+
+$$
+\cos(\theta) = \frac{\mathbf{a}\cdot\mathbf{b}}{\|\mathbf{a}\|\|\mathbf{b}\|}
+$$
+
+## Breakdown
+
+### Terms
+
+- $\mathbf{a}\cdot\mathbf{b}$ = dot product
+- $\|\mathbf{a}\|$ = magnitude of vector `a`
+- $\|\mathbf{b}\|$ = magnitude of vector `b`
+
+### What the equation is really doing
+
+It divides the dot product by the product of the two vector lengths, so the final score mainly reflects angular alignment.
+
+## Plain-English explanation
+
+Cosine asks: "Are these vectors pointing in the same direction?"
+
+## Worked example
+
+If `a = [1, 1]` and `b = [2, 2]`, the vectors have different sizes but the same direction, so cosine similarity is 1.
+
+## ASCII diagram
+
+```text
+y
+^
+|        b
+|      /
+|    /
+|  /   a
+|/
++------------> x
+```
+
+## Why this is used
+
+It is useful when vector length is less meaningful than vector direction.
+
+## Benefits
+
+* reduces magnitude distortion
+* intuitive for embeddings
+* widely used in retrieval
+
+## Drawbacks and failure modes
+
+* discards magnitude information
+* can hide meaningful norm differences
+* not automatically the best metric in every embedding setup
+
+## Where I have used it
+
+* [[ukb_pipeline]] — embedding similarity comparisons
+* [[faiss_setup]] — normalized vector search
+
+## Questions this note answers
+
+* What does cosine similarity measure?
+* Why does normalization matter?
+* When is cosine better than dot product?
+
+## Related notes
+
+* [[dot_product]]
+* [[vector_similarity]]
+* [[cosine_vs_euclidean_vs_dot]]
+
+## Open questions
+
+* How often do biomedical embedders encode useful signal in vector norm?
+
+## Review
+
+* Next review target: add ANN-specific implications

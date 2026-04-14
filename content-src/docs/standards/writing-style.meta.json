@@ -1,0 +1,14 @@
+{
+  "title": "Writing Style",
+  "description": "Writing standard for all Stack Record notes: the seven mandatory rules, MDX artifact usage guide, and per-note-type placement recommendations.",
+  "id": "STD-WRITE-0001",
+  "type": "standard",
+  "domain": "standards",
+  "status": "enforced",
+  "tags": ["standard/writing"],
+  "review_cycle": "yearly",
+  "last_reviewed": "2026-04-14",
+  "closure_score": 6,
+  "closure_status": "closed",
+  "open_questions": []
+}

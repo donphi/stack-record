@@ -1,0 +1,98 @@
+## What this is
+
+The dot product combines pairwise coordinate multiplication and summation to produce a scalar score.
+
+## Why this matters
+
+It is the base operation beneath cosine similarity and many vector retrieval systems.
+
+## Where this fits
+
+- Parent map: [[MOC_Similarity_Metrics]]
+- Prerequisites: [[vectors]], [[magnitude]]
+- Used in method: [[dense_retrieval]]
+- Used in system: [[faiss_setup]]
+- Used in project: [[ukb_pipeline]]
+
+## Core idea
+
+The dot product grows when vectors point in similar directions and when their magnitudes are large.
+
+## Equation
+
+$$
+\mathbf{a}\cdot\mathbf{b} = \sum_{i=1}^{n} a_i b_i
+$$
+
+## Breakdown
+
+### Terms
+
+- $a_i$ = component of vector `a`
+- $b_i$ = component of vector `b`
+
+### What the equation is really doing
+
+It multiplies aligned components and adds them, blending direction and magnitude into one score.
+
+## Plain-English explanation
+
+Dot product asks: "How much do these vectors point together, and how large are they while doing it?"
+
+## Worked example
+
+For `a = [1, 2]` and `b = [3, 4]`:
+
+$$
+1 \cdot 3 + 2 \cdot 4 = 11
+$$
+
+## ASCII diagram
+
+```text
+a ---->
+b ------>
+
+same general direction + non-zero size = positive dot product
+```
+
+## Why this is used
+
+It is fast, fundamental, and directly supported in many vector indexes.
+
+## Benefits
+
+* simple
+* computationally efficient
+* preserves magnitude information
+
+## Drawbacks and failure modes
+
+* sensitive to vector norm
+* hard to compare across unnormalized spaces
+* can over-reward large norms
+
+## Where I have used it
+
+* [[faiss_setup]] — inner-product search
+* [[ukb_pipeline]] — vector comparison reasoning
+
+## Questions this note answers
+
+* What is the dot product?
+* How is it different from cosine?
+* Why does norm matter?
+
+## Related notes
+
+* [[vectors]]
+* [[cosine_similarity]]
+* [[vector_similarity]]
+
+## Open questions
+
+* When should norm be preserved instead of normalized away?
+
+## Review
+
+* Next review target: add rank behavior examples

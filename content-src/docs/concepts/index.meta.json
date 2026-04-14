@@ -1,0 +1,15 @@
+{
+  "title": "Concepts",
+  "description": "Atomic ideas and theory notes.",
+  "id": "MAP-CONCEPTS-0001",
+  "type": "map",
+  "domain": "global",
+  "status": "evergreen",
+  "tags": ["map/concepts"],
+  "children": ["mathematics", "statistics", "information-retrieval", "representation-learning", "machine-learning", "biomedical"],
+  "review_cycle": "quarterly",
+  "last_reviewed": "2026-04-14",
+  "closure_score": 6,
+  "closure_status": "closed",
+  "open_questions": []
+}

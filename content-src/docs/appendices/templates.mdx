@@ -1,0 +1,708 @@
+# Authoring Templates
+
+Every note in Stack Record is a pair: a **body-only `.mdx`** file and a **`.meta.json` sidecar**. The materialiser joins them at build time. No `.mdx` file under `content-src/` may contain frontmatter.
+
+<Callout type="warn">
+Every `.mdx` must have a matching `.meta.json`. Every `.meta.json` must have `title`, `description`, `id`, and `type`. The materialiser will reject violations.
+</Callout>
+
+<Cards>
+<Card title="Concept" href="#concept" />
+<Card title="Method" href="#method" />
+<Card title="System" href="#system" />
+<Card title="Decision" href="#decision" />
+<Card title="Experiment" href="#experiment" />
+<Card title="Project" href="#project" />
+<Card title="Map" href="#map" />
+<Card title="Standard" href="#standard" />
+<Card title="Reference" href="#reference" />
+</Cards>
+
+## Writing rules
+
+<Steps>
+<Step>
+### Define before explaining
+State what the thing is before explaining why or how.
+</Step>
+<Step>
+### Use stable section order
+Follow the template for the note type exactly. Omit inapplicable sections but preserve order.
+</Step>
+<Step>
+### Plain-English interpretation
+Every technical note must include a plain-language summary.
+</Step>
+<Step>
+### One worked example minimum
+Show at least one concrete example with real values.
+</Step>
+<Step>
+### Show drawbacks
+No note should only sell the idea. State limitations and failure modes.
+</Step>
+<Step>
+### Link outward
+Connect to related notes, methods, systems, and projects.
+</Step>
+<Step>
+### Write for decision utility
+The reader should leave knowing what to do.
+</Step>
+</Steps>
+
+---
+
+## Concept
+
+<Tabs items={["Body Template", "Sidecar Template", "Closure Checklist"]}>
+<Tab value="Body Template">
+
+```md title="concept-name.mdx"
+## What this is
+## Why this matters
+## Where this fits
+## Core idea
+## Equation or formal logic
+## Breakdown
+### Terms
+### What the equation is really doing
+## Plain-English explanation
+## Worked example
+## ASCII diagram
+## Why this is used
+## Benefits
+## Drawbacks and failure modes
+## Where I have used it
+## Questions this note answers
+## Related notes
+## Open questions
+## Review
+```
+
+<Callout type="info">
+Use `$$...$$` for KaTeX math blocks. Use ` ```text ` for ASCII diagrams.
+</Callout>
+
+</Tab>
+<Tab value="Sidecar Template">
+
+```json title="concept-name.meta.json"
+{
+  "title": "",
+  "description": "",
+  "id": "C-{{CODE}}",
+  "type": "concept",
+  "domain": "",
+  "status": "evergreen",
+  "tags": ["concept/{{TAG}}"],
+  "aliases": [],
+  "icon": "",
+  "parent_maps": [],
+  "prerequisites": [],
+  "children": [],
+  "related_notes": [],
+  "related_methods": [],
+  "related_systems": [],
+  "related_projects": [],
+  "review_cycle": "monthly",
+  "last_reviewed": "",
+  "closure_score": 0,
+  "closure_status": "open",
+  "open_questions": []
+}
+```
+
+</Tab>
+<Tab value="Closure Checklist">
+
+<Accordions>
+<Accordion title="Concept closure requirements">
+
+- One parent map
+- Two related or prerequisite concepts
+- One child, example, or comparison note
+- One related method
+- One related system or project link
+- Drawbacks or failure modes stated
+- Open questions listed
+- Review metadata present
+
+</Accordion>
+</Accordions>
+
+</Tab>
+</Tabs>
+
+---
+
+## Method
+
+<Tabs items={["Body Template", "Sidecar Template", "Closure Checklist"]}>
+<Tab value="Body Template">
+
+```md title="method-name.mdx"
+## What this method is
+## Why this is used
+## Where this fits
+## Inputs
+## Outputs
+## Procedure
+## Formal rule or formula
+## Why it works
+## Code sketch
+## Benefits
+## Drawbacks
+## Failure modes
+## Where I have used it
+## Validation and evidence
+## Questions this note answers
+## Related notes
+## Open questions
+## Review
+```
+
+<Callout type="info">
+Use `<Steps>` for multi-step procedures. Use ` ```python title="example.py" ` for titled code sketches.
+</Callout>
+
+</Tab>
+<Tab value="Sidecar Template">
+
+```json title="method-name.meta.json"
+{
+  "title": "",
+  "description": "",
+  "id": "M-{{CODE}}",
+  "type": "method",
+  "domain": "",
+  "status": "evergreen",
+  "tags": ["method/{{TAG}}"],
+  "icon": "",
+  "parent_maps": [],
+  "uses_concepts": [],
+  "implemented_in": [],
+  "validated_by": [],
+  "related_notes": [],
+  "related_methods": [],
+  "related_systems": [],
+  "related_projects": [],
+  "review_cycle": "monthly",
+  "last_reviewed": "",
+  "closure_score": 0,
+  "closure_status": "open",
+  "open_questions": []
+}
+```
+
+</Tab>
+<Tab value="Closure Checklist">
+
+<Accordions>
+<Accordion title="Method closure requirements">
+
+- One parent map
+- Concept dependencies linked
+- Implementation link present
+- Evaluation or validation link
+- Inputs and outputs defined
+- Benefits and drawbacks stated
+- Failure modes listed
+- Where used documented
+- Review metadata present
+
+</Accordion>
+</Accordions>
+
+</Tab>
+</Tabs>
+
+---
+
+## System
+
+<Tabs items={["Body Template", "Sidecar Template", "Closure Checklist"]}>
+<Tab value="Body Template">
+
+```md title="system-name.mdx"
+## What this system is
+## Why this exists
+## Where this fits
+## Architecture
+## Components
+## Configuration contract
+## Why it is used
+## Benefits
+## Drawbacks
+## Failure modes
+## Monitoring
+## Where I have used it
+## Related notes
+## Open questions
+## Review
+```
+
+<Callout type="info">
+Use ` ```text ` for ASCII architecture diagrams. Include a configuration contract section with exact naming and schema rules.
+</Callout>
+
+</Tab>
+<Tab value="Sidecar Template">
+
+```json title="system-name.meta.json"
+{
+  "title": "",
+  "description": "",
+  "id": "S-{{CODE}}",
+  "type": "system",
+  "domain": "",
+  "status": "active",
+  "tags": ["system/{{TAG}}"],
+  "icon": "",
+  "parent_maps": [],
+  "implements_methods": [],
+  "depends_on": [],
+  "used_in_projects": [],
+  "related_notes": [],
+  "related_methods": [],
+  "related_systems": [],
+  "related_projects": [],
+  "review_cycle": "quarterly",
+  "last_reviewed": "",
+  "closure_score": 0,
+  "closure_status": "open",
+  "open_questions": []
+}
+```
+
+</Tab>
+<Tab value="Closure Checklist">
+
+<Accordions>
+<Accordion title="System closure requirements">
+
+- One parent map
+- Implemented method link
+- Dependency links
+- Architecture block diagram
+- Configuration contract
+- Failure modes listed
+- Monitoring section
+- Where used documented
+- Review metadata present
+
+</Accordion>
+</Accordions>
+
+</Tab>
+</Tabs>
+
+---
+
+## Decision
+
+<Tabs items={["Body Template", "Sidecar Template", "Closure Checklist"]}>
+<Tab value="Body Template">
+
+```md title="decision-name.mdx"
+## Decision
+## Context
+## Why this decision exists
+## Options considered
+## Why the chosen option won
+## Tradeoffs accepted
+## Consequences
+## Where this has been used
+## Review trigger
+```
+
+<Callout type="info">
+Decision notes must include alternatives considered and tradeoffs accepted. Include a review trigger so the decision can be revisited.
+</Callout>
+
+</Tab>
+<Tab value="Sidecar Template">
+
+```json title="decision-name.meta.json"
+{
+  "title": "",
+  "description": "",
+  "id": "D-{{CODE}}",
+  "type": "decision",
+  "domain": "",
+  "status": "accepted",
+  "tags": ["decision/{{TAG}}"],
+  "decision_status": "accepted",
+  "date_decided": "",
+  "deciders": ["Donald Philp"],
+  "alternatives": [],
+  "related_projects": [],
+  "review_cycle": "yearly",
+  "last_reviewed": "",
+  "closure_score": 0,
+  "closure_status": "open",
+  "open_questions": []
+}
+```
+
+</Tab>
+<Tab value="Closure Checklist">
+
+<Accordions>
+<Accordion title="Decision closure requirements">
+
+- Context documented
+- Options considered listed
+- Why chosen explained
+- Tradeoffs accepted stated
+- Consequences documented
+- Review trigger defined
+
+</Accordion>
+</Accordions>
+
+</Tab>
+</Tabs>
+
+---
+
+## Experiment
+
+<Tabs items={["Body Template", "Sidecar Template", "Closure Checklist"]}>
+<Tab value="Body Template">
+
+```md title="experiment-name.mdx"
+## Question
+## Hypothesis
+## Why this matters
+## Setup
+## Procedure
+## Results
+## Interpretation
+## Threats to validity
+## What this changes
+## Final status
+```
+
+<Callout type="info">
+Use `<Steps>` for the procedure section. Include threats to validity even if no issues were found.
+</Callout>
+
+</Tab>
+<Tab value="Sidecar Template">
+
+```json title="experiment-name.meta.json"
+{
+  "title": "",
+  "description": "",
+  "id": "E-{{CODE}}",
+  "type": "experiment",
+  "domain": "",
+  "status": "completed",
+  "tags": ["experiment/{{TAG}}"],
+  "related_notes": [],
+  "related_methods": [],
+  "related_systems": [],
+  "related_projects": [],
+  "date_started": "",
+  "date_completed": "",
+  "review_cycle": "never",
+  "last_reviewed": "",
+  "closure_score": 0,
+  "closure_status": "open",
+  "open_questions": []
+}
+```
+
+</Tab>
+<Tab value="Closure Checklist">
+
+<Accordions>
+<Accordion title="Experiment closure requirements">
+
+- Question stated
+- Hypothesis defined
+- Setup documented
+- Procedure listed
+- Results recorded
+- Interpretation provided
+- Threats to validity addressed
+- Feedback links to affected notes
+
+</Accordion>
+</Accordions>
+
+</Tab>
+</Tabs>
+
+---
+
+## Project
+
+<Tabs items={["Body Template", "Sidecar Template", "Closure Checklist"]}>
+<Tab value="Body Template">
+
+```md title="project-name.mdx"
+## What this project is
+## Why it exists
+## Scope
+## Key concepts
+## Key methods
+## Key systems
+## Key decisions
+## Status
+## Lessons learned
+## Open loops
+```
+
+</Tab>
+<Tab value="Sidecar Template">
+
+```json title="project-name.meta.json"
+{
+  "title": "",
+  "description": "",
+  "id": "P-{{CODE}}",
+  "type": "project",
+  "domain": "project",
+  "status": "active",
+  "tags": ["project/{{TAG}}"],
+  "related_notes": [],
+  "related_methods": [],
+  "related_systems": [],
+  "related_projects": [],
+  "key_methods": [],
+  "key_systems": [],
+  "key_decisions": [],
+  "review_cycle": "monthly",
+  "last_reviewed": "",
+  "closure_score": 0,
+  "closure_status": "open",
+  "open_questions": []
+}
+```
+
+</Tab>
+<Tab value="Closure Checklist">
+
+<Accordions>
+<Accordion title="Project closure requirements">
+
+- One parent map
+- Key concepts linked
+- Key methods linked
+- Key systems linked
+- Key decisions linked
+- Scope defined
+- Status documented
+- Lessons learned recorded
+- Open loops listed
+- Review metadata present
+
+</Accordion>
+</Accordions>
+
+</Tab>
+</Tabs>
+
+---
+
+## Map
+
+<Tabs items={["Body Template", "Sidecar Template", "Closure Checklist"]}>
+<Tab value="Body Template">
+
+```md title="map-name.mdx"
+## What this map is
+## Why this matters
+## Where this fits
+## Structure
+## What this map helps answer
+## Notes in this map
+## Gaps and open loops
+## Review
+```
+
+<Callout type="info">
+Use ` ```text ` for tree-style structure diagrams showing child notes.
+</Callout>
+
+</Tab>
+<Tab value="Sidecar Template">
+
+```json title="map-name.meta.json"
+{
+  "title": "",
+  "description": "",
+  "id": "MAP-{{CODE}}",
+  "type": "map",
+  "domain": "",
+  "status": "evergreen",
+  "tags": ["map/{{TAG}}"],
+  "children": [],
+  "review_cycle": "quarterly",
+  "last_reviewed": "",
+  "closure_score": 0,
+  "closure_status": "open",
+  "open_questions": []
+}
+```
+
+</Tab>
+<Tab value="Closure Checklist">
+
+<Accordions>
+<Accordion title="Map closure requirements">
+
+- Children notes listed
+- Structure diagram present
+- Gaps and open loops identified
+- Each child note exists and links back
+- Review metadata present
+
+</Accordion>
+</Accordions>
+
+</Tab>
+</Tabs>
+
+---
+
+## Standard
+
+<Tabs items={["Body Template", "Sidecar Template", "Closure Checklist"]}>
+<Tab value="Body Template">
+
+```md title="standard-name.mdx"
+## Purpose
+## Applies to
+## Required fields
+## Required sections
+## Quality bar
+## Failure conditions
+```
+
+</Tab>
+<Tab value="Sidecar Template">
+
+```json title="standard-name.meta.json"
+{
+  "title": "",
+  "description": "",
+  "id": "STD-{{CODE}}",
+  "type": "standard",
+  "domain": "standards",
+  "status": "enforced",
+  "tags": ["standard/{{TAG}}"],
+  "review_cycle": "yearly",
+  "last_reviewed": "",
+  "closure_score": 6,
+  "closure_status": "closed",
+  "open_questions": []
+}
+```
+
+</Tab>
+<Tab value="Closure Checklist">
+
+<Accordions>
+<Accordion title="Standard closure requirements">
+
+- Purpose stated
+- Applies-to scope defined
+- Required fields listed
+- Required sections listed
+- Quality bar criteria defined
+- Failure conditions documented
+- Review metadata present
+
+</Accordion>
+</Accordions>
+
+</Tab>
+</Tabs>
+
+---
+
+## Reference
+
+<Tabs items={["Body Template", "Sidecar Template", "Closure Checklist"]}>
+<Tab value="Body Template">
+
+Reference pages have no fixed section order. Use whatever structure best serves the content (glossary, notation tables, template listings, etc.). The following is a suggested starting point:
+
+```md title="reference-name.mdx"
+## Overview
+## Entries
+## Usage notes
+## Related notes
+```
+
+<Callout type="info">
+Reference pages are flexible. Use tables, definition lists, or whatever format best suits the reference material.
+</Callout>
+
+</Tab>
+<Tab value="Sidecar Template">
+
+```json title="reference-name.meta.json"
+{
+  "title": "",
+  "description": "",
+  "id": "REF-{{CODE}}",
+  "type": "reference",
+  "domain": "",
+  "status": "evergreen",
+  "tags": ["reference/{{TAG}}"],
+  "review_cycle": "yearly",
+  "last_reviewed": "",
+  "closure_score": 6,
+  "closure_status": "closed",
+  "open_questions": []
+}
+```
+
+</Tab>
+<Tab value="Closure Checklist">
+
+<Accordions>
+<Accordion title="Reference closure requirements">
+
+- Content is complete for its stated scope
+- Entries are consistently formatted
+- Related notes linked where applicable
+- Review metadata present
+
+</Accordion>
+</Accordions>
+
+</Tab>
+</Tabs>
+
+---
+
+## Fumadocs MDX tips
+
+<Callout type="info">
+
+**Available components** (no imports needed in `.mdx` files):
+
+- `<Steps>` / `<Step>` — numbered step guides
+- `<Tabs>` / `<Tab>` — tabbed content switching
+- `<Callout>` — info, warn, error, success boxes
+- `<Accordion>` / `<Accordions>` — expandable sections
+- `<Cards>` / `<Card>` — link card grids
+- `<Files>` / `<File>` / `<Folder>` — file tree diagrams
+- `<TypeTable>` — prop/field documentation tables
+- `<ImageZoom>` — zoomable images
+
+**Code block features** (no components needed):
+
+- ` ```ts title="filename.ts" ` — titled code blocks
+- ` ```ts lineNumbers ` — line numbers
+- `// [!code highlight]` — line highlighting
+- `// [!code --]` / `// [!code ++]` — diff markers
+- `// [!code focus]` — focus lines
+- `$$...$$` — KaTeX math blocks
+
+</Callout>

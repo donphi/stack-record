@@ -1,0 +1,25 @@
+{
+  "title": "Domain Map",
+  "description": "Groups every concept note by knowledge area: mathematics, statistics, information retrieval, representation learning, machine learning, and biomedical.",
+  "id": "MAP-DOMAIN-0001",
+  "type": "map",
+  "domain": "global",
+  "status": "active",
+  "tags": ["map/domain"],
+  "children": [
+    "concepts"
+  ],
+  "related_notes": ["cosine_similarity", "dot_product", "vector_similarity"],
+  "related_methods": ["rrf_pipeline"],
+  "related_systems": [],
+  "related_projects": ["ukb_pipeline"],
+  "review_cycle": "quarterly",
+  "last_reviewed": "2026-04-14",
+  "closure_score": 4,
+  "closure_status": "partial",
+  "open_questions": [
+    "Should BM25 live under information retrieval or statistics, given it depends on corpus-level statistical properties?",
+    "Where does the corpus statistics gap note belong — information retrieval or representation learning?",
+    "Should biomedical domain concepts be split into general (UMLS, ontology mapping) and project-specific (UK Biobank features)?"
+  ]
+}

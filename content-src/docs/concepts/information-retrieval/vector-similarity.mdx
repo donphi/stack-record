@@ -1,0 +1,85 @@
+## What this is
+
+Vector similarity is the family of methods used to compare vector representations numerically.
+
+## Why this matters
+
+Embedding systems only become useful when you can compare vectors in a way that reflects the meaning you care about.
+
+## Where this fits
+
+- Parent map: [[MOC_Similarity_Metrics]]
+- Prerequisites: [[vectors]], [[distance_metrics]]
+- Used in method: [[dense_retrieval]]
+- Used in system: [[faiss_setup]]
+- Used in project: [[ukb_pipeline]]
+
+## Core idea
+
+Different metrics define "closeness" differently. That changes ranking and retrieval behavior.
+
+## Equation or formal logic
+
+$$
+\text{similarity}(\mathbf{a}, \mathbf{b}) \in \{\text{cosine}, \text{dot}, \text{L2-based transforms}, \dots\}
+$$
+
+## Plain-English explanation
+
+Vector similarity is the rulebook for deciding whether two embeddings should count as "close."
+
+## Worked example
+
+The same two vectors can rank differently under cosine and dot product if their magnitudes differ.
+
+## ASCII diagram
+
+```text
+vector A  ---->
+vector B  --->
+vector C  -------->
+
+A vs B may be similar by direction
+A vs C may dominate by norm under dot product
+```
+
+## Why this is used
+
+It is the conceptual bridge between embeddings and retrieval.
+
+## Benefits
+
+* makes metric choice explicit
+* prevents blind use of cosine everywhere
+* clarifies why retrieval rankings change
+
+## Drawbacks and failure modes
+
+* easy to treat as a generic black box
+* metric choice is often under-documented
+* preprocessing can silently redefine similarity
+
+## Where I have used it
+
+* [[ukb_pipeline]] — metric reasoning for retrieval design
+* [[faiss_setup]] — implementation choice discussion
+
+## Questions this note answers
+
+* What is vector similarity?
+* Why are there multiple metrics?
+* Why does metric choice change retrieval behavior?
+
+## Related notes
+
+* [[cosine_similarity]]
+* [[dot_product]]
+* [[dense_retrieval]]
+
+## Open questions
+
+* Need a dedicated comparison note for cosine vs dot vs euclidean.
+
+## Review
+
+* Next review target: add ANN indexing implications

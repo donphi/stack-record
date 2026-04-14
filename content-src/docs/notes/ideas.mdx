@@ -1,0 +1,405 @@
+## Pull Quick Web Data
+
+```
+sudo apt install pipx
+pipx install trafilatura
+```
+
+Trafilatura achieves 0.978 recall while maintaining excellent precision, and its native markdown output reduces token count by approximately 67% compared to raw HTML. Apify That token reduction matters directly — fewer wasted tokens means the LLM spends its context window on actual content.
+Major LLM pretraining datasets like FineWeb and RefinedWeb use trafilatura for their web extraction pipelines arXiv, which tells you it's the industry standard for getting LLM-ready text from web pages.
+
+https://arxiv.org/html/2602.19548
+
+---
+
+## Rust ↔ Python Integration
+
+### PyO3
+
+Rust library for writing Python extensions. You write functions in Rust, compile them into a Python module, and import them like any normal package. This is how you move your slow Python hot paths into Rust without rewriting your whole codebase.
+
+```bash
+# Install
+cargo install maturin
+pip install maturin
+
+# Create a new PyO3 project
+maturin init --bindings pyo3
+
+# Build and install into your current Python env
+maturin develop
+
+# Build a wheel for distribution
+maturin build --release
+```
+
+### Maturin
+
+The build tool for PyO3. Handles compiling Rust code into Python-compatible wheels. You don't use PyO3 without it.
+
+```bash
+# Install
+pip install maturin
+# or
+cargo install maturin
+
+# Create project, build, install in one flow
+maturin init --bindings pyo3
+maturin develop       # dev build, installs into active venv
+maturin build         # production wheel in target/wheels/
+```
+
+---
+
+## Data Validation
+
+### Pydantic
+
+Python library for data validation using type annotations. Define a schema as a Python class, and Pydantic validates all incoming data against it at runtime. The core validation engine (pydantic-core) is written in Rust, so it's fast. Essential for validating data flowing between your pipeline stages — OCR output schemas, API payloads, config files, inter-container messages.
+
+```bash
+# Install
+pip install pydantic
+
+# Usage
+from pydantic import BaseModel, field_validator
+
+class OCRResult(BaseModel):
+    text: str
+    confidence: float
+    bounding_box: list[float]
+
+    @field_validator('confidence')
+    @classmethod
+    def check_confidence(cls, v):
+        if not 0 <= v <= 1:
+            raise ValueError('confidence must be between 0 and 1')
+        return v
+
+# Validates on construction — throws if data is wrong
+result = OCRResult(text="hello", confidence=0.95, bounding_box=[0, 0, 100, 50])
+```
+
+---
+
+## CPU Data Processing
+
+### Polars
+
+Rust-powered DataFrame library with a Python API. Replacement for pandas that runs 2–13x faster depending on the operation. Handles large tabular data without the memory bloat of pandas.
+
+```bash
+# Install
+pip install polars
+
+# Usage
+import polars as pl
+df = pl.read_csv("data.csv")
+result = df.filter(pl.col("score") > 0.8).group_by("category").agg(pl.col("score").mean())
+```
+
+---
+
+## GPU Compute & Inference
+
+### PyTorch
+
+The standard Python framework for GPU-accelerated model training and inference. Your OCR models almost certainly run on this or ONNX Runtime. GPU memory is managed by PyTorch's CUDA allocator under the hood.
+
+```bash
+# Install (CUDA 12.x)
+pip install torch torchvision --index-url https://download.pytorch.org/whl/cu121
+
+# Install (CPU only)
+pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
+
+# Install (ROCm / AMD GPU)
+pip install torch torchvision --index-url https://download.pytorch.org/whl/rocm6.0
+```
+
+### ONNX Runtime (with Rust bindings)
+
+Cross-platform inference engine. Export your OCR model to ONNX format, run it through ONNX Runtime. The `ort` Rust crate gives you bindings so your Rust binary can load and run models directly without Python.
+
+```bash
+# Python
+pip install onnxruntime-gpu   # GPU version
+pip install onnxruntime        # CPU version
+
+# Rust (add to Cargo.toml)
+[dependencies]
+ort = "2"
+```
+
+### cudarc (Rust CUDA bindings)
+
+Safe Rust wrappers around CUDA APIs. If you need direct GPU memory control from Rust — allocating, freeing, copying between host and device — this is the crate. Not needed if you're staying in Python for GPU work.
+
+```bash
+# Rust (add to Cargo.toml)
+[dependencies]
+cudarc = "0.12"
+```
+
+### tch-rs (Rust PyTorch bindings)
+
+Rust bindings to libtorch (PyTorch's C++ backend). Lets a Rust binary load and run PyTorch models without Python.
+
+```bash
+# Rust (add to Cargo.toml)
+[dependencies]
+tch = "0.17"
+
+# Requires libtorch installed on the system
+# Download from https://pytorch.org and set LIBTORCH env var
+export LIBTORCH=/path/to/libtorch
+```
+
+---
+
+## Rust ML Frameworks
+
+### Candle (Hugging Face)
+
+Rust-native ML inference framework. Lightweight, no Python dependency. Built for serverless and edge inference where you want small binaries and low latency.
+
+```bash
+# Rust (add to Cargo.toml)
+[dependencies]
+candle-core = "0.8"
+candle-nn = "0.8"
+candle-transformers = "0.8"
+```
+
+### Burn
+
+Rust deep learning framework with backends for CUDA, ROCm, and CPU. More flexible than Candle — supports training as well as inference.
+
+```bash
+# Rust (add to Cargo.toml)
+[dependencies]
+burn = "0.16"
+burn-tch = "0.16"     # PyTorch backend
+burn-ndarray = "0.16"  # CPU backend
+```
+
+---
+
+## Container Orchestration
+
+### Kubernetes (bare metal)
+
+Container orchestration for your single node with 120 cores, 8 GPUs, and 400 containers. Handles scheduling, resource limits, health checks, restarts.
+
+```bash
+# Install kubeadm on bare metal (Ubuntu)
+sudo apt-get update
+sudo apt-get install -y apt-transport-https ca-certificates curl
+curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.32/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.32/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
+sudo apt-get update
+sudo apt-get install -y kubelet kubeadm kubectl
+
+# Initialize single-node cluster
+sudo kubeadm init --pod-network-cidr=10.244.0.0/16
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+
+# Allow scheduling on the control plane (single node)
+kubectl taint nodes --all node-role.kubernetes.io/control-plane-
+```
+
+### NVIDIA GPU Operator
+
+Automates GPU driver, device plugin, and monitoring deployment on Kubernetes. One Helm chart and your GPU nodes are production ready.
+
+```bash
+# Install via Helm
+helm repo add nvidia https://helm.ngc.nvidia.com/nvidia
+helm repo update
+helm install gpu-operator nvidia/gpu-operator
+
+# Verify GPUs are visible
+kubectl get nodes -o json | jq '.items[].status.allocatable["nvidia.com/gpu"]'
+```
+
+### GPU Time-Slicing (for your 70 OCR containers on 8 GPUs)
+
+Lets multiple containers share a single GPU via round-robin scheduling. No memory isolation but works on any NVIDIA GPU. ~9 containers per GPU for your setup.
+
+```yaml
+# time-slicing-config.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: time-slicing-config
+  namespace: gpu-operator
+data:
+  any: |-
+    version: v1
+    sharing:
+      timeSlicing:
+        resources:
+          - name: nvidia.com/gpu
+            replicas: 9
+```
+
+```bash
+# Apply the config
+kubectl apply -f time-slicing-config.yaml
+
+# Patch the GPU operator to use it
+kubectl patch clusterpolicies/cluster-policy \
+  --type merge \
+  -p '{"spec": {"devicePlugin": {"config": {"name": "time-slicing-config", "default": "any"}}}}'
+
+# Each GPU now advertises 9 slots instead of 1
+# Your 8 GPUs = 72 available slots for 70 OCR containers
+```
+
+### NVIDIA MIG (Multi-Instance GPU)
+
+Hardware-level GPU partitioning. Splits one GPU into up to 7 isolated instances with dedicated memory and compute. Only available on A100, H100, H200. Use this if you need hard isolation between OCR containers.
+
+```bash
+# Enable MIG mode (requires GPU reset)
+sudo nvidia-smi -mig 1
+
+# List available partition profiles
+nvidia-smi mig -lgip
+
+# Create partitions (example: 7 equal slices on GPU 0)
+sudo nvidia-smi mig -cgi 19,19,19,19,19,19,19 -C -i 0
+
+# Verify
+nvidia-smi mig -lgi
+```
+
+### Docker (container runtime)
+
+Your containers run on Docker or containerd under Kubernetes. Each container packages your Python + Rust binary + model.
+
+```bash
+# Install Docker
+curl -fsSL https://get.docker.com | sh
+
+# Install NVIDIA Container Toolkit (GPU access in containers)
+distribution=$(. /etc/os-release;echo $ID$VERSION_ID)
+curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | sudo gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg
+curl -s -L https://nvidia.github.io/libnvidia-container/$distribution/libnvidia-container.list | \
+  sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' | \
+  sudo tee /etc/apt/sources.list.d/nvidia-container-toolkit.list
+sudo apt-get update
+sudo apt-get install -y nvidia-container-toolkit
+sudo nvidia-ctk runtime configure --runtime=docker
+sudo systemctl restart docker
+
+# Test GPU access in a container
+docker run --rm --gpus all nvidia/cuda:12.4.1-base-ubuntu22.04 nvidia-smi
+```
+
+---
+
+## Profiling (Find What to Rewrite in Rust)
+
+### py-spy
+
+Sampling profiler for Python, written in Rust. Attaches to a running process without modifying code or restarting. Generates flamegraphs, live top-like views, and thread dumps. Safe for production. This is how you find your Rust rewrite targets.
+
+```bash
+# Install
+pip install py-spy
+# or
+cargo install py-spy
+
+# Live top view — see which functions eat CPU right now
+sudo py-spy top --pid <PID>
+
+# Record a flamegraph SVG — widest bars = slowest code
+py-spy record -o profile.svg -- python my_ocr_pipeline.py
+
+# Record with native C extension visibility (OpenCV, PyTorch, Pillow)
+py-spy record -o profile.svg --native -- python my_ocr_pipeline.py
+
+# Profile Python inside a Docker container from the host
+sudo py-spy record -o profile.svg --pid $(docker inspect --format '{{.State.Pid}}' <container_name>)
+
+# Profile all subprocesses too
+py-spy record -o profile.svg --subprocesses -- python my_ocr_pipeline.py
+
+# Dump current stack traces (instant snapshot)
+sudo py-spy dump --pid <PID>
+
+# Output for speedscope (interactive web viewer at https://speedscope.app)
+py-spy record -o profile.json --format speedscope -- python my_ocr_pipeline.py
+```
+
+### Scalene
+
+Line-level Python profiler that separates Python time vs native C time vs memory. Outputs an HTML report showing exactly which lines are slow in Python (rewrite in Rust) vs slow in C extensions (leave alone). Use locally for deep analysis.
+
+```bash
+# Install
+pip install scalene
+
+# Profile a script — opens HTML report
+scalene my_ocr_pipeline.py
+
+# CLI-only output (no browser)
+scalene --cli my_ocr_pipeline.py
+
+# CPU only, show native extension time
+scalene --cpu-only --cli --native my_ocr_pipeline.py
+```
+
+---
+
+## Rust Container Image (Minimal Builds)
+
+### Building Rust for containers
+
+Static musl builds produce single binaries with no system dependencies. Container images can be under 10MB.
+
+```dockerfile
+# Dockerfile for a Rust + Python hybrid container
+FROM rust:1.78-slim-bookworm AS rust-builder
+WORKDIR /app
+COPY rust_module/ ./rust_module/
+RUN cargo install maturin
+RUN cd rust_module && maturin build --release
+
+FROM python:3.12-slim-bookworm
+WORKDIR /app
+COPY --from=rust-builder /app/rust_module/target/wheels/*.whl /tmp/
+RUN pip install /tmp/*.whl && rm /tmp/*.whl
+COPY python_app/ ./python_app/
+CMD ["python", "python_app/main.py"]
+```
+
+```bash
+# Build
+docker build -t ocr-worker .
+
+# Run with GPU access
+docker run --gpus all ocr-worker
+```
+
+---
+
+## Statistical Methodologies (from libs.md survey)
+
+These are methodologies, not software libraries. They do not have repos or package managers but are essential evaluation techniques for the pipeline.
+
+### Stability Selection (libs.md #61)
+
+Robustness method that ensures selected features are not random noise. Runs the model many times on subsampled data and keeps only features that are consistently selected. Computationally expensive (requires running the model ~100x) but critical for proving that extracted biomarkers are real signals, not artefacts.
+
+- **Citation:** Meinshausen, N. (2010).
+- **Alternative:** Lasso
+
+### Bootstrap Resampling (libs.md #62)
+
+Confidence interval method that generates error bars for metrics by resampling with replacement. Produces uncertainty estimates without assuming a parametric distribution. Computationally intensive but essential for reporting honest confidence intervals in the thesis.
+
+- **Citation:** Efron, B. (1993).
+- **Alternative:** Jackknife

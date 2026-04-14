@@ -1,0 +1,19 @@
+{
+  "title": "RabbitMQ Central Broker",
+  "description": "Central queue broker coordinating competing GPU and CPU consumers across the pipeline.",
+  "id": "S-CMP-0004",
+  "type": "system",
+  "domain": "compute",
+  "status": "active",
+  "tags": ["system/compute"],
+  "parent_maps": ["System_Map"],
+  "related_notes": ["naming_contracts", "contract_system"],
+  "related_methods": ["gpu_dispatch", "gpu_worker"],
+  "related_systems": [],
+  "related_projects": ["ukb_pipeline"],
+  "review_cycle": "quarterly",
+  "last_reviewed": "2026-04-14",
+  "closure_score": 6,
+  "closure_status": "closed",
+  "open_questions": ["Should some stages move to pull-batch processing instead of per-job dispatch?"]
+}

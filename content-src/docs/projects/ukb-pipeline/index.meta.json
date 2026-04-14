@@ -1,0 +1,18 @@
+{
+  "title": "UK Biobank Extraction Pipeline",
+  "description": "End-to-end pipeline for extracting diseases and UKB features from literature.",
+  "id": "P-UKB-0001",
+  "type": "project",
+  "domain": "project",
+  "status": "active",
+  "tags": ["project/ukb"],
+  "related_notes": ["cosine_similarity", "rank_fusion"],
+  "related_methods": ["disease_extraction", "rrf_pipeline"],
+  "related_systems": ["rabbitmq_central_broker", "contract_system"],
+  "related_projects": [],
+  "review_cycle": "monthly",
+  "last_reviewed": "2026-04-14",
+  "closure_score": 6,
+  "closure_status": "closed",
+  "open_questions": ["Need thresholding evidence note.", "Need ANN tradeoff note."]
+}

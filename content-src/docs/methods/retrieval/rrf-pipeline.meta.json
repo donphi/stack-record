@@ -1,0 +1,19 @@
+{
+  "title": "Reciprocal Rank Fusion Pipeline",
+  "description": "A rank-fusion method for combining retrieval systems without forcing raw score comparability.",
+  "id": "M-RET-0012",
+  "type": "method",
+  "domain": "retrieval",
+  "status": "evergreen",
+  "tags": ["method/retrieval"],
+  "parent_maps": ["Method_Map"],
+  "related_notes": ["rank_fusion", "score_distributions", "threshold_selection"],
+  "related_methods": [],
+  "related_systems": ["rrf_pipeline"],
+  "related_projects": ["ukb_pipeline"],
+  "review_cycle": "monthly",
+  "last_reviewed": "2026-04-14",
+  "closure_score": 6,
+  "closure_status": "closed",
+  "open_questions": ["Should weighting ever be justified when judges operate on incompatible inductive biases?"]
+}

@@ -1,0 +1,15 @@
+{
+  "title": "Stack Record",
+  "description": "Long-horizon learning system for concepts, methods, systems, decisions, and projects.",
+  "id": "HOME-0001",
+  "type": "map",
+  "domain": "global",
+  "status": "evergreen",
+  "tags": ["map/home"],
+  "children": ["learning-map", "domain-map", "method-map", "system-map", "open-loops"],
+  "review_cycle": "quarterly",
+  "last_reviewed": "2026-04-14",
+  "closure_score": 6,
+  "closure_status": "closed",
+  "open_questions": []
+}

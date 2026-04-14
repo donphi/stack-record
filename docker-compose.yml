@@ -1,0 +1,14 @@
+# Stack Record — Docker Compose for local production builds.
+#
+# PURPOSE: Single-service compose for building and running the site.
+# USAGE:   docker compose up --build
+
+services:
+  stack-record:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production

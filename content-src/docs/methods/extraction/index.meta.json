@@ -1,0 +1,15 @@
+{
+  "title": "Extraction",
+  "description": "DESCRIPTION",
+  "id": "MAP-MEXT-0001",
+  "type": "map",
+  "domain": "extraction",
+  "status": "evergreen",
+  "tags": ["map/extraction"],
+  "children": [],
+  "review_cycle": "quarterly",
+  "last_reviewed": "2026-04-14",
+  "closure_score": 6,
+  "closure_status": "closed",
+  "open_questions": []
+}

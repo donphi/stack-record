@@ -1,0 +1,15 @@
+{
+  "title": "Methods",
+  "description": "Repeatable procedures and processing patterns.",
+  "id": "MAP-METHODS-0001",
+  "type": "map",
+  "domain": "global",
+  "status": "evergreen",
+  "tags": ["map/methods"],
+  "children": ["retrieval"],
+  "review_cycle": "quarterly",
+  "last_reviewed": "2026-04-14",
+  "closure_score": 6,
+  "closure_status": "closed",
+  "open_questions": []
+}

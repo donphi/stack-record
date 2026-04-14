@@ -1,0 +1,22 @@
+{
+  "title": "Cosine Similarity",
+  "description": "A similarity measure based on the angle between two vectors.",
+  "id": "C-IR-0007",
+  "type": "concept",
+  "domain": "information_retrieval",
+  "status": "evergreen",
+  "tags": ["concept/ir", "concept/maths"],
+  "aliases": ["cosine similarity", "cosine score"],
+  "parent_maps": ["MOC_Similarity_Metrics"],
+  "prerequisites": ["vectors", "dot_product", "magnitude"],
+  "children": ["cosine_vs_euclidean_vs_dot"],
+  "related_notes": ["vector_similarity"],
+  "related_methods": ["dense_retrieval"],
+  "related_systems": ["faiss_setup"],
+  "related_projects": ["ukb_pipeline"],
+  "review_cycle": "monthly",
+  "last_reviewed": "2026-04-14",
+  "closure_score": 6,
+  "closure_status": "closed",
+  "open_questions": ["When does dot product outperform cosine in normalized embedding pipelines?"]
+}

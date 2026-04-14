@@ -1,0 +1,8 @@
+{
+  "title": "Concepts",
+  "icon": "Sparks",
+  "pages": [
+    "mathematics", "statistics", "information-retrieval",
+    "representation-learning", "machine-learning", "biomedical"
+  ]
+}

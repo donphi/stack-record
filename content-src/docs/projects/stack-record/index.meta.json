@@ -1,0 +1,15 @@
+{
+  "title": "Stack Record",
+  "description": "DESCRIPTION",
+  "id": "MAP-PSR-0001",
+  "type": "map",
+  "domain": "project",
+  "status": "evergreen",
+  "tags": ["map/stack-record"],
+  "children": [],
+  "review_cycle": "quarterly",
+  "last_reviewed": "2026-04-14",
+  "closure_score": 6,
+  "closure_status": "closed",
+  "open_questions": []
+}

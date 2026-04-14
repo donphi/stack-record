@@ -1,0 +1,15 @@
+{
+  "title": "Retrieval Methods",
+  "description": "Methods for ranking, combining, and thresholding candidates.",
+  "id": "MAP-MRET-0001",
+  "type": "map",
+  "domain": "retrieval",
+  "status": "evergreen",
+  "tags": ["map/retrieval"],
+  "children": ["rrf-pipeline"],
+  "review_cycle": "quarterly",
+  "last_reviewed": "2026-04-14",
+  "closure_score": 6,
+  "closure_status": "closed",
+  "open_questions": ["Need a thresholding note linked beneath rank fusion."]
+}

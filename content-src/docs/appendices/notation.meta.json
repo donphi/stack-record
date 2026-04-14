@@ -1,0 +1,14 @@
+{
+  "title": "Notation",
+  "description": "Mathematical and technical notation conventions.",
+  "id": "REF-NOTA-0001",
+  "type": "reference",
+  "domain": "templates",
+  "status": "evergreen",
+  "tags": ["reference/notation"],
+  "review_cycle": "yearly",
+  "last_reviewed": "2026-04-14",
+  "closure_score": 6,
+  "closure_status": "closed",
+  "open_questions": []
+}

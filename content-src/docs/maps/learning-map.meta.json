@@ -1,0 +1,22 @@
+{
+  "title": "Learning Map",
+  "description": "Top-level orientation map connecting the four child maps that organize all knowledge: domains, methods, systems, and open loops.",
+  "id": "MAP-LEARN-0001",
+  "type": "map",
+  "domain": "global",
+  "status": "evergreen",
+  "tags": ["map/learning"],
+  "children": ["domain-map", "method-map", "system-map", "open-loops"],
+  "related_notes": [],
+  "related_methods": [],
+  "related_systems": [],
+  "related_projects": ["ukb_pipeline", "stack_record"],
+  "review_cycle": "quarterly",
+  "last_reviewed": "2026-04-14",
+  "closure_score": 5,
+  "closure_status": "partial",
+  "open_questions": [
+    "Should the learning map link directly to project notes, or only through child maps?",
+    "How should review automation surface low-closure notes without manual open-loops curation?"
+  ]
+}

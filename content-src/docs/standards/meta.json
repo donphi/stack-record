@@ -1,0 +1,5 @@
+{
+  "title": "Standards",
+  "icon": "RulerCombine",
+  "pages": ["closure-rule", "metadata-schema", "writing-style", "note-quality-bar"]
+}

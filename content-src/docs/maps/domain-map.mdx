@@ -1,0 +1,104 @@
+## What this map is
+
+The domain map organizes every concept note in Stack Record by knowledge area. Each domain is a subfolder under `concepts/` containing atomic idea notes that define, explain, and connect the theoretical building blocks you reason with.
+
+This is the "what you know" layer. Methods use these concepts. Systems implement them. Projects combine them. But the concepts themselves live here, grouped into six domains that reflect the intellectual territory of your work.
+
+## Why this matters
+
+Without domain grouping, concept notes pile up in a flat list. With 30% of your knowledge captured and twenty years ahead, flat breaks fast. The six domains below emerged from the topics you actually work on — they are not an abstract taxonomy imposed from outside.
+
+Each domain answers a different kind of question:
+
+- **Mathematics** answers: what are the formal objects and operations? Vectors, norms, inner products, distance metrics, dimensionality.
+- **Statistics** answers: how do you reason about distributions and uncertainty? Jenks natural breaks, confusion matrices, F1 optimization, corpus statistics.
+- **Information Retrieval** answers: how do you find, rank, and compare items? BM25, TF-IDF, cosine similarity, dot product, vector similarity, approximate nearest neighbors.
+- **Representation Learning** answers: how do discrete things become continuous geometry? Embeddings, manifolds, Word2Vec, BERT, contextual representations, the corpus statistics gap.
+- **Machine Learning** answers: how do models learn and generalize? Gradient descent, loss functions, batch tuning, model evaluation, the compression-expressiveness tradeoff.
+- **Biomedical** answers: what domain-specific knowledge structures exist? UMLS concept identifiers, MONDO ontology, disease extraction, UK Biobank feature taxonomy, NER ensemble design.
+
+## Where this fits
+
+- Parent: [[Learning_Map]]
+- Related maps: [[Method_Map]], [[System_Map]]
+- Concepts feed into methods: a concept like [[cosine_similarity]] enables a method like [[rrf_pipeline]]
+- Concepts are implemented in systems: a concept like [[vector_similarity]] is operationalized in a system like [[rabbitmq_central_broker]]
+
+## Structure
+
+```text
+Domain Map
+├── Mathematics
+│   └── (vectors, norms, magnitude, distance metrics, dimensionality)
+├── Statistics
+│   └── (Jenks natural breaks, confusion matrices, F1 optimization,
+│        corpus-level scoring, distribution analysis)
+├── Information Retrieval
+│   ├── Cosine Similarity
+│   ├── Dot Product
+│   ├── Vector Similarity
+│   └── (BM25, TF-IDF, FAISS indexing, ANN tradeoffs — not yet written)
+├── Representation Learning
+│   └── (embedding space, manifolds, contextual embeddings,
+│        corpus statistics gap, dimensionality as tradeoff)
+├── Machine Learning
+│   └── (gradient descent, loss functions, model evaluation,
+│        batch tuning, BGE-M3 extraction modes)
+└── Biomedical
+    └── (UMLS, MONDO ontology, disease NER, UK Biobank features,
+         phenotype-level extraction)
+```
+
+## What this map helps answer
+
+* Which mathematical foundation does a retrieval concept depend on?
+* Where does a new concept about embeddings belong — representation learning or information retrieval?
+* Which domains have deep coverage and which are stubs?
+* What are the prerequisite concepts for understanding a method like RRF?
+* Which biomedical domain concepts are specific to the UK Biobank pipeline versus generalizable?
+
+## Notes in this map
+
+* [[Concepts]] — the section index linking to all six domains
+
+### Information Retrieval (3 notes, active)
+
+* [[cosine_similarity]] — angle-based vector similarity, foundation for normalized retrieval
+* [[dot_product]] — magnitude-aware similarity, foundation for inner-product search
+* [[vector_similarity]] — the family of comparison methods and when each applies
+
+### Mathematics (0 notes, stub)
+
+Planned: vectors, norms, magnitude, distance metrics, dimensionality. These are prerequisites for nearly every information retrieval and representation learning concept.
+
+### Statistics (0 notes, stub)
+
+Planned: Jenks natural breaks (used in RRF threshold selection), confusion matrices, F1 optimization, corpus-level statistics (TF, IDF, document frequency). The Jenks + confusion matrix chain for threshold-free scoring is a priority — it underpins the entire RRF pipeline.
+
+### Representation Learning (0 notes, stub)
+
+Planned: embedding space geometry, manifolds and the unit sphere, contextual vs static embeddings, the corpus statistics gap (pretrained embedders vs corpus-specific BM25), dimensionality as compression-expressiveness tradeoff. The manifold note and corpus statistics gap note are high priority — they explain why BM25 and embeddings give different answers.
+
+### Machine Learning (0 notes, stub)
+
+Planned: gradient descent, loss functions, batch size tuning, model evaluation methodology, BGE-M3 three-mode extraction (dense, sparse, ColBERT). The BGE-M3 note bridges to the biomedical domain and to the retrieval methods.
+
+### Biomedical (0 notes, stub)
+
+Planned: UMLS concept identifiers, MONDO ontology filtering, 3-NER ensemble for disease extraction, UK Biobank feature taxonomy, phenotype versus disease versus symptom disambiguation. These notes are specific to the UK Biobank pipeline but the NER ensemble pattern and ontology mapping are reusable.
+
+## Gaps and open loops
+
+* Five of six domains are empty stubs. Only information retrieval has concept notes.
+* The three information retrieval notes lack prerequisite links to mathematics (vectors, norms, magnitude do not exist yet).
+* No concept note exists for BM25, which is arguably the most important scoring concept in the current pipeline.
+* The manifold and embedding space notes are missing — they explain *why* cosine similarity works and when it fails.
+* Jenks natural breaks is referenced by the RRF pipeline method but has no concept note.
+* The corpus statistics gap (pretrained knowledge vs corpus-specific statistics) needs its own note — it is the central insight connecting information retrieval to representation learning.
+* No concept notes exist for any biomedical domain knowledge despite it being the application domain of the primary project.
+
+## Review
+
+* Last reviewed: 2026-04-14
+* Next review target: write the BM25 concept note (highest cross-reference demand), then vectors and magnitude (prerequisite for all similarity notes), then Jenks natural breaks (prerequisite for the RRF pipeline method)
+* Review cycle: quarterly

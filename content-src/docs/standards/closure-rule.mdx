@@ -1,0 +1,67 @@
+# Closure Rule
+
+A note is not complete because it exists. A note is complete only when it is **closed** across the knowledge graph.
+
+## The closure dimensions
+
+Each note is scored across six dimensions.
+
+### U — Upward closure
+
+The note links to at least one parent map or organizing frame.
+
+### L — Lateral closure
+
+The note links to at least two related peer notes.
+
+### D — Downward closure
+
+The note links to at least one more specific note, example, comparison, implementation, or child concept.
+
+### A — Applied closure
+
+The note links to at least one real use: project, implementation, system, experiment, or practical use case.
+
+### E — Epistemic closure
+
+The note states: what is known, limitations or failure modes, uncertainty or open questions.
+
+### M — Maintenance closure
+
+The note includes: status, review cycle, last reviewed, next revision target or open loop.
+
+## Closure score
+
+Closure Score = U + L + D + A + E + M. Each dimension is binary (0 or 1).
+
+## Interpretation
+
+* 6/6 = closed
+* 4/6 or 5/6 = usable but incomplete
+* 0/6 to 3/6 = orphan or draft
+
+## By note type
+
+### Concept note closure
+
+One parent map, two related/prerequisite concepts, one child/example/comparison, one related method, one related system or project, drawbacks or failure modes, open questions, review metadata.
+
+### Method note closure
+
+One parent map, concept dependencies, implementation link, evaluation/validation link, inputs and outputs, benefits and drawbacks, failure modes, where used, review metadata.
+
+### System note closure
+
+One parent map, implemented method link, dependency links, architecture block, configuration contract, failure modes, monitoring section, where used, review metadata.
+
+### Decision note closure
+
+Context, options considered, why chosen, tradeoffs, consequences, review trigger.
+
+### Experiment note closure
+
+Question, hypothesis, setup, procedure, results, interpretation, threats to validity, feedback links to affected notes.
+
+## Rule of use
+
+No note should be promoted to evergreen unless it reaches at least 5/6.

@@ -1,0 +1,268 @@
+/*
+ * PURPOSE: Stack Record — global visual configuration.
+ *
+ * OWNS: All colours, spacing, fonts, dark mode, sidebar styles,
+ *       NewCMMath @font-face declarations and KaTeX font override.
+ *
+ * RULE: This is the ONLY file for visual tuning.
+ *       No inline styles, no hardcoded colours in components.
+ *       See 0_overview.md "Immutable code rules" for the full constraint.
+ *
+ * TOUCH POINTS:
+ *   - Every component and page inherits these CSS custom properties
+ *   - lib/source.ts owns icon stroke weights (React props, not here)
+ */
+
+@import 'tailwindcss';
+@import 'fumadocs-ui/css/neutral.css';
+@import 'fumadocs-ui/css/preset.css';
+
+/* 
+ * Required for Tailwind CSS v4 to scan Fumadocs UI components.
+ * Without this, layout utility classes (like sticky, h-screen) won't be generated,
+ * causing layout shifts and scrolling issues when interacting with the sidebar.
+ */
+@source '../node_modules/fumadocs-ui/dist/**/*.js';
+
+/*
+ * ════════════════════════════════════════════════════════════
+ *  MATH FONT  ── NewCMMath (New Computer Modern Math)
+ *  Loaded from public/fonts/ as self-hosted .woff2
+ *  Overrides KaTeX's default font for normal math text.
+ *  Stretchable glyphs (large brackets, integrals) still use
+ *  KaTeX's built-in SVG/CSS fallbacks — this is expected.
+ * ════════════════════════════════════════════════════════════
+ */
+
+@font-face {
+  font-family: 'NewCMMath';
+  src: url('/fonts/NewCMMath-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'NewCMMath';
+  src: url('/fonts/NewCMMath-Book.woff2') format('woff2');
+  font-weight: 450;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'NewCMMath';
+  src: url('/fonts/NewCMMath-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+.katex .mathnormal,
+.katex .mathit,
+.katex .mathrm,
+.katex .mathbf,
+.katex .mathbb,
+.katex .mathcal,
+.katex .mathfrak,
+.katex .mathsf,
+.katex .mathtt,
+.katex .mainrm {
+  font-family: 'NewCMMath', KaTeX_Math, KaTeX_Main, serif !important;
+}
+
+/*
+ * ════════════════════════════════════════════════════════════
+ *  FONT SIZE CORRECTION — Plus Jakarta Sans
+ *  PJS renders slightly larger than typical system sans at the
+ *  same font-size. Rather than scaling every font-size globally,
+ *  size-adjust shrinks only PJS glyphs while leaving JetBrains
+ *  Mono and KaTeX math fonts untouched.
+ *  Tune the percentage here — 100% = no change, lower = smaller.
+ * ════════════════════════════════════════════════════════════
+ */
+@font-face {
+  font-family: 'PJS Adjusted';
+  src: local('Plus Jakarta Sans');
+  size-adjust: 90%;
+}
+
+@theme {
+  --font-sans: 'PJS Adjusted', var(--font-pjs), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jbm), ui-monospace, monospace;
+
+  /*
+   * ── Light mode: flat white + warm-neutral + lightning orange ──
+   *
+   * fd-background     → page body, navbar (at 80% opacity via bg-fd-background/80)
+   * fd-foreground     → primary body text
+   * fd-muted          → table header (<th>) bg, inline `code` bg
+   * fd-muted-fg       → secondary text (descriptions, timestamps)
+   * fd-popover        → floating panels (search, dropdowns)
+   * fd-popover-fg     → text inside popovers
+   * fd-card           → sidebar (#nd-sidebar), table cells, file trees,
+   *                     callouts, navigation cards
+   * fd-card-fg        → text on card / sidebar surfaces
+   * fd-border         → all 1px borders (sidebar edge, table, dividers)
+   * fd-primary        → brand accent (links, active sidebar, buttons)
+   * fd-primary-fg     → text on primary-coloured backgrounds
+   * fd-secondary      → code block (<figure>) bg, tabs frame, sec. buttons
+   * fd-secondary-fg   → text on secondary fills
+   * fd-accent         → card hover, sidebar hover, focus highlight fills
+   * fd-accent-fg      → text on accent fills
+   *
+   * fd-ring           → focus ring colour
+   * fd-overlay        → backdrop behind modals / drawers
+   *
+   * NOTE: fd-muted, fd-secondary, and fd-accent are intentionally
+   *       set to the same hsl(0,0%,95%) so table headers, tabs
+   *       frames, and card hovers share one consistent light grey.
+   */
+  --color-fd-background: hsl(0, 0%, 100%);          /* pure white */
+  --color-fd-foreground: hsl(0, 0%, 13%);            /* near-black */
+  --color-fd-muted: hsl(0, 0%, 95%);                  /* light grey — table header (<th>) bg, inline code bg */
+  --color-fd-muted-foreground: hsl(0, 0%, 52%);      /* mid grey */
+  --color-fd-popover: hsl(0, 0%, 100%);              /* white */
+  --color-fd-popover-foreground: hsl(0, 0%, 18%);    /* dark grey */
+  --color-fd-card: hsl(0, 0%, 100%);                 /* white — matches body so sidebar is seamless */
+  --color-fd-card-foreground: hsl(0, 0%, 13%);       /* near-black */
+  --color-fd-border: hsla(30, 6%, 82%, 50%);         /* warm tan at 50% opacity */
+  --color-fd-primary: rgb(254, 85, 27);              /* lightning orange */
+  --color-fd-primary-foreground: hsl(0, 0%, 100%);   /* white */
+  --color-fd-secondary: hsl(0, 0%, 95%);              /* light grey — code block/tabs outer frame, secondary buttons */
+  --color-fd-secondary-foreground: hsl(0, 0%, 18%);  /* dark grey */
+  --color-fd-accent: hsl(0, 0%, 95%);                 /* light grey — card hover, sidebar hover, focus fills */
+  --color-fd-accent-foreground: hsl(0, 0%, 13%);     /* near-black */
+  --color-fd-ring: rgb(254, 85, 27);                 /* lightning orange */
+  --color-fd-overlay: hsla(0, 0%, 0%, 0.15);         /* black at 15% */
+}
+
+/*
+ * ── Dark mode ──
+ * Same variable map as light; see light-mode block above for
+ * what each variable controls.
+ */
+.dark {
+  --color-fd-background: hsl(0, 0%, 6%);              /* near-black */
+  --color-fd-foreground: hsl(30, 6%, 90%);             /* warm off-white */
+  --color-fd-muted: hsl(0, 0%, 11%);                   /* dark grey — table headers, inline code bg */
+  --color-fd-muted-foreground: hsla(30, 4%, 62%, 0.85); /* warm mid-grey at 85% */
+  --color-fd-popover: hsl(0, 0%, 9%);                  /* very dark grey */
+  --color-fd-popover-foreground: hsl(30, 4%, 85%);     /* warm light grey */
+  --color-fd-card: hsl(0, 0%, 6%);                     /* matches body — seamless sidebar */
+  --color-fd-card-foreground: hsl(30, 6%, 95%);        /* near-white */
+  --color-fd-border: hsla(0, 0%, 36%, 22%);            /* grey at 22% opacity */
+  --color-fd-primary: rgb(254, 85, 27);                /* lightning orange */
+  --color-fd-primary-foreground: hsl(0, 0%, 5%);       /* near-black */
+  --color-fd-secondary: hsl(0, 0%, 12%);               /* dark grey — code block bg, secondary buttons */
+  --color-fd-secondary-foreground: hsl(30, 4%, 88%);   /* warm light grey */
+  --color-fd-accent: hsl(0, 0%, 18%);                  /* charcoal */
+  --color-fd-accent-foreground: hsl(30, 6%, 90%);      /* warm off-white */
+  --color-fd-ring: rgb(254, 85, 27);                   /* lightning orange */
+  --color-fd-overlay: hsla(0, 0%, 0%, 0.4);            /* black at 40% */
+}
+
+.dark #nd-sidebar {
+  --color-fd-muted: hsl(0, 0%, 13%);
+  --color-fd-secondary: hsl(0, 0%, 14%);
+  --color-fd-muted-foreground: hsl(30, 4%, 65%);
+}
+
+button:hover,
+a[role="button"]:hover,
+[role="button"]:hover {
+  --color-fd-primary: rgb(218, 47, 0);
+  --color-fd-ring: rgb(218, 47, 0);
+}
+
+
+/*
+ * ════════════════════════════════════════════════════════════
+ *  INLINE CODE TAG OVERRIDES
+ *  Fumadocs typography plugin styles inline `code` with
+ *  background: var(--color-fd-muted), a 1px fd-border, and
+ *  3px padding. Two overrides applied here:
+ *
+ *  1. TINT — swap the neutral grey background for a light
+ *     primary-orange wash (matching the active sidebar item
+ *     highlight at fd-primary/10). Border picks up the same
+ *     hue at 20% opacity. The :not(.not-prose) guard excludes
+ *     TypeTable property names and other not-prose code.
+ *
+ *  2. LINE-HEIGHT — inside tight containers (callouts at
+ *     text-sm / 1.25rem) the padded code boxes overlap
+ *     adjacent lines. line-height: 2 on the code element
+ *     gives enough vertical room without changing the
+ *     surrounding paragraph's rhythm.
+ * ════════════════════════════════════════════════════════════
+ */
+.prose :not(pre):not(.not-prose) > code {
+  background: color-mix(in srgb, var(--color-fd-primary) 10%, transparent) !important;
+  border-color: color-mix(in srgb, var(--color-fd-primary) 20%, transparent) !important;
+  line-height: 2;
+}
+
+/*
+ * ════════════════════════════════════════════════════════════
+ *  STEPS — BRANDED CIRCLES AND LINE
+ *  Fumadocs fd-step circles default to bg-fd-secondary (grey)
+ *  with fd-secondary-foreground text. The vertical connector
+ *  line is border-inline-start using fd-border.
+ *  Override both to use the primary lightning-orange brand
+ *  colour with white numerals for visual consistency.
+ * ════════════════════════════════════════════════════════════
+ */
+.fd-steps {
+  border-color: var(--color-fd-primary) !important;
+}
+
+.fd-step:before {
+  background-color: var(--color-fd-primary) !important;
+  color: var(--color-fd-primary-foreground) !important;
+}
+
+/*
+ * ════════════════════════════════════════════════════════════
+ *  DOCS DESCRIPTION MARGIN
+ *  fumadocs-ui DocsDescription ships with mb-8 (32px).
+ *  The Fumadocs website uses mb-2 (8px) to tighten the gap
+ *  between the description and the page-action buttons.
+ * ════════════════════════════════════════════════════════════
+ */
+p.mb-8.text-lg.text-fd-muted-foreground {
+  margin-bottom: calc(var(--spacing) * 2);
+}
+
+/*
+ * ════════════════════════════════════════════════════════════
+ *  LAYOUT SHIFT FIX
+ *  Prevents the centered navbar from shifting left/right by ~15px
+ *  on Linux/Windows when opening a sidebar accordion that causes
+ *  the page height to exceed the viewport, spawning a vertical scrollbar.
+ *  This matches the official Fumadocs website implementation.
+ * ════════════════════════════════════════════════════════════
+ */
+html {
+  scrollbar-gutter: stable;
+}
+
+/*
+ * ════════════════════════════════════════════════════════════
+ *  CLERK TOC ANIMATION FIX
+ *  Tailwind v4 may not generate transition-[offset-distance]
+ *  and transition-[clip-path] from scanned fumadocs-ui dist.
+ *  These ensure the TOC thumb dot and active highlight animate
+ *  smoothly instead of flashing between positions.
+ * ════════════════════════════════════════════════════════════
+ */
+.transition-\[offset-distance\] {
+  transition-property: offset-distance;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+.transition-\[clip-path\] {
+  transition-property: clip-path;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}

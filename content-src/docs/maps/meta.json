@@ -1,0 +1,5 @@
+{
+  "title": "Maps",
+  "icon": "Map",
+  "pages": ["learning-map", "domain-map", "method-map", "system-map", "open-loops", "toc-test"]
+}

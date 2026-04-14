@@ -1,0 +1,38 @@
+## What this map is
+
+This map groups the concrete compute-layer systems used to run and coordinate workloads.
+
+## Why this matters
+
+Method design only becomes operational once it is implemented in systems that move real work.
+
+## Where this fits
+
+- Parent: [[System_Map]]
+- Related maps: [[Method_Map]], [[Domain_Map]]
+
+## Structure
+
+```text
+Compute Systems
+└── [[rabbitmq_central_broker]]
+```
+
+## What this map helps answer
+
+* Which systems distribute jobs?
+* Which systems create silent failure risks?
+* Which components need monitoring?
+
+## Notes in this map
+
+* [[rabbitmq_central_broker]]
+
+## Gaps and open loops
+
+* retry policy note missing
+* dead-letter queue note missing
+
+## Review
+
+* Next review target: add failure-handling notes

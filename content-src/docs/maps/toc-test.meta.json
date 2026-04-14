@@ -1,0 +1,15 @@
+{
+  "title": "TOC Test Page",
+  "description": "A test page demonstrating nested headings in the table of contents.",
+  "id": "MAP-TOC-TEST-0001",
+  "type": "map",
+  "domain": "global",
+  "status": "draft",
+  "tags": ["test"],
+  "children": [],
+  "review_cycle": "never",
+  "last_reviewed": "2026-04-14",
+  "closure_score": 0,
+  "closure_status": "open",
+  "open_questions": []
+}

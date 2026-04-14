@@ -266,3 +266,18 @@ html {
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
 }
+
+/*
+ * ════════════════════════════════════════════════════════════
+ *  DOCS PAGE TITLE — HEAVIER WEIGHT
+ *  Fumadocs DocsTitle renders as an <h1> inside the <article>
+ *  container, above DocsBody. Bumping font-weight from the
+ *  default bold (700) to extrabold (800) gives the page title
+ *  more visual authority over body-level ## headings.
+ *  The selector targets only the DocsTitle <h1>, not any <h1>
+ *  that might appear inside the .prose body wrapper.
+ * ════════════════════════════════════════════════════════════
+ */
+article > h1 {
+  font-weight: 800;
+}

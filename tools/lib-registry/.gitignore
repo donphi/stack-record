@@ -1,0 +1,2 @@
+# Rolling backups (created at runtime, not committed)
+backups/*.bak

@@ -63,6 +63,7 @@ def _migrate_add_columns(conn: sqlite3.Connection) -> None:
         ("github_stars", "INTEGER"),
         ("github_license", "TEXT"),
         ("pypi_summary", "TEXT"),
+        ("github_pushed_at", "TEXT"),
     ]
     for col, col_type in migrations:
         if col not in existing:

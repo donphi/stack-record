@@ -2,6 +2,7 @@
 #
 # PURPOSE: Single-service compose for running the library metadata sync script.
 # USAGE:   docker compose run --rm lib-sync
+#          docker compose run --rm lib-sync python scripts/sync_registry.py --force
 
 services:
   lib-sync:
@@ -13,4 +14,5 @@ services:
     volumes:
       - ./config:/app/config:ro
       - ./data:/app/data
+      - ./backups:/app/backups
       - ../../content-src/docs/appendices:/app/site-out

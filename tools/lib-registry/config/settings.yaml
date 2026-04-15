@@ -1,0 +1,18 @@
+# Runtime settings for sync_registry.py
+# All tunables live here — the script has zero hardcoded defaults.
+
+api:
+  github_base_url: "https://api.github.com"
+  pypi_base_url: "https://pypi.org/pypi"
+
+requests:
+  timeout_seconds: 15
+  github_sleep_seconds: 0.5
+
+backup:
+  max_copies: 5
+  directory: "backups"
+
+staleness:
+  max_age_days: 28
+  auto_force: true

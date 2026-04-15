@@ -44,8 +44,9 @@
       "latest_version": "0.17.1",
       "last_updated": "2026-01-30T21:52:59.361629Z",
       "github_description": "OCR, layout analysis, reading order, table recognition in 90+ languages",
-      "github_stars": 19585,
+      "github_stars": 19587,
       "github_license": "GPL-3.0",
+      "github_pushed_at": "2026-04-10T14:55:40Z",
       "pypi_summary": "OCR, layout, reading order, and table recognition in 90+ languages",
       "citation": "Paruchuri, V. (2024).",
       "pro": "Precision & Speed. Detects line-level bounding boxes in one GPU pass.",
@@ -55,7 +56,7 @@
         "PaddleOCR"
       ],
       "docs_tag": null,
-      "synced_at": "2026-04-14T23:31:18.339869+00:00"
+      "synced_at": "2026-04-15T11:12:56.591922+00:00"
     },
     {
       "number": 2,
@@ -69,8 +70,9 @@
       "latest_version": "1.10.2",
       "last_updated": "2026-01-31T00:04:55.179918Z",
       "github_description": "Convert PDF to markdown + JSON quickly with high accuracy",
-      "github_stars": 33852,
+      "github_stars": 33888,
       "github_license": "GPL-3.0",
+      "github_pushed_at": "2026-04-14T00:31:57Z",
       "pypi_summary": "Convert documents to markdown with high speed and accuracy.",
       "citation": "Datalab (2024).",
       "pro": "Math & Speed. Best-in-class at cleaning messy equations/headers into Markdown.",
@@ -80,7 +82,7 @@
         "MinerU"
       ],
       "docs_tag": null,
-      "synced_at": "2026-04-14T23:31:18.339869+00:00"
+      "synced_at": "2026-04-15T11:12:56.591922+00:00"
     },
     {
       "number": 3,
@@ -94,8 +96,9 @@
       "latest_version": "2.88.0",
       "last_updated": "2026-04-13T14:06:29.337340Z",
       "github_description": "Get your documents ready for gen AI",
-      "github_stars": 57829,
+      "github_stars": 57878,
       "github_license": "MIT",
+      "github_pushed_at": "2026-04-15T10:50:31Z",
       "pypi_summary": "SDK and CLI for parsing PDF, DOCX, HTML, and more, to a unified document representation for powering downstream workflows such as gen AI applications.",
       "citation": "Auer, C., et al. (2024).",
       "pro": "The \"Second Opinion\". A completely independent parsing engine (IBM).",
@@ -104,7 +107,7 @@
         "Adobe Extract API"
       ],
       "docs_tag": null,
-      "synced_at": "2026-04-14T23:31:18.339869+00:00"
+      "synced_at": "2026-04-15T11:12:56.591922+00:00"
     },
     {
       "number": 4,
@@ -118,8 +121,9 @@
       "latest_version": "3.4.1",
       "last_updated": "2026-04-14T05:48:07.037314Z",
       "github_description": "Turn any PDF or image document into structured data for your AI. A powerful, lightweight OCR toolkit that bridges the gap between images/PDFs and LLMs. Supports 100+ languages.",
-      "github_stars": 75586,
+      "github_stars": 75644,
       "github_license": "Apache-2.0",
+      "github_pushed_at": "2026-04-14T08:41:01Z",
       "pypi_summary": "Awesome multilingual OCR and document parsing toolkits based on PaddlePaddle",
       "citation": "Li, C., et al. (2022).",
       "pro": "Multilingual Robustness. Excellent at borderless tables.",
@@ -128,7 +132,7 @@
         "TableFormer"
       ],
       "docs_tag": null,
-      "synced_at": "2026-04-14T23:31:18.339869+00:00"
+      "synced_at": "2026-04-15T11:12:56.591922+00:00"
     },
     {
       "number": 5,
@@ -142,8 +146,9 @@
       "latest_version": "0.1.17",
       "last_updated": "2023-10-04T09:29:52.357780Z",
       "github_description": "Implementation of Nougat Neural Optical Understanding for Academic Documents",
-      "github_stars": 9908,
+      "github_stars": 9909,
       "github_license": "MIT",
+      "github_pushed_at": "2025-02-21T16:38:00Z",
       "pypi_summary": "Nougat: Neural Optical Understanding for Academic Documents",
       "citation": "Blecher, L., et al. (2023).",
       "pro": "End-to-End. Good for pure math papers where layout doesn't matter.",
@@ -152,7 +157,7 @@
         "Marker"
       ],
       "docs_tag": null,
-      "synced_at": "2026-04-14T23:31:18.339869+00:00"
+      "synced_at": "2026-04-15T11:12:56.591922+00:00"
     },
     {
       "number": 6,
@@ -168,6 +173,7 @@
       "github_description": "Official Implementation of OCR-free Document Understanding Transformer (Donut) and Synthetic Document Generator (SynthDoG), ECCV 2022",
       "github_stars": 6833,
       "github_license": "MIT",
+      "github_pushed_at": "2024-07-11T15:33:26Z",
       "pypi_summary": "",
       "citation": "Kim, G., et al. (2022).",
       "pro": "OCR-Free. Skips text recognition, goes straight to JSON.",
@@ -176,7 +182,7 @@
         "Pix2Struct"
       ],
       "docs_tag": null,
-      "synced_at": "2026-04-14T23:31:18.339869+00:00"
+      "synced_at": "2026-04-15T11:12:56.591922+00:00"
     },
     {
       "number": 7,
@@ -190,8 +196,9 @@
       "latest_version": "0.3.13",
       "last_updated": "2024-08-16T02:33:56.762649Z",
       "github_description": "A Python wrapper for Google Tesseract",
-      "github_stars": 6333,
+      "github_stars": 6334,
       "github_license": "Apache-2.0",
+      "github_pushed_at": "2026-03-16T19:26:01Z",
       "pypi_summary": "Python-tesseract is a python wrapper for Google's Tesseract-OCR",
       "citation": "Google (2024).",
       "pro": "Reliability. Used only to check page rotation before heavy models run.",
@@ -200,7 +207,7 @@
         "EasyOCR"
       ],
       "docs_tag": null,
-      "synced_at": "2026-04-14T23:31:18.339869+00:00"
+      "synced_at": "2026-04-15T11:12:56.591922+00:00"
     },
     {
       "number": 8,
@@ -216,6 +223,7 @@
       "github_description": "",
       "github_stars": 0,
       "github_license": "",
+      "github_pushed_at": "",
       "pypi_summary": "",
       "citation": "Xiao, B., et al. (2024).",
       "pro": "Semantic Vision. Can \"look\" at a page and find \"Figure 1\" without needing text.",
@@ -224,7 +232,7 @@
         "LayoutLMv3"
       ],
       "docs_tag": null,
-      "synced_at": "2026-04-14T23:31:18.339869+00:00"
+      "synced_at": "2026-04-15T11:12:56.591922+00:00"
     },
     {
       "number": 9,
@@ -238,8 +246,9 @@
       "latest_version": "",
       "last_updated": "2026-01-30T04:47:30Z",
       "github_description": "Qwen3-VL is the multimodal large language model series developed by Qwen team, Alibaba Cloud.",
-      "github_stars": 18960,
+      "github_stars": 18969,
       "github_license": "Apache-2.0",
+      "github_pushed_at": "2026-01-30T04:47:30Z",
       "pypi_summary": "",
       "citation": "Qwen Team (2024).",
       "pro": "The Tie-Breaker. If Surya and Marker disagree, this model \"looks\" at the crop to decide.",
@@ -248,7 +257,7 @@
         "Llama-3.2-Vision"
       ],
       "docs_tag": null,
-      "synced_at": "2026-04-14T23:31:18.339869+00:00"
+      "synced_at": "2026-04-15T11:12:56.591922+00:00"
     },
     {
       "number": 10,
@@ -262,8 +271,9 @@
       "latest_version": "v1.0",
       "last_updated": "2024-04-07T03:34:37Z",
       "github_description": "[CVPR 2024] Official RT-DETR (RTDETR paddle pytorch), Real-Time DEtection TRansformer, DETRs Beat YOLOs on Real-time Object Detection. 🔥 🔥 🔥 ",
-      "github_stars": 5082,
+      "github_stars": 5083,
       "github_license": "Apache-2.0",
+      "github_pushed_at": "2026-03-02T03:35:59Z",
       "pypi_summary": "",
       "citation": "Lv, W., et al. (2023).",
       "pro": "Real-Time Speed. Identifies headers/footers instantly.",
@@ -272,7 +282,7 @@
         "YOLOv8"
       ],
       "docs_tag": null,
-      "synced_at": "2026-04-14T23:31:18.339869+00:00"
+      "synced_at": "2026-04-15T11:12:56.591922+00:00"
     },
     {
       "number": 11,
@@ -288,6 +298,7 @@
       "github_description": "Large-scale Self-supervised Pre-training Across Tasks, Languages, and Modalities",
       "github_stars": 22090,
       "github_license": "MIT",
+      "github_pushed_at": "2026-01-23T04:09:35Z",
       "pypi_summary": "",
       "citation": "Huang, Y., et al. (2022).",
       "pro": "Standard. The academic baseline for classifying \"Title\" vs \"Paragraph\".",
@@ -297,7 +308,7 @@
         "DiT"
       ],
       "docs_tag": null,
-      "synced_at": "2026-04-14T23:31:18.339869+00:00"
+      "synced_at": "2026-04-15T11:12:56.591922+00:00"
     },
     {
       "number": 12,
@@ -313,6 +324,7 @@
       "github_description": "Large-scale Self-supervised Pre-training Across Tasks, Languages, and Modalities",
       "github_stars": 22090,
       "github_license": "MIT",
+      "github_pushed_at": "2026-01-23T04:09:35Z",
       "pypi_summary": "",
       "citation": "Li, J., et al. (2022).",
       "pro": "Vision Only. Classification without needing OCR text first.",
@@ -321,7 +333,7 @@
         "LayoutLMv3"
       ],
       "docs_tag": null,
-      "synced_at": "2026-04-14T23:31:18.339869+00:00"
+      "synced_at": "2026-04-15T11:12:56.591922+00:00"
     },
     {
       "number": 13,
@@ -335,8 +347,9 @@
       "latest_version": "1.27.2.2",
       "last_updated": "2026-03-20T09:47:58.386121Z",
       "github_description": "PyMuPDF is a high performance Python library for data extraction, analysis, conversion & manipulation of PDF (and other) documents.",
-      "github_stars": 9454,
+      "github_stars": 9460,
       "github_license": "AGPL-3.0",
+      "github_pushed_at": "2026-04-14T10:30:04Z",
       "pypi_summary": "A high performance Python library for data extraction, analysis, conversion & manipulation of PDF (and other) documents.",
       "citation": "Artifex (2024).",
       "pro": "Speed. The fastest way to turn PDFs into images for the vision models.",
@@ -345,7 +358,7 @@
         "pdf2image"
       ],
       "docs_tag": null,
-      "synced_at": "2026-04-14T23:31:18.339869+00:00"
+      "synced_at": "2026-04-15T11:12:56.591922+00:00"
     },
     {
       "number": 14,
@@ -359,8 +372,9 @@
       "latest_version": "0.11.9",
       "last_updated": "2026-01-05T08:10:29.072711Z",
       "github_description": "Plumb a PDF for detailed information about each char, rectangle, line, et cetera — and easily extract text and tables.",
-      "github_stars": 10105,
+      "github_stars": 10109,
       "github_license": "MIT",
+      "github_pushed_at": "2026-01-28T22:47:09Z",
       "pypi_summary": "Plumb a PDF for detailed information about each char, rectangle, and line.",
       "citation": "Jsvine (2024).",
       "pro": "Debuggability. Great for visualizing what the computer \"sees\".",
@@ -369,7 +383,7 @@
         "PyMuPDF"
       ],
       "docs_tag": null,
-      "synced_at": "2026-04-14T23:31:18.339869+00:00"
+      "synced_at": "2026-04-15T11:12:56.591922+00:00"
     },
     {
       "number": 15,
@@ -383,8 +397,9 @@
       "latest_version": "1.17.0",
       "last_updated": "2024-01-07T20:33:01.965185Z",
       "github_description": "A python module that wraps the pdftoppm utility to convert PDF to PIL Image object",
-      "github_stars": 1956,
+      "github_stars": 1957,
       "github_license": "MIT",
+      "github_pushed_at": "2024-07-23T13:52:58Z",
       "pypi_summary": "A wrapper around the pdftoppm and pdftocairo command line tools to convert PDF to a PIL Image list.",
       "citation": "Belval (2024).",
       "pro": "Simplicity. Just wraps Poppler. Rock solid.",
@@ -393,7 +408,7 @@
         "PyMuPDF"
       ],
       "docs_tag": null,
-      "synced_at": "2026-04-14T23:31:18.339869+00:00"
+      "synced_at": "2026-04-15T11:12:56.591922+00:00"
     },
     {
       "number": 16,
@@ -407,8 +422,9 @@
       "latest_version": "1.27.2.2",
       "last_updated": "2026-03-20T09:47:58.386121Z",
       "github_description": "PyMuPDF is a high performance Python library for data extraction, analysis, conversion & manipulation of PDF (and other) documents.",
-      "github_stars": 9454,
+      "github_stars": 9460,
       "github_license": "AGPL-3.0",
+      "github_pushed_at": "2026-04-14T10:30:04Z",
       "pypi_summary": "A high performance Python library for data extraction, analysis, conversion & manipulation of PDF (and other) documents.",
       "citation": "Artifex (2024).",
       "pro": "Structure Preservation. Rotates pages without breaking the text layer.",
@@ -417,7 +433,7 @@
         "QPDF"
       ],
       "docs_tag": null,
-      "synced_at": "2026-04-14T23:31:18.339869+00:00"
+      "synced_at": "2026-04-15T11:12:56.591922+00:00"
     },
     {
       "number": 69,
@@ -431,8 +447,9 @@
       "latest_version": "3.0.9",
       "last_updated": "2026-04-07T13:05:03.882461Z",
       "github_description": "Transforms complex documents like PDFs into LLM-ready markdown/JSON for your Agentic workflows.",
-      "github_stars": 59862,
+      "github_stars": 59952,
       "github_license": "AGPL-3.0",
+      "github_pushed_at": "2026-04-15T11:14:26Z",
       "pypi_summary": "A practical tool for converting PDF to Markdown",
       "citation": "OpenDataLab (2024).",
       "pro": "Comprehensive. Full-pipeline document parsing with layout analysis.",
@@ -442,7 +459,7 @@
         "Docling"
       ],
       "docs_tag": null,
-      "synced_at": "2026-04-14T23:31:18.339869+00:00"
+      "synced_at": "2026-04-15T11:14:23.433045+00:00"
     },
     {
       "number": 70,
@@ -458,6 +475,7 @@
       "github_description": "Large-scale Self-supervised Pre-training Across Tasks, Languages, and Modalities",
       "github_stars": 22090,
       "github_license": "MIT",
+      "github_pushed_at": "2026-01-23T04:09:35Z",
       "pypi_summary": "",
       "citation": "Microsoft (2024).",
       "pro": "Reading Order. Determines correct reading order from layout.",
@@ -466,7 +484,7 @@
         "RT-DETR"
       ],
       "docs_tag": null,
-      "synced_at": "2026-04-14T23:31:18.339869+00:00"
+      "synced_at": "2026-04-15T11:12:56.591922+00:00"
     },
     {
       "number": 72,
@@ -482,6 +500,7 @@
       "github_description": "Large-scale Self-supervised Pre-training Across Tasks, Languages, and Modalities",
       "github_stars": 22090,
       "github_license": "MIT",
+      "github_pushed_at": "",
       "pypi_summary": "",
       "citation": "Microsoft (2024).",
       "pro": "Reading Order. Determines correct reading order from layout.",
@@ -506,6 +525,7 @@
       "github_description": "Table Transformer (TATR) is a deep learning model for extracting tables from unstructured documents (PDFs and images). This is also the official repository for the PubTables-1M dataset and GriTS evaluation metric.",
       "github_stars": 2887,
       "github_license": "MIT",
+      "github_pushed_at": "2024-06-24T13:41:20Z",
       "pypi_summary": "",
       "citation": "Smock, B. (2022).",
       "pro": "Scientific Bias. Trained on PubTables-1M, specifically for academic journals.",
@@ -514,7 +534,7 @@
         "YOLO-Table"
       ],
       "docs_tag": null,
-      "synced_at": "2026-04-14T23:31:18.339869+00:00"
+      "synced_at": "2026-04-15T11:12:56.591922+00:00"
     },
     {
       "number": 18,
@@ -530,6 +550,7 @@
       "github_description": "Table Transformer (TATR) is a deep learning model for extracting tables from unstructured documents (PDFs and images). This is also the official repository for the PubTables-1M dataset and GriTS evaluation metric.",
       "github_stars": 2887,
       "github_license": "MIT",
+      "github_pushed_at": "2024-06-24T13:41:20Z",
       "pypi_summary": "",
       "citation": "Smock, B. (2022).",
       "pro": "Granularity. Recognizes row spans and column spans (complex headers).",
@@ -538,7 +559,7 @@
         "TableFormer"
       ],
       "docs_tag": null,
-      "synced_at": "2026-04-14T23:31:18.339869+00:00"
+      "synced_at": "2026-04-15T11:12:56.591922+00:00"
     },
     {
       "number": 19,
@@ -554,6 +575,7 @@
       "github_description": "",
       "github_stars": 198,
       "github_license": "MIT",
+      "github_pushed_at": "2026-04-06T07:16:33Z",
       "pypi_summary": "This package contains the AI models used by the Docling PDF conversion package",
       "citation": "Nassar, A. (2022).",
       "pro": "Drift Resistance. Better at handling columns that \"wave\" or drift in scans.",
@@ -562,7 +584,7 @@
         "TATR"
       ],
       "docs_tag": null,
-      "synced_at": "2026-04-14T23:31:18.339869+00:00"
+      "synced_at": "2026-04-15T11:16:05.781357+00:00"
     },
     {
       "number": 20,
@@ -576,8 +598,9 @@
       "latest_version": "0.9.0",
       "last_updated": "2026-04-07T20:37:17Z",
       "github_description": "A machine learning software for extracting information from scholarly documents",
-      "github_stars": 4784,
+      "github_stars": 4785,
       "github_license": "Apache-2.0",
+      "github_pushed_at": "2026-04-15T06:42:11Z",
       "pypi_summary": "",
       "citation": "Lopez, P. (2009).",
       "pro": "The Specialist. Unbeaten precision for extracting Titles, DOIs, and Authors.",
@@ -586,7 +609,7 @@
         "CERMINE"
       ],
       "docs_tag": null,
-      "synced_at": "2026-04-14T23:31:18.339869+00:00"
+      "synced_at": "2026-04-15T11:12:56.591922+00:00"
     },
     {
       "number": 21,
@@ -602,6 +625,7 @@
       "github_description": "Content ExtRactor and MINEr",
       "github_stars": 511,
       "github_license": "AGPL-3.0",
+      "github_pushed_at": "2022-06-30T20:12:51Z",
       "pypi_summary": "",
       "citation": "Tkaczyk, D. (2015).",
       "pro": "Backup. Good if GROBID fails on a specific layout.",
@@ -610,7 +634,7 @@
         "CrossRef API"
       ],
       "docs_tag": null,
-      "synced_at": "2026-04-14T23:31:18.339869+00:00"
+      "synced_at": "2026-04-15T11:12:56.591922+00:00"
     },
     {
       "number": 22,
@@ -624,8 +648,9 @@
       "latest_version": "2.13.0",
       "last_updated": "2026-04-13T10:51:35.571831Z",
       "github_description": "Data validation using Python type hints",
-      "github_stars": 27469,
+      "github_stars": 27480,
       "github_license": "MIT",
+      "github_pushed_at": "2026-04-15T11:13:13Z",
       "pypi_summary": "Data validation using Python type hints",
       "citation": "Colvin, S. (2024).",
       "pro": "Contract Enforcement. Ensures data fits the schema before it enters the DB.",
@@ -634,7 +659,7 @@
         "Marshmallow"
       ],
       "docs_tag": null,
-      "synced_at": "2026-04-14T23:31:18.339869+00:00"
+      "synced_at": "2026-04-15T11:12:56.591922+00:00"
     },
     {
       "number": 23,
@@ -645,11 +670,12 @@
       "tool_type": "Library",
       "github_url": "https://github.com/pandera-dev/pandera",
       "pypi_name": "pandera",
-      "latest_version": "0.31.0",
-      "last_updated": "2026-04-14T02:03:48.869971Z",
+      "latest_version": "0.31.1",
+      "last_updated": "2026-04-15T03:18:59.967400Z",
       "github_description": "A light-weight, flexible, and expressive statistical data testing library",
-      "github_stars": 4305,
+      "github_stars": 4306,
       "github_license": "MIT",
+      "github_pushed_at": "2026-04-15T11:14:04Z",
       "pypi_summary": "A light-weight and flexible data validation and testing tool for statistical data objects.",
       "citation": "Bantilan, N. (2020).",
       "pro": "Statistical Check. Checks values (e.g., \"p-value must be < 1\"), not just types.",
@@ -658,7 +684,7 @@
         "GreatExpectations"
       ],
       "docs_tag": null,
-      "synced_at": "2026-04-14T23:31:18.339869+00:00"
+      "synced_at": "2026-04-15T11:14:23.433045+00:00"
     },
     {
       "number": 24,
@@ -674,6 +700,7 @@
       "github_description": "A lightweight library for converting complex objects to and from simple Python datatypes.",
       "github_stars": 7229,
       "github_license": "MIT",
+      "github_pushed_at": "2026-04-15T02:40:37Z",
       "pypi_summary": "A lightweight library for converting complex datatypes to and from native Python datatypes.",
       "citation": "Marshmallow (2024).",
       "pro": "Legacy. Good for simple serialization.",
@@ -682,7 +709,7 @@
         "Pydantic"
       ],
       "docs_tag": null,
-      "synced_at": "2026-04-14T23:31:18.339869+00:00"
+      "synced_at": "2026-04-15T11:12:56.591922+00:00"
     },
     {
       "number": 25,
@@ -696,8 +723,9 @@
       "latest_version": "3.14.5",
       "last_updated": "2026-04-07T11:16:31.931499Z",
       "github_description": "Rapid fuzzy string matching in Python using various string metrics",
-      "github_stars": 3842,
+      "github_stars": 3843,
       "github_license": "MIT",
+      "github_pushed_at": "2026-04-13T00:30:17Z",
       "pypi_summary": "rapid fuzzy string matching",
       "citation": "Bachmann, M. (2024).",
       "pro": "Verification. Uses Levenshtein distance to compare Surya vs Marker text.",
@@ -706,7 +734,7 @@
         "FuzzyWuzzy"
       ],
       "docs_tag": null,
-      "synced_at": "2026-04-14T23:31:18.339869+00:00"
+      "synced_at": "2026-04-15T11:12:56.591922+00:00"
     },
     {
       "number": 26,
@@ -722,6 +750,7 @@
       "github_description": "Fuzzy String Matching in Python",
       "github_stars": 9257,
       "github_license": "GPL-2.0",
+      "github_pushed_at": "2023-02-24T19:00:26Z",
       "pypi_summary": "Fuzzy string matching in python",
       "citation": "Cohen, A. (2024).",
       "pro": "Simple. Easy API.",
@@ -730,7 +759,7 @@
         "RapidFuzz"
       ],
       "docs_tag": null,
-      "synced_at": "2026-04-14T23:31:18.339869+00:00"
+      "synced_at": "2026-04-15T11:12:56.591922+00:00"
     },
     {
       "number": 27,
@@ -746,6 +775,7 @@
       "github_description": "BERN2: an advanced neural biomedical namedentity recognition and normalization tool",
       "github_stars": 203,
       "github_license": "BSD-2-Clause",
+      "github_pushed_at": "2024-03-28T00:52:14Z",
       "pypi_summary": "",
       "citation": "Sung, M. (2022).",
       "pro": "Breadth. Recognizes 9 types (Gene, Drug, Disease) simultaneously.",
@@ -754,7 +784,7 @@
         "BioBERT"
       ],
       "docs_tag": null,
-      "synced_at": "2026-04-14T23:31:18.339869+00:00"
+      "synced_at": "2026-04-15T11:12:56.591922+00:00"
     },
     {
       "number": 28,
@@ -768,8 +798,9 @@
       "latest_version": "0.15.1",
       "last_updated": "2025-02-05T14:45:44.322676Z",
       "github_description": "A very simple framework for state-of-the-art Natural Language Processing (NLP)",
-      "github_stars": 14369,
+      "github_stars": 14370,
       "github_license": "NOASSERTION",
+      "github_pushed_at": "2025-10-27T18:11:31Z",
       "pypi_summary": "A very simple framework for state-of-the-art NLP",
       "citation": "Sänger, M. (2024).",
       "pro": "Consensus. Uses a different architecture (Flair); great for voting against BERN2.",
@@ -778,7 +809,7 @@
         "scispaCy"
       ],
       "docs_tag": null,
-      "synced_at": "2026-04-14T23:31:18.339869+00:00"
+      "synced_at": "2026-04-15T11:12:56.591922+00:00"
     },
     {
       "number": 29,
@@ -794,6 +825,7 @@
       "github_description": "Medical Concept Annotation Tool",
       "github_stars": 529,
       "github_license": "Apache-2.0",
+      "github_pushed_at": "2025-07-25T10:16:30Z",
       "pypi_summary": "Medical Concept Annotation Toolkit (v2)",
       "citation": "Kraljevic, Z. (2021).",
       "pro": "Hospital Grade. The SOTA for mapping text to SNOMED-CT/UMLS.",
@@ -802,7 +834,7 @@
         "cTAKES"
       ],
       "docs_tag": null,
-      "synced_at": "2026-04-14T23:31:18.339869+00:00"
+      "synced_at": "2026-04-15T11:12:56.591922+00:00"
     },
     {
       "number": 30,
@@ -818,6 +850,7 @@
       "github_description": "",
       "github_stars": 0,
       "github_license": "",
+      "github_pushed_at": "",
       "pypi_summary": "",
       "citation": "Gu, Y. (2022).",
       "pro": "Vocabulary. Trained only on medical text (no Wikipedia), so it understands jargon.",
@@ -826,7 +859,7 @@
         "BioBERT"
       ],
       "docs_tag": null,
-      "synced_at": "2026-04-14T23:31:18.339869+00:00"
+      "synced_at": "2026-04-15T11:12:56.591922+00:00"
     },
     {
       "number": 31,
@@ -842,6 +875,7 @@
       "github_description": "Bioinformatics'2020: BioBERT: a pre-trained biomedical language representation model for biomedical text mining",
       "github_stars": 2196,
       "github_license": "NOASSERTION",
+      "github_pushed_at": "2023-08-13T21:11:54Z",
       "pypi_summary": "",
       "citation": "Lee, J. (2020).",
       "pro": "Baseline. The standard comparison point.",
@@ -850,7 +884,7 @@
         "BlueBERT"
       ],
       "docs_tag": null,
-      "synced_at": "2026-04-14T23:31:18.339869+00:00"
+      "synced_at": "2026-04-15T11:12:56.591922+00:00"
     },
     {
       "number": 32,
@@ -866,6 +900,7 @@
       "github_description": "",
       "github_stars": 0,
       "github_license": "",
+      "github_pushed_at": "",
       "pypi_summary": "",
       "citation": "Wei, C. (2019).",
       "pro": "Gold Standard. Pre-annotated by NCBI.",
@@ -874,7 +909,7 @@
         "BERN2"
       ],
       "docs_tag": null,
-      "synced_at": "2026-04-14T23:31:18.339869+00:00"
+      "synced_at": "2026-04-15T11:12:56.591922+00:00"
     },
     {
       "number": 33,
@@ -888,8 +923,9 @@
       "latest_version": "0.2.26",
       "last_updated": "2026-03-19T15:07:22.707557Z",
       "github_description": "Generalist and Lightweight Model for Named Entity Recognition (Extract any entity types from texts)",
-      "github_stars": 3064,
+      "github_stars": 3066,
       "github_license": "Apache-2.0",
+      "github_pushed_at": "2026-04-15T10:48:57Z",
       "pypi_summary": "Generalist model for NER (Extract any entity types from texts)",
       "citation": "Zaratiana, U. (2024).",
       "pro": "Flexibility. Can find new entities (e.g., \"Cohort Size\") without retraining.",
@@ -898,7 +934,7 @@
         "ChatGPT (API)"
       ],
       "docs_tag": null,
-      "synced_at": "2026-04-14T23:31:18.339869+00:00"
+      "synced_at": "2026-04-15T11:12:56.591922+00:00"
     },
     {
       "number": 34,
@@ -914,6 +950,7 @@
       "github_description": "A full spaCy pipeline and models for scientific/biomedical documents.",
       "github_stars": 1943,
       "github_license": "Apache-2.0",
+      "github_pushed_at": "2025-12-04T07:49:16Z",
       "pypi_summary": "A full SpaCy pipeline and models for scientific/biomedical documents.",
       "citation": "Neumann, M. (2019).",
       "pro": "Preprocessing. Fast enough to run on millions of sentences for filtering.",
@@ -922,7 +959,7 @@
         "Spacy-Transformers"
       ],
       "docs_tag": null,
-      "synced_at": "2026-04-14T23:31:18.339869+00:00"
+      "synced_at": "2026-04-15T11:12:56.591922+00:00"
     },
     {
       "number": 35,
@@ -938,6 +975,7 @@
       "github_description": "Repository for the Human Disease Ontology.",
       "github_stars": 393,
       "github_license": "CC0-1.0",
+      "github_pushed_at": "2026-04-13T19:37:28Z",
       "pypi_summary": "",
       "citation": "Schriml, L. (2022).",
       "pro": "Hierarchy. Good for high-level classification (Cancer vs Viral).",
@@ -946,7 +984,7 @@
         "ICD-10"
       ],
       "docs_tag": null,
-      "synced_at": "2026-04-14T23:31:18.339869+00:00"
+      "synced_at": "2026-04-15T11:12:56.591922+00:00"
     },
     {
       "number": 36,
@@ -962,6 +1000,7 @@
       "github_description": "Mondo Disease Ontology",
       "github_stars": 297,
       "github_license": "CC-BY-4.0",
+      "github_pushed_at": "2026-04-15T03:30:36Z",
       "pypi_summary": "",
       "citation": "Vasilevsky, N. (2022).",
       "pro": "Unification. The \"Rosetta Stone\" connecting OMIM, DOID, and ORPHA IDs.",
@@ -970,7 +1009,7 @@
         "DOID"
       ],
       "docs_tag": null,
-      "synced_at": "2026-04-14T23:31:18.339869+00:00"
+      "synced_at": "2026-04-15T11:12:56.591922+00:00"
     },
     {
       "number": 37,
@@ -986,6 +1025,7 @@
       "github_description": "Ontology for the description of human clinical features",
       "github_stars": 351,
       "github_license": "NOASSERTION",
+      "github_pushed_at": "2026-04-14T16:17:01Z",
       "pypi_summary": "",
       "citation": "Köhler, S. (2021).",
       "pro": "Symptoms. The standard for \"Human Phenotypes\" (e.g., HP:000123).",
@@ -994,7 +1034,7 @@
         "SNOMED"
       ],
       "docs_tag": null,
-      "synced_at": "2026-04-14T23:31:18.339869+00:00"
+      "synced_at": "2026-04-15T11:12:56.591922+00:00"
     },
     {
       "number": 38,
@@ -1010,6 +1050,7 @@
       "github_description": "",
       "github_stars": 0,
       "github_license": "",
+      "github_pushed_at": "",
       "pypi_summary": "",
       "citation": "SNOMED Int. (2024).",
       "pro": "Clinical. Essential if working with hospital records (EHR).",
@@ -1018,7 +1059,7 @@
         "UMLS"
       ],
       "docs_tag": null,
-      "synced_at": "2026-04-14T23:31:18.339869+00:00"
+      "synced_at": "2026-04-15T11:12:56.591922+00:00"
     },
     {
       "number": 39,
@@ -1032,8 +1073,9 @@
       "latest_version": "3.8.14",
       "last_updated": "2026-03-29T10:41:20.890284Z",
       "github_description": "💫 Industrial-strength Natural Language Processing (NLP) in Python",
-      "github_stars": 33467,
+      "github_stars": 33470,
       "github_license": "MIT",
+      "github_pushed_at": "2026-03-28T20:59:29Z",
       "pypi_summary": "Industrial-strength Natural Language Processing (NLP) in Python",
       "citation": "Explosion AI.",
       "pro": "Engineering. The \"Chassis\" that holds the NER models together.",
@@ -1042,7 +1084,7 @@
         "Stanza"
       ],
       "docs_tag": null,
-      "synced_at": "2026-04-14T23:31:18.339869+00:00"
+      "synced_at": "2026-04-15T11:12:56.591922+00:00"
     },
     {
       "number": 40,
@@ -1056,8 +1098,9 @@
       "latest_version": "0.15.1",
       "last_updated": "2025-02-05T14:45:44.322676Z",
       "github_description": "A very simple framework for state-of-the-art Natural Language Processing (NLP)",
-      "github_stars": 14369,
+      "github_stars": 14370,
       "github_license": "NOASSERTION",
+      "github_pushed_at": "2025-10-27T18:11:31Z",
       "pypi_summary": "A very simple framework for state-of-the-art NLP",
       "citation": "Akbik, A. (2019).",
       "pro": "State of Art. Research-grade sequence labeling.",
@@ -1066,7 +1109,7 @@
         "AllenNLP"
       ],
       "docs_tag": null,
-      "synced_at": "2026-04-14T23:31:18.339869+00:00"
+      "synced_at": "2026-04-15T11:12:56.591922+00:00"
     },
     {
       "number": 41,
@@ -1082,6 +1125,7 @@
       "github_description": "ColBERT: state-of-the-art neural search (SIGIR'20, TACL'21, NeurIPS'21, NAACL'22, CIKM'22, ACL'23, EMNLP'23)",
       "github_stars": 3838,
       "github_license": "MIT",
+      "github_pushed_at": "2025-10-14T18:50:11Z",
       "pypi_summary": "Efficient and Effective Passage Search via Contextualized Late Interaction over BERT",
       "citation": "Santhanam, K. (2021).",
       "pro": "Precision. Uses \"Late Interaction\" to match exact numbers/units.",
@@ -1090,7 +1134,7 @@
         "Splade"
       ],
       "docs_tag": null,
-      "synced_at": "2026-04-14T23:31:18.339869+00:00"
+      "synced_at": "2026-04-15T11:12:56.591922+00:00"
     },
     {
       "number": 42,
@@ -1106,6 +1150,7 @@
       "github_description": "Free and Open Source, Distributed, RESTful Search Engine",
       "github_stars": 76524,
       "github_license": "NOASSERTION",
+      "github_pushed_at": "2026-04-15T11:16:36Z",
       "pypi_summary": "Python client for Elasticsearch",
       "citation": "Elastic (2024).",
       "pro": "Features. The most robust engine for full-text search (BM25).",
@@ -1114,7 +1159,7 @@
         "MeiliSearch"
       ],
       "docs_tag": null,
-      "synced_at": "2026-04-14T23:31:18.339869+00:00"
+      "synced_at": "2026-04-15T11:16:05.781357+00:00"
     },
     {
       "number": 43,
@@ -1128,8 +1173,9 @@
       "latest_version": "1.13.2",
       "last_updated": "2025-12-24T10:27:36.653492Z",
       "github_description": "A library for efficient similarity search and clustering of dense vectors.",
-      "github_stars": 39725,
+      "github_stars": 39732,
       "github_license": "MIT",
+      "github_pushed_at": "2026-04-15T08:02:14Z",
       "pypi_summary": "A library for efficient similarity search and clustering of dense vectors.",
       "citation": "Johnson, J. (2019).",
       "pro": "Scale. Can search 1 Billion vectors in milliseconds.",
@@ -1138,7 +1184,7 @@
         "Qdrant"
       ],
       "docs_tag": null,
-      "synced_at": "2026-04-14T23:31:18.339869+00:00"
+      "synced_at": "2026-04-15T11:12:56.591922+00:00"
     },
     {
       "number": 44,
@@ -1152,8 +1198,9 @@
       "latest_version": "3.1.0",
       "last_updated": "2025-11-20T16:37:36.777775Z",
       "github_description": "🔎 Open source distributed and RESTful search engine.",
-      "github_stars": 12744,
+      "github_stars": 12747,
       "github_license": "Apache-2.0",
+      "github_pushed_at": "2026-04-15T07:02:25Z",
       "pypi_summary": "Python client for OpenSearch",
       "citation": "OpenSearch (2024).",
       "pro": "Open Source. A truly open fork of Elasticsearch.",
@@ -1162,7 +1209,7 @@
         "Solr"
       ],
       "docs_tag": null,
-      "synced_at": "2026-04-14T23:31:18.339869+00:00"
+      "synced_at": "2026-04-15T11:12:56.591922+00:00"
     },
     {
       "number": 45,
@@ -1176,8 +1223,9 @@
       "latest_version": "2.0.0",
       "last_updated": "2026-02-16T16:37:56.647455Z",
       "github_description": "Open Source alternative to Algolia + Pinecone and an Easier-to-Use alternative to ElasticSearch ⚡ 🔍 ✨ Fast, typo tolerant, in-memory fuzzy Search Engine for building delightful search experiences",
-      "github_stars": 25607,
+      "github_stars": 25614,
       "github_license": "GPL-3.0",
+      "github_pushed_at": "2026-04-14T11:50:29Z",
       "pypi_summary": "Python client for Typesense, an open source and typo tolerant search engine.",
       "citation": "Typesense (2024).",
       "pro": "UX. Typo-tolerance out of the box.",
@@ -1186,7 +1234,7 @@
         "Algolia"
       ],
       "docs_tag": null,
-      "synced_at": "2026-04-14T23:31:18.339869+00:00"
+      "synced_at": "2026-04-15T11:12:56.591922+00:00"
     },
     {
       "number": 46,
@@ -1200,8 +1248,9 @@
       "latest_version": "2.6.12",
       "last_updated": "2026-04-09T07:49:11.374155Z",
       "github_description": "Milvus is a high-performance, cloud-native vector database built for scalable vector ANN search",
-      "github_stars": 43800,
+      "github_stars": 43813,
       "github_license": "Apache-2.0",
+      "github_pushed_at": "2026-04-15T09:01:03Z",
       "pypi_summary": "Python Sdk for Milvus",
       "citation": "Milvus (2024).",
       "pro": "Cloud Native. Good if we move to a cluster later.",
@@ -1210,7 +1259,7 @@
         "Weaviate"
       ],
       "docs_tag": null,
-      "synced_at": "2026-04-14T23:31:18.339869+00:00"
+      "synced_at": "2026-04-15T11:12:56.591922+00:00"
     },
     {
       "number": 47,
@@ -1224,8 +1273,9 @@
       "latest_version": "1.17.1",
       "last_updated": "2026-03-13T17:13:44.678154Z",
       "github_description": "Qdrant - High-performance, massive-scale Vector Database and Vector Search Engine for the next generation of AI. Also available in the cloud https://cloud.qdrant.io/",
-      "github_stars": 30333,
+      "github_stars": 30350,
       "github_license": "Apache-2.0",
+      "github_pushed_at": "2026-04-15T10:36:29Z",
       "pypi_summary": "Client library for the Qdrant vector search engine",
       "citation": "Qdrant (2024).",
       "pro": "Rust. Fast and safe; good filter support.",
@@ -1234,7 +1284,7 @@
         "Chroma"
       ],
       "docs_tag": null,
-      "synced_at": "2026-04-14T23:31:18.339869+00:00"
+      "synced_at": "2026-04-15T11:12:56.591922+00:00"
     },
     {
       "number": 48,
@@ -1250,6 +1300,7 @@
       "github_description": "The Pinecone Python client ",
       "github_stars": 432,
       "github_license": "Apache-2.0",
+      "github_pushed_at": "2026-04-08T18:06:36Z",
       "pypi_summary": "Pinecone client and SDK",
       "citation": "Pinecone (2024).",
       "pro": "Easy. Managed service.",
@@ -1258,7 +1309,7 @@
         "Milvus"
       ],
       "docs_tag": null,
-      "synced_at": "2026-04-14T23:31:18.339869+00:00"
+      "synced_at": "2026-04-15T11:12:56.591922+00:00"
     },
     {
       "number": 49,
@@ -1272,8 +1323,9 @@
       "latest_version": "1.5.2",
       "last_updated": "2026-04-13T11:30:09.065706Z",
       "github_description": "DuckDB is an analytical in-process SQL database management system",
-      "github_stars": 37434,
+      "github_stars": 37458,
       "github_license": "MIT",
+      "github_pushed_at": "2026-04-15T10:40:03Z",
       "pypi_summary": "DuckDB in-process database",
       "citation": "Raasveldt, M. (2019).",
       "pro": "Local Power. Processes millions of rows on a laptop (Columnar). No server needed.",
@@ -1282,7 +1334,7 @@
         "ClickHouse"
       ],
       "docs_tag": null,
-      "synced_at": "2026-04-14T23:31:18.339869+00:00"
+      "synced_at": "2026-04-15T11:12:56.591922+00:00"
     },
     {
       "number": 50,
@@ -1296,8 +1348,9 @@
       "latest_version": "0.11.3",
       "last_updated": "2025-10-10T13:36:54.984309Z",
       "github_description": "Embedded property graph database built for speed. Vector search and full-text search built in. Implements Cypher.",
-      "github_stars": 3838,
+      "github_stars": 3839,
       "github_license": "MIT",
+      "github_pushed_at": "2025-10-10T15:34:00Z",
       "pypi_summary": "Highly scalable, extremely fast, easy-to-use embeddable graph database",
       "citation": "Kuzu Team (2024).",
       "pro": "Simplicity. An embedded Graph DB (like DuckDB but for graphs).",
@@ -1306,7 +1359,7 @@
         "Neo4j"
       ],
       "docs_tag": null,
-      "synced_at": "2026-04-14T23:31:18.339869+00:00"
+      "synced_at": "2026-04-15T11:12:56.591922+00:00"
     },
     {
       "number": 51,
@@ -1320,8 +1373,9 @@
       "latest_version": "3.3.3",
       "last_updated": "2026-02-18T16:52:16.546654Z",
       "github_description": "Open-source vector similarity search for Postgres",
-      "github_stars": 20780,
+      "github_stars": 20790,
       "github_license": "NOASSERTION",
+      "github_pushed_at": "2026-04-15T05:48:15Z",
       "pypi_summary": "PostgreSQL database adapter for Python",
       "citation": "Postgres Group.",
       "pro": "Safety. The reliable place to store user data and job status.",
@@ -1330,7 +1384,7 @@
         "MySQL"
       ],
       "docs_tag": null,
-      "synced_at": "2026-04-14T23:31:18.339869+00:00"
+      "synced_at": "2026-04-15T11:12:56.591922+00:00"
     },
     {
       "number": 52,
@@ -1344,8 +1398,9 @@
       "latest_version": "5.4.1",
       "last_updated": "2026-04-14T13:34:59.006455Z",
       "github_description": "State-of-the-Art Text Embeddings",
-      "github_stars": 18549,
+      "github_stars": 18550,
       "github_license": "Apache-2.0",
+      "github_pushed_at": "2026-04-15T10:04:02Z",
       "pypi_summary": "Embeddings, Retrieval, and Reranking",
       "citation": "Reimers, N. (2019).",
       "pro": "Baseline. Fast, standard embeddings for general similarity.",
@@ -1354,7 +1409,7 @@
         "Instructor-XL"
       ],
       "docs_tag": null,
-      "synced_at": "2026-04-14T23:31:18.339869+00:00"
+      "synced_at": "2026-04-15T11:12:56.591922+00:00"
     },
     {
       "number": 53,
@@ -1368,8 +1423,9 @@
       "latest_version": "3.6.26",
       "last_updated": "2026-04-10T16:56:30.506443Z",
       "github_description": "Prefect is a workflow orchestration framework for building resilient data pipelines in Python.",
-      "github_stars": 22176,
+      "github_stars": 22177,
       "github_license": "Apache-2.0",
+      "github_pushed_at": "2026-04-15T08:39:47Z",
       "pypi_summary": "Workflow orchestration and management.",
       "citation": "Prefect (2024).",
       "pro": "Modern. Python-native workflow management; handles retries automatically.",
@@ -1378,7 +1434,7 @@
         "Airflow"
       ],
       "docs_tag": null,
-      "synced_at": "2026-04-14T23:31:18.339869+00:00"
+      "synced_at": "2026-04-15T11:12:56.591922+00:00"
     },
     {
       "number": 54,
@@ -1392,8 +1448,9 @@
       "latest_version": "3.2.0",
       "last_updated": "2026-04-07T12:52:11.510415Z",
       "github_description": "Apache Airflow - A platform to programmatically author, schedule, and monitor workflows",
-      "github_stars": 45047,
+      "github_stars": 45049,
       "github_license": "Apache-2.0",
+      "github_pushed_at": "2026-04-15T11:15:06Z",
       "pypi_summary": "Programmatically author, schedule and monitor data pipelines",
       "citation": "Apache (2024).",
       "pro": "Enterprise. The \"Big Corp\" standard.",
@@ -1402,7 +1459,7 @@
         "Prefect"
       ],
       "docs_tag": null,
-      "synced_at": "2026-04-14T23:31:18.339869+00:00"
+      "synced_at": "2026-04-15T11:14:23.433045+00:00"
     },
     {
       "number": 55,
@@ -1416,8 +1473,9 @@
       "latest_version": "1.13.0",
       "last_updated": "2026-04-09T18:06:30.310228Z",
       "github_description": "An orchestration platform for the development, production, and observation of data assets.",
-      "github_stars": 15322,
+      "github_stars": 15325,
       "github_license": "Apache-2.0",
+      "github_pushed_at": "2026-04-14T22:40:14Z",
       "pypi_summary": "Dagster is an orchestration platform for the development, production, and observation of data assets.",
       "citation": "Dagster Labs (2024).",
       "pro": "Data. Focuses on the \"Asset\" rather than the \"Task\".",
@@ -1426,7 +1484,7 @@
         "Prefect"
       ],
       "docs_tag": null,
-      "synced_at": "2026-04-14T23:31:18.339869+00:00"
+      "synced_at": "2026-04-15T11:12:56.591922+00:00"
     },
     {
       "number": 56,
@@ -1442,6 +1500,7 @@
       "github_description": "Open source RabbitMQ: core server and tier 1 (built-in) plugins",
       "github_stars": 13592,
       "github_license": "NOASSERTION",
+      "github_pushed_at": "2026-04-15T10:46:08Z",
       "pypi_summary": "",
       "citation": "VMware (2024).",
       "pro": "Decoupling. Buffers jobs so the GPU doesn't crash if 1000 PDFs arrive at once.",
@@ -1450,7 +1509,7 @@
         "Redis Queue"
       ],
       "docs_tag": null,
-      "synced_at": "2026-04-14T23:31:18.339869+00:00"
+      "synced_at": "2026-04-15T11:12:56.591922+00:00"
     },
     {
       "number": 57,
@@ -1464,8 +1523,9 @@
       "latest_version": "3.0.2",
       "last_updated": "2026-03-31T06:48:30.816546Z",
       "github_description": "Flexible and powerful data analysis / manipulation library for Python, providing labeled data structures similar to R data.frame objects, statistical functions, and much more",
-      "github_stars": 48502,
+      "github_stars": 48507,
       "github_license": "BSD-3-Clause",
+      "github_pushed_at": "2026-04-14T21:52:21Z",
       "pypi_summary": "Powerful data structures for data analysis, time series, and statistics",
       "citation": "McKinney, W. (2010).",
       "pro": "Universal. Every library speaks Pandas.",
@@ -1474,7 +1534,7 @@
         "Polars"
       ],
       "docs_tag": null,
-      "synced_at": "2026-04-14T23:31:18.339869+00:00"
+      "synced_at": "2026-04-15T11:12:56.591922+00:00"
     },
     {
       "number": 58,
@@ -1488,8 +1548,9 @@
       "latest_version": "1.39.3",
       "last_updated": "2026-03-20T11:16:24.836995Z",
       "github_description": "Extremely fast Query Engine for DataFrames, written in Rust",
-      "github_stars": 38170,
+      "github_stars": 38186,
       "github_license": "MIT",
+      "github_pushed_at": "2026-04-15T11:10:59Z",
       "pypi_summary": "Blazingly fast DataFrame library",
       "citation": "Vink, R. (2024).",
       "pro": "Performance. Multi-threaded speed for the heavy data lifting.",
@@ -1498,7 +1559,7 @@
         "Dask"
       ],
       "docs_tag": null,
-      "synced_at": "2026-04-14T23:31:18.339869+00:00"
+      "synced_at": "2026-04-15T11:12:56.591922+00:00"
     },
     {
       "number": 59,
@@ -1512,8 +1573,9 @@
       "latest_version": "2.4.4",
       "last_updated": "2026-03-29T13:22:01.298989Z",
       "github_description": "The fundamental package for scientific computing with Python.",
-      "github_stars": 31851,
+      "github_stars": 31856,
       "github_license": "NOASSERTION",
+      "github_pushed_at": "2026-04-14T23:18:17Z",
       "pypi_summary": "Fundamental package for array computing in Python",
       "citation": "Harris, C. (2020).",
       "pro": "Foundation. The bedrock of all scientific computing in Python.",
@@ -1522,7 +1584,7 @@
         "CuPy"
       ],
       "docs_tag": null,
-      "synced_at": "2026-04-14T23:31:18.339869+00:00"
+      "synced_at": "2026-04-15T11:12:56.591922+00:00"
     },
     {
       "number": 60,
@@ -1536,8 +1598,9 @@
       "latest_version": "0.4.3",
       "last_updated": "2026-01-13T17:48:01.043274Z",
       "github_description": "Supercharge Your LLM Application Evaluations 🚀",
-      "github_stars": 13380,
+      "github_stars": 13393,
       "github_license": "Apache-2.0",
+      "github_pushed_at": "2026-02-24T07:47:19Z",
       "pypi_summary": "Evaluation framework for RAG and LLM applications",
       "citation": "Es, S. (2024).",
       "pro": "Methodology. Algorithmically scores \"Faithfulness\" (Did we hallucinate?).",
@@ -1546,7 +1609,7 @@
         "TruLens"
       ],
       "docs_tag": null,
-      "synced_at": "2026-04-14T23:31:18.339869+00:00"
+      "synced_at": "2026-04-15T11:12:56.591922+00:00"
     },
     {
       "number": 61,
@@ -1560,8 +1623,9 @@
       "latest_version": "2.11.0",
       "last_updated": "2026-03-23T18:09:05.617245Z",
       "github_description": "Tensors and Dynamic neural networks in Python with strong GPU acceleration",
-      "github_stars": 99122,
+      "github_stars": 99142,
       "github_license": "NOASSERTION",
+      "github_pushed_at": "2026-04-15T11:12:32Z",
       "pypi_summary": "Tensors and Dynamic neural networks in Python with strong GPU acceleration",
       "citation": "Paszke, A. (2019).",
       "pro": "Research. The standard for all modern AI models.",
@@ -1570,7 +1634,7 @@
         "TensorFlow"
       ],
       "docs_tag": null,
-      "synced_at": "2026-04-14T23:31:18.339869+00:00"
+      "synced_at": "2026-04-15T11:12:56.591922+00:00"
     },
     {
       "number": 62,
@@ -1584,8 +1648,9 @@
       "latest_version": "5.5.4",
       "last_updated": "2026-04-13T16:55:55.181068Z",
       "github_description": "🤗 Transformers: the model-definition framework for state-of-the-art machine learning models in text, vision, audio, and multimodal models, for both inference and training. ",
-      "github_stars": 159378,
+      "github_stars": 159408,
       "github_license": "Apache-2.0",
+      "github_pushed_at": "2026-04-15T11:15:22Z",
       "pypi_summary": "Transformers: the model-definition framework for state-of-the-art machine learning models in text, vision, audio, and multimodal models, for both inference and training.",
       "citation": "Wolf, T. (2020).",
       "pro": "Hub. Access to 100k+ models (HuggingFace).",
@@ -1594,7 +1659,7 @@
         "Timm"
       ],
       "docs_tag": null,
-      "synced_at": "2026-04-14T23:31:18.339869+00:00"
+      "synced_at": "2026-04-15T11:16:05.781357+00:00"
     },
     {
       "number": 63,
@@ -1608,8 +1673,9 @@
       "latest_version": "1.17.1",
       "last_updated": "2026-02-23T00:26:24.851890Z",
       "github_description": "SciPy library main repository",
-      "github_stars": 14601,
+      "github_stars": 14604,
       "github_license": "BSD-3-Clause",
+      "github_pushed_at": "2026-04-15T09:40:17Z",
       "pypi_summary": "Fundamental algorithms for scientific computing in Python",
       "citation": "Virtanen, P. (2020).",
       "pro": "Tests. Standard t-tests and distributions.",
@@ -1618,7 +1684,7 @@
         "Statsmodels"
       ],
       "docs_tag": null,
-      "synced_at": "2026-04-14T23:31:18.339869+00:00"
+      "synced_at": "2026-04-15T11:12:56.591922+00:00"
     },
     {
       "number": 64,
@@ -1632,8 +1698,9 @@
       "latest_version": "0.14.6",
       "last_updated": "2025-12-05T23:08:39.522823Z",
       "github_description": "Statsmodels: statistical modeling and econometrics in Python",
-      "github_stars": 11361,
+      "github_stars": 11364,
       "github_license": "BSD-3-Clause",
+      "github_pushed_at": "2026-04-15T11:03:41Z",
       "pypi_summary": "Statistical computations and models for Python",
       "citation": "Seabold, S. (2010).",
       "pro": "Diagnostics. Deep statistical checks (p-values, R-squared).",
@@ -1642,7 +1709,7 @@
         "Scikit-Learn"
       ],
       "docs_tag": null,
-      "synced_at": "2026-04-14T23:31:18.339869+00:00"
+      "synced_at": "2026-04-15T11:12:56.591922+00:00"
     },
     {
       "number": 65,
@@ -1656,8 +1723,9 @@
       "latest_version": "1.8.0",
       "last_updated": "2025-12-10T07:08:53.618206Z",
       "github_description": "scikit-learn: machine learning in Python",
-      "github_stars": 65822,
+      "github_stars": 65830,
       "github_license": "BSD-3-Clause",
+      "github_pushed_at": "2026-04-15T10:50:13Z",
       "pypi_summary": "A set of python modules for machine learning and data mining",
       "citation": "Pedregosa, F. (2011).",
       "pro": "Toolbox. Feature selection and basic ML.",
@@ -1666,7 +1734,7 @@
         "XGBoost"
       ],
       "docs_tag": null,
-      "synced_at": "2026-04-14T23:31:18.339869+00:00"
+      "synced_at": "2026-04-15T11:12:56.591922+00:00"
     },
     {
       "number": 66,
@@ -1680,8 +1748,9 @@
       "latest_version": "3.10.8",
       "last_updated": "2025-12-10T22:56:51.155486Z",
       "github_description": "matplotlib: plotting with Python",
-      "github_stars": 22713,
+      "github_stars": 22715,
       "github_license": "",
+      "github_pushed_at": "2026-04-13T20:51:24Z",
       "pypi_summary": "Python plotting package",
       "citation": "Hunter, J. (2007).",
       "pro": "Publication. Total control over every pixel for the thesis.",
@@ -1690,7 +1759,7 @@
         "Seaborn"
       ],
       "docs_tag": null,
-      "synced_at": "2026-04-14T23:31:18.339869+00:00"
+      "synced_at": "2026-04-15T11:12:56.591922+00:00"
     },
     {
       "number": 67,
@@ -1704,8 +1773,9 @@
       "latest_version": "0.13.2",
       "last_updated": "2024-01-25T13:21:52.551420Z",
       "github_description": "Statistical data visualization in Python",
-      "github_stars": 13807,
+      "github_stars": 13810,
       "github_license": "BSD-3-Clause",
+      "github_pushed_at": "2026-01-22T13:03:07Z",
       "pypi_summary": "Statistical data visualization",
       "citation": "Waskom, M. (2021).",
       "pro": "Quick. Beautiful statistical plots instantly.",
@@ -1714,7 +1784,7 @@
         "Altair"
       ],
       "docs_tag": null,
-      "synced_at": "2026-04-14T23:31:18.339869+00:00"
+      "synced_at": "2026-04-15T11:12:56.591922+00:00"
     },
     {
       "number": 68,
@@ -1728,8 +1798,9 @@
       "latest_version": "15.0.0",
       "last_updated": "2026-04-12T08:24:00.750018Z",
       "github_description": "Rich is a Python library for rich text and beautiful formatting in the terminal.",
-      "github_stars": 56078,
+      "github_stars": 56085,
       "github_license": "MIT",
+      "github_pushed_at": "2026-04-12T09:40:10Z",
       "pypi_summary": "Render rich text, tables, progress bars, syntax highlighting, markdown and more to the terminal",
       "citation": "McGugan, W. (2024).",
       "pro": "Monitoring. Live progress bars in the terminal.",
@@ -1738,7 +1809,7 @@
         "tqdm"
       ],
       "docs_tag": null,
-      "synced_at": "2026-04-14T23:31:18.339869+00:00"
+      "synced_at": "2026-04-15T11:12:56.591922+00:00"
     },
     {
       "number": 71,
@@ -1754,6 +1825,7 @@
       "github_description": "Control the quality of your labeled data with the Python tools you already know.",
       "github_stars": 242,
       "github_license": "NOASSERTION",
+      "github_pushed_at": "2025-12-01T04:07:18Z",
       "pypi_summary": "Computational Quality Control for Crowdsourcing",
       "citation": "Toloka (2024).",
       "pro": "Consensus. Aggregation algorithms for multi-annotator agreement.",
@@ -1762,7 +1834,7 @@
         "Custom voting"
       ],
       "docs_tag": null,
-      "synced_at": "2026-04-14T23:31:18.339869+00:00"
+      "synced_at": "2026-04-15T11:12:56.591922+00:00"
     },
     {
       "number": 73,
@@ -1778,6 +1850,7 @@
       "github_description": "Control the quality of your labeled data with the Python tools you already know.",
       "github_stars": 242,
       "github_license": "NOASSERTION",
+      "github_pushed_at": "",
       "pypi_summary": "Computational Quality Control for Crowdsourcing",
       "citation": "Toloka (2024).",
       "pro": "Consensus. Aggregation algorithms for multi-annotator agreement.",

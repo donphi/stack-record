@@ -1,0 +1,17 @@
+{
+  "title": "",
+  "description": "",
+  "id": "MAP-{{CODE}}-{{NUMBER}}",
+  "type": "map",
+  "domain": "",
+  "status": "active",
+  "tags": ["map/{{TAG}}"],
+  "children": [],
+  "related_notes": [],
+  "related_projects": [],
+  "review_cycle": "quarterly",
+  "last_reviewed": "",
+  "closure_score": 0,
+  "closure_status": "open",
+  "open_questions": []
+}

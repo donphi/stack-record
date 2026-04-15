@@ -57,7 +57,7 @@ All runtime tunables live in `config/settings.yaml`:
 - `data/sync.log` — overwritten each run; lists mode, counts, and failed endpoints
 - `data/library-registry.data.json` — JSON copy for reference
 - `backups/` — rolling date-stamped backups of DB and config
-- `../../content-src/docs/appendices/library-registry.data.json` — site data (via volume mount)
+- `../../content-src/docs/appendices/library-registry/library-registry.data.json` — site data (via volume mount)
 
 ## Adding libraries
 

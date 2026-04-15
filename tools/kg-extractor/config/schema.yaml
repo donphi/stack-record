@@ -1,0 +1,151 @@
+# ============================================================================
+# FILE: schema.yaml
+# LOCATION: config/schema.yaml
+# PURPOSE: Map your SQLite tables/columns to RDF types and predicates.
+#          This is the ONLY file you edit. The extractor reads this + your .db
+#          and outputs standards-compliant JSON-LD.
+# ============================================================================
+
+# ── Base URI for your knowledge graph ────────────────────────────────────
+# Every node ID becomes: {base_uri}{id_prefix}:{row_id}
+# Change this to your own namespace when ready
+base_uri: "http://mywiki.local/kg/"
+
+# ── Namespace prefixes (standard + custom) ───────────────────────────────
+# These map short prefixes to full IRIs in the JSON-LD @context
+namespaces:
+  schema: "http://schema.org/"
+  dcterms: "http://purl.org/dc/terms/"
+  skos: "http://www.w3.org/2004/02/skos/core#"
+  wiki: "http://mywiki.local/kg/vocab/"
+
+# ── Node types ───────────────────────────────────────────────────────────
+# Each entry = one SQLite table that represents entities (nodes).
+#
+# INSTRUCTIONS: Replace these examples with YOUR actual tables.
+#   table:       exact SQLite table name
+#   rdf_type:    the RDF class for this entity (use namespace:Type)
+#   id_column:   which column is the primary key
+#   id_prefix:   short prefix for the node URI (e.g. "page", "lib")
+#   columns:     list of columns to export
+#     column:    exact SQLite column name
+#     alias:     short name used in JSON-LD output (optional, defaults to column)
+#     predicate: full RDF predicate IRI this column maps to
+#
+# ─── EXAMPLE — replace with your real tables ─────────────────────────────
+node_types:
+
+  - table: "pages"
+    rdf_type: "wiki:WikiPage"
+    id_column: "id"
+    id_prefix: "page"
+    columns:
+      - column: "title"
+        alias: "title"
+        predicate: "dcterms:title"
+      - column: "content"
+        alias: "content"
+        predicate: "schema:text"
+      - column: "category"
+        alias: "category"
+        predicate: "schema:category"
+      - column: "created_at"
+        alias: "created"
+        predicate: "dcterms:created"
+      - column: "updated_at"
+        alias: "modified"
+        predicate: "dcterms:modified"
+
+  - table: "libraries"
+    rdf_type: "wiki:Library"
+    id_column: "id"
+    id_prefix: "lib"
+    columns:
+      - column: "name"
+        alias: "name"
+        predicate: "schema:name"
+      - column: "language"
+        alias: "language"
+        predicate: "schema:programmingLanguage"
+      - column: "description"
+        alias: "description"
+        predicate: "dcterms:description"
+      - column: "version"
+        alias: "version"
+        predicate: "schema:softwareVersion"
+
+  - table: "equations"
+    rdf_type: "wiki:Equation"
+    id_column: "id"
+    id_prefix: "eq"
+    columns:
+      - column: "name"
+        alias: "name"
+        predicate: "schema:name"
+      - column: "latex"
+        alias: "latex"
+        predicate: "wiki:latexNotation"
+      - column: "domain"
+        alias: "domain"
+        predicate: "schema:about"
+
+  - table: "projects"
+    rdf_type: "wiki:Project"
+    id_column: "id"
+    id_prefix: "proj"
+    columns:
+      - column: "name"
+        alias: "name"
+        predicate: "schema:name"
+      - column: "status"
+        alias: "status"
+        predicate: "wiki:status"
+      - column: "description"
+        alias: "description"
+        predicate: "dcterms:description"
+
+# ── Edge types ───────────────────────────────────────────────────────────
+# Each entry = one SQLite table that represents relationships (edges).
+#
+#   table:           exact SQLite table name
+#   subject_column:  FK column pointing to the source node
+#   object_column:   FK column pointing to the target node
+#   subject_prefix:  must match the id_prefix of the source node_type
+#   object_prefix:   must match the id_prefix of the target node_type
+#   predicate:       the relationship name in the JSON-LD output
+#   columns:         optional extra columns on the relationship (weight, type, etc.)
+#
+# ─── EXAMPLE — replace with your real relationship tables ────────────────
+edge_types:
+
+  - table: "page_links"
+    subject_column: "source_page_id"
+    object_column: "target_page_id"
+    subject_prefix: "page"
+    object_prefix: "page"
+    predicate: "wiki:linksTo"
+    columns: []
+
+  - table: "page_libraries"
+    subject_column: "page_id"
+    object_column: "library_id"
+    subject_prefix: "page"
+    object_prefix: "lib"
+    predicate: "wiki:usesLibrary"
+    columns: []
+
+  - table: "page_equations"
+    subject_column: "page_id"
+    object_column: "equation_id"
+    subject_prefix: "page"
+    object_prefix: "eq"
+    predicate: "wiki:referencesEquation"
+    columns: []
+
+  - table: "project_pages"
+    subject_column: "project_id"
+    object_column: "page_id"
+    subject_prefix: "proj"
+    object_prefix: "page"
+    predicate: "wiki:hasPage"
+    columns: []

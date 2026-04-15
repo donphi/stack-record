@@ -1,0 +1,33 @@
+# ============================================================================
+# FILE: docker-compose.yaml
+# PURPOSE: Mount your SQLite file, run extraction, get JSON-LD output
+# ============================================================================
+#
+# USAGE:
+#   1. Put your .db file in ./data/
+#   2. Edit config/schema.yaml to match your tables
+#   3. Run:  docker compose run --rm extractor
+#   4. Output appears in ./output/knowledge_graph.jsonld
+#
+# To target a DIFFERENT database file, override via environment:
+#   DB_FILE=my_other.db docker compose run --rm extractor
+
+services:
+  extractor:
+    build: .
+    stdin_open: true
+    tty: true
+    environment:
+      - DB_FILE=${DB_FILE:-wiki.db}
+    volumes:
+      # Mount your SQLite database (read-only)
+      - ./data:/app/data:ro
+      # Mount config so you can edit schema.yaml without rebuilding
+      - ./config:/app/config:ro
+      # Output directory — JSON-LD lands here
+      - ./output:/app/output
+    command: >
+      python3 scripts/extract.py
+      --db /app/data/${DB_FILE:-wiki.db}
+      --config /app/config/schema.yaml
+      --output /app/output/knowledge_graph.jsonld

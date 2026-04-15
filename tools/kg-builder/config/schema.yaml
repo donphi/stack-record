@@ -1,0 +1,359 @@
+# ============================================================================
+# FILE: schema.yaml
+# LOCATION: config/schema.yaml
+# PURPOSE: Single control surface for the KG builder. Every parameter,
+#          table name, field mapping, and feature toggle lives here.
+#          Zero defaults exist in the Python scripts.
+#
+# MAXIMUM CONTROL PRINCIPLE:
+#   - To run a lighter graph, remove entries from array_edge_tables.
+#   - To skip wiki-link extraction, set wiki_link_extraction.enabled: false.
+#   - To skip body-section extraction, set body_section_extraction.enabled: false.
+#   - To skip library registry, set library_registry.enabled: false.
+#   - To exclude a specific edge type (e.g. note_deciders), delete that
+#     entry from array_edge_tables — the builder only creates tables and
+#     populates edges for entries present here. No code changes required.
+# ============================================================================
+
+# ── Paths (resolved relative to project root inside Docker) ──────────────
+paths:
+  content_src: "/app/content"
+  library_registry_json: "/app/content/appendices/library-registry/library-registry.data.json"
+  db_output: "/app/data/kg.sqlite3"
+  jsonld_output: "/app/output/knowledge_graph.jsonld"
+
+# ── Folder navigation files (meta.json) ─────────────────────────────────
+folder_fields:
+  scalar: ["title", "icon", "defaultOpen"]
+  array: ["pages"]
+
+# ── Wiki link extraction from MDX bodies ─────────────────────────────────
+wiki_link_extraction:
+  enabled: true
+  pattern: "\\[\\[([^\\]]+)\\]\\]"
+  table: "wiki_links"
+
+# ── Body section extraction from MDX bodies ──────────────────────────────
+body_section_extraction:
+  enabled: true
+  heading_pattern: "^(#{1,6})\\s+(.+)$"
+  table: "note_sections"
+
+# ── Note sidecar fields (*.meta.json) ────────────────────────────────────
+note_fields:
+  required: ["title", "description", "id", "type"]
+  scalar:
+    - "domain"
+    - "status"
+    - "review_cycle"
+    - "last_reviewed"
+    - "closure_score"
+    - "closure_status"
+    - "icon"
+    - "decision_status"
+    - "date_decided"
+    - "date_started"
+    - "date_completed"
+
+# ── Array fields → edge/owned tables ────────────────────────────────────
+# style: "edge"       → junction table with target_key TEXT (resolvable via key_to_note)
+# style: "owned"      → child table owned by the note (alias, question text, etc.)
+# style: "literal"    → junction with raw string values (decider names, alternative names)
+# normalized: true    → use a separate lookup table (tags)
+#
+# To exclude an edge type entirely, delete its entry from this list.
+array_edge_tables:
+  - field: "tags"
+    table: "note_tags"
+    normalized: true
+  - field: "aliases"
+    table: "aliases"
+    style: "owned"
+  - field: "open_questions"
+    table: "open_questions"
+    style: "owned"
+  - field: "parent_maps"
+    table: "note_parent_maps"
+    style: "edge"
+  - field: "prerequisites"
+    table: "note_prerequisites"
+    style: "edge"
+  - field: "children"
+    table: "note_children"
+    style: "edge"
+  - field: "related_notes"
+    table: "note_related_notes"
+    style: "edge"
+  - field: "related_methods"
+    table: "note_related_methods"
+    style: "edge"
+  - field: "related_systems"
+    table: "note_related_systems"
+    style: "edge"
+  - field: "related_projects"
+    table: "note_related_projects"
+    style: "edge"
+  - field: "uses_concepts"
+    table: "note_uses_concepts"
+    style: "edge"
+  - field: "implemented_in"
+    table: "note_implemented_in"
+    style: "edge"
+  - field: "validated_by"
+    table: "note_validated_by"
+    style: "edge"
+  - field: "implements_methods"
+    table: "note_implements_methods"
+    style: "edge"
+  - field: "depends_on"
+    table: "note_depends_on"
+    style: "edge"
+  - field: "used_in_projects"
+    table: "note_used_in_projects"
+    style: "edge"
+  - field: "key_methods"
+    table: "note_key_methods"
+    style: "edge"
+  - field: "key_systems"
+    table: "note_key_systems"
+    style: "edge"
+  - field: "key_decisions"
+    table: "note_key_decisions"
+    style: "edge"
+  - field: "alternatives"
+    table: "note_alternatives"
+    style: "literal"
+  - field: "deciders"
+    table: "note_deciders"
+    style: "literal"
+  - field: "related_experiments"
+    table: "note_related_experiments"
+    style: "edge"
+  - field: "related_decisions"
+    table: "note_related_decisions"
+    style: "edge"
+  - field: "related_standards"
+    table: "note_related_standards"
+    style: "edge"
+  - field: "superseded_by"
+    table: "note_superseded_by"
+    style: "edge"
+  - field: "supersedes"
+    table: "note_supersedes"
+    style: "edge"
+  - field: "blocked_by"
+    table: "note_blocked_by"
+    style: "edge"
+
+# ── Valid note types ─────────────────────────────────────────────────────
+valid_note_types:
+  - map
+  - concept
+  - method
+  - system
+  - decision
+  - experiment
+  - project
+  - standard
+  - reference
+
+# ── Library registry ingestion ───────────────────────────────────────────
+library_registry:
+  enabled: true
+  section_table: "lib_sections"
+  library_table: "libraries"
+  alternatives_table: "lib_alternatives"
+  note_link_table: "library_note_links"
+  note_link_field: "docs_tag"
+  scalar_fields:
+    - "number"
+    - "name"
+    - "section_id"
+    - "function"
+    - "tool_type"
+    - "github_url"
+    - "pypi_name"
+    - "latest_version"
+    - "last_updated"
+    - "github_description"
+    - "github_stars"
+    - "github_license"
+    - "pypi_summary"
+    - "citation"
+    - "pro"
+    - "con"
+    - "docs_tag"
+    - "synced_at"
+
+# ── JSON-LD export ───────────────────────────────────────────────────────
+jsonld:
+  enabled: true
+  base_uri: "http://stack-record.local/kg/"
+  namespaces:
+    schema: "http://schema.org/"
+    dcterms: "http://purl.org/dc/terms/"
+    skos: "http://www.w3.org/2004/02/skos/core#"
+    sr: "http://stack-record.local/kg/vocab/"
+
+# ── Closure validation rules ────────────────────────────────────────────
+# Declarative per-type checks. The Python interpreter is generic — it reads
+# this list and evaluates each rule. No table names, type names, thresholds,
+# or labels are hardcoded in the scripts.
+#
+# check modes:
+#   "edge_count"  → sum row counts across listed tables for the note,
+#                   fail if total < min
+#   "scalar_set"  → fail if ANY of the listed fields on the notes row is NULL
+#
+# To disable all closure checking: set enabled: false
+# To remove a single check: delete that list entry
+# To change a threshold: edit min
+# To apply a rule to additional types: edit applies_to
+closure_rules:
+  enabled: true
+  rules:
+    # ── Upward link ──────────────────────────────────────────
+    - label: "U: no parent_maps"
+      check: "edge_count"
+      tables: ["note_parent_maps"]
+      min: 1
+      applies_to: ["concept", "method", "system", "decision", "experiment", "project"]
+
+    # ── Lateral links ────────────────────────────────────────
+    - label: "L: lateral links < 2"
+      check: "edge_count"
+      tables: ["note_related_notes", "note_prerequisites"]
+      min: 2
+      applies_to: ["concept", "method", "system", "decision", "experiment", "project"]
+
+    # ── Downward link ────────────────────────────────────────
+    - label: "D: no children"
+      check: "edge_count"
+      tables: ["note_children"]
+      min: 1
+      applies_to: ["concept", "map"]
+
+    # ── Applied links ────────────────────────────────────────
+    - label: "A: no applied links"
+      check: "edge_count"
+      tables: ["note_related_methods", "note_related_systems", "note_related_projects"]
+      min: 1
+      applies_to: ["concept", "method", "system"]
+
+    # ── Epistemic link ───────────────────────────────────────
+    - label: "E: no open_questions"
+      check: "edge_count"
+      tables: ["open_questions"]
+      min: 1
+      applies_to: ["concept", "method", "system", "decision", "experiment", "project", "map"]
+
+    # ── Maintenance ──────────────────────────────────────────
+    - label: "M: review_cycle or last_reviewed missing"
+      check: "scalar_set"
+      fields: ["review_cycle", "last_reviewed"]
+      applies_to: ["concept", "method", "system"]
+
+    # ── Method-specific ──────────────────────────────────────
+    - label: "T: no uses_concepts"
+      check: "edge_count"
+      tables: ["note_uses_concepts"]
+      min: 1
+      applies_to: ["method"]
+
+    - label: "T: no implemented_in"
+      check: "edge_count"
+      tables: ["note_implemented_in"]
+      min: 1
+      applies_to: ["method"]
+
+    - label: "T: no validated_by"
+      check: "edge_count"
+      tables: ["note_validated_by"]
+      min: 1
+      applies_to: ["method"]
+
+    - label: "T: no related_projects (method)"
+      check: "edge_count"
+      tables: ["note_related_projects"]
+      min: 1
+      applies_to: ["method"]
+
+    # ── System-specific ──────────────────────────────────────
+    - label: "T: no implements_methods"
+      check: "edge_count"
+      tables: ["note_implements_methods"]
+      min: 1
+      applies_to: ["system"]
+
+    - label: "T: no depends_on"
+      check: "edge_count"
+      tables: ["note_depends_on"]
+      min: 1
+      applies_to: ["system"]
+
+    - label: "T: no used_in_projects"
+      check: "edge_count"
+      tables: ["note_used_in_projects"]
+      min: 1
+      applies_to: ["system"]
+
+    # ── Decision-specific ────────────────────────────────────
+    - label: "T: no related_projects (decision)"
+      check: "edge_count"
+      tables: ["note_related_projects"]
+      min: 1
+      applies_to: ["decision"]
+
+    - label: "T: no alternatives"
+      check: "edge_count"
+      tables: ["note_alternatives"]
+      min: 1
+      applies_to: ["decision"]
+
+    - label: "T: no deciders"
+      check: "edge_count"
+      tables: ["note_deciders"]
+      min: 1
+      applies_to: ["decision"]
+
+    - label: "T: date_decided missing"
+      check: "scalar_set"
+      fields: ["date_decided"]
+      applies_to: ["decision"]
+
+    # ── Experiment-specific ──────────────────────────────────
+    - label: "T: no related_methods or related_systems (experiment)"
+      check: "edge_count"
+      tables: ["note_related_methods", "note_related_systems"]
+      min: 1
+      applies_to: ["experiment"]
+
+    - label: "T: no related_projects (experiment)"
+      check: "edge_count"
+      tables: ["note_related_projects"]
+      min: 1
+      applies_to: ["experiment"]
+
+    - label: "T: date_started missing"
+      check: "scalar_set"
+      fields: ["date_started"]
+      applies_to: ["experiment"]
+
+    # ── Project-specific ─────────────────────────────────────
+    - label: "T: no key_methods"
+      check: "edge_count"
+      tables: ["note_key_methods"]
+      min: 1
+      applies_to: ["project"]
+
+    - label: "T: no key_systems"
+      check: "edge_count"
+      tables: ["note_key_systems"]
+      min: 1
+      applies_to: ["project"]
+
+    - label: "T: no related_notes (project)"
+      check: "edge_count"
+      tables: ["note_related_notes"]
+      min: 1
+      applies_to: ["project"]

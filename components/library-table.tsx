@@ -28,7 +28,7 @@ import {
   type ColumnFiltersState,
 } from '@tanstack/react-table';
 
-import registryData from '@/content-src/docs/appendices/library-registry.data.json';
+import registryData from '@/content-src/docs/appendices/library-registry/library-registry.data.json';
 
 interface LibraryEntry {
   number: number;

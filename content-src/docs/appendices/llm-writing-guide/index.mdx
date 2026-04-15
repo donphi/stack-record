@@ -1,0 +1,585 @@
+## Purpose
+
+This page is the complete reference for writing Stack Record notes. It is designed to be injected as context for an LLM writing assistant (via `@llm-writing-guide` in Obsidian Copilot) and also serves as on-site documentation.
+
+It covers: body templates per note type, all sidecar connection fields, all constrained enum values, MDX artifact syntax and placement guidance, closure rules, and writing quality standards.
+
+## A. Body templates per note type
+
+Every `.mdx` file must NOT contain YAML frontmatter (no `---`). Use `##` headings in the exact order shown. Omit inapplicable sections but never reorder.
+
+### Concept
+
+```
+## What this is
+## Why this matters
+## Where this fits
+## Core idea
+## Equation or formal logic
+## Breakdown
+### Terms
+### What the equation is really doing
+## Plain-English explanation
+## Worked example
+## ASCII diagram
+## Why this is used
+## Benefits
+## Drawbacks and failure modes
+## Where I have used it
+## Questions this note answers
+## Related notes
+## Open questions
+## Review
+```
+
+### Method
+
+```
+## What this method is
+## Why this is used
+## Where this fits
+## Inputs
+## Outputs
+## Procedure
+## Formal rule or formula
+## Why it works
+## Code sketch
+## Benefits
+## Drawbacks
+## Failure modes
+## Where I have used it
+## Validation and evidence
+## Questions this note answers
+## Related notes
+## Open questions
+## Review
+```
+
+### System
+
+```
+## What this system is
+## Why this exists
+## Where this fits
+## Architecture
+## Components
+## Configuration contract
+## Why it is used
+## Benefits
+## Drawbacks
+## Failure modes
+## Monitoring
+## Where I have used it
+## Related notes
+## Open questions
+## Review
+```
+
+### Decision
+
+```
+## Decision
+## Context
+## Why this decision exists
+## Options considered
+## Why the chosen option won
+## Tradeoffs accepted
+## Consequences
+## Where this has been used
+## Review trigger
+```
+
+### Experiment
+
+```
+## Question
+## Hypothesis
+## Why this matters
+## Setup
+## Procedure
+## Results
+## Interpretation
+## Threats to validity
+## What this changes
+## Final status
+```
+
+### Project
+
+```
+## What this project is
+## Why it exists
+## Scope
+## Key concepts
+## Key methods
+## Key systems
+## Key decisions
+## Status
+## Lessons learned
+## Open loops
+```
+
+### Map
+
+```
+## What this map is
+## Why this matters
+## Where this fits
+## Structure
+## What this map helps answer
+## Notes in this map
+## Gaps and open loops
+## Review
+```
+
+### Standard
+
+```
+## Purpose
+## Applies to
+## Required fields
+## Required sections
+## Quality bar
+## Failure conditions
+```
+
+### Reference
+
+No strict heading template. Use whatever structure best serves the reference material. The `.mdx` file must NOT contain YAML frontmatter.
+
+## B. Sidecar fields and knowledge graph connections
+
+Every `.mdx` must have a matching `.meta.json` sidecar with the same stem (e.g. `index.mdx` ↔ `index.meta.json`). Each article lives in its own folder: `slug/index.mdx` + `slug/index.meta.json`. The materialiser will reject any mismatch.
+
+### Required fields (build fails without these)
+
+| Field | Type | Example |
+|-------|------|---------|
+| `title` | string | `"Cosine Similarity"` |
+| `description` | string | `"Angle-based vector similarity measure."` |
+| `id` | string | `"C-IR-0007"` |
+| `type` | enum | See allowed values below |
+
+### Constrained enum values
+
+**`type`** (required): `map`, `concept`, `method`, `system`, `decision`, `experiment`, `project`, `standard`, `reference`
+
+**`status`**: `draft`, `active`, `evergreen`, `enforced`, `accepted`, `rejected`, `completed`, `superseded`, `archived`
+
+**`review_cycle`**: `weekly`, `monthly`, `quarterly`, `yearly`, `never`
+
+**`closure_status`**: `open`, `partial`, `closed`, `archived`
+
+**`decision_status`** (decision notes only): `accepted`, `rejected`, `pending`
+
+### ID prefix conventions
+
+| Note type | Prefix | Example |
+|-----------|--------|---------|
+| concept | `C-` | `C-IR-0007` |
+| method | `M-` | `M-RET-0012` |
+| system | `S-` | `S-CMP-0004` |
+| decision | `D-` | `D-PUB-0001` |
+| experiment | `E-` | `E-RET-0001` |
+| project | `P-` | `P-UKB-0001` |
+| map | `MAP-` | `MAP-LEARN-0001` |
+| standard | `STD-` | `STD-CLS-0001` |
+| reference | `REF-` | `REF-TPL-0001` |
+
+### All connection fields (27 edge types)
+
+Values in connection arrays are wiki-style keys (underscores, lowercase) or slugs (hyphens) that resolve through `key_to_note` in the knowledge graph.
+
+#### Edge fields (link to other notes)
+
+| Field | Links to | Used by |
+|-------|----------|---------|
+| `parent_maps` | Map notes | concept, method, system, decision, experiment, project |
+| `prerequisites` | Concept notes | concept |
+| `children` | Child/sub notes | concept, map |
+| `related_notes` | Any peer notes | all types |
+| `related_methods` | Method notes | concept, method, system, experiment, project |
+| `related_systems` | System notes | concept, method, system, experiment, project |
+| `related_projects` | Project notes | concept, method, system, decision, experiment, project |
+| `related_experiments` | Experiment notes | concept, method, system, decision, project |
+| `related_decisions` | Decision notes | concept, method, system, experiment, project |
+| `related_standards` | Standard notes | concept, method, system, standard |
+| `uses_concepts` | Concept notes | method |
+| `implemented_in` | System notes | method |
+| `validated_by` | Experiment/system notes | method |
+| `implements_methods` | Method notes | system |
+| `depends_on` | System notes | system |
+| `used_in_projects` | Project notes | system |
+| `key_methods` | Method notes | project |
+| `key_systems` | System notes | project |
+| `key_decisions` | Decision notes | project |
+| `superseded_by` | Replacement note | all types |
+| `supersedes` | Previous version | all types |
+| `blocked_by` | Blocking notes | experiment, project |
+
+#### Owned fields (text values, not links)
+
+| Field | Contains | Used by |
+|-------|----------|---------|
+| `aliases` | Alternative names for this note | concept, method, system |
+| `open_questions` | Unresolved questions | all types |
+| `tags` | Tag strings (e.g. `concept/ir`) | all types |
+
+#### Literal fields (string values, not note links)
+
+| Field | Contains | Used by |
+|-------|----------|---------|
+| `alternatives` | Options that were considered | decision |
+| `deciders` | People who made the decision | decision |
+
+### Scalar metadata fields
+
+| Field | Type | Used by |
+|-------|------|---------|
+| `domain` | string | all types |
+| `status` | enum (see above) | all types |
+| `icon` | string (Iconoir name) | concept, method, system |
+| `review_cycle` | enum (see above) | all types |
+| `last_reviewed` | ISO date `YYYY-MM-DD` | all types |
+| `closure_score` | integer 0-6 | all types |
+| `closure_status` | enum (see above) | all types |
+| `decision_status` | enum (see above) | decision |
+| `date_decided` | ISO date | decision |
+| `date_started` | ISO date | experiment |
+| `date_completed` | ISO date | experiment |
+
+## C. MDX artifacts and usage guidance
+
+Every component below is registered globally. No imports needed -- use the JSX tags directly in `.mdx` files. Use these to make content engaging and scannable, but each artifact should earn its place. Never overuse.
+
+### Callout
+
+Coloured boxes for context. Five types:
+
+```
+<Callout title="Note" type="info">
+  Supplementary context the reader should know.
+</Callout>
+
+<Callout title="Warning" type="warn">
+  This assumption breaks under specific conditions.
+</Callout>
+
+<Callout title="Failure condition" type="error">
+  Critical failure if this is wrong.
+</Callout>
+
+<Callout title="Verified" type="success">
+  This pattern has been validated.
+</Callout>
+
+<Callout title="Open question" type="idea">
+  An unresolved question worth investigating.
+</Callout>
+```
+
+| Note type | Where to use |
+|-----------|-------------|
+| Concept | `warn` in Drawbacks, `info` in Where this fits, `idea` in Open questions |
+| Method | `error` in Failure modes, `success` in Validation, `warn` in Drawbacks |
+| System | `error` in Failure modes, `warn` in Configuration contract, `info` in Monitoring |
+| Decision | `warn` in Tradeoffs accepted, `info` in Context |
+| Experiment | `idea` in Interpretation, `error` in Threats to validity |
+| Map | `info` in What this map helps answer, `warn` in Gaps and open loops |
+| Standard | `error` in Failure conditions, `warn` in Quality bar |
+
+### Steps
+
+Numbered step indicators with vertical progress line:
+
+```
+<Steps>
+<Step>
+
+### Step title
+
+Step content.
+
+</Step>
+<Step>
+
+### Next step
+
+More content.
+
+</Step>
+</Steps>
+```
+
+| Note type | Where to use |
+|-----------|-------------|
+| Method | Procedure section (primary use case) |
+| Experiment | Setup and Procedure sections |
+| System | Architecture section for sequential processes |
+| Standard | Required sections when listing order |
+
+### Tabs
+
+Switchable panels for comparisons:
+
+```
+<Tabs items={['Option A', 'Option B']}>
+<Tab value="Option A">
+
+Content for option A.
+
+</Tab>
+<Tab value="Option B">
+
+Content for option B.
+
+</Tab>
+</Tabs>
+```
+
+Use `groupId` and `persist` to sync tab selection: `<Tabs groupId="lang" items={['Python', 'Bash']} persist>`
+
+| Note type | Where to use |
+|-----------|-------------|
+| Concept | Comparing approaches (cosine vs dot product) |
+| Method | Code sketch in multiple languages |
+| System | Config examples for different environments |
+| Decision | Options considered (one tab per alternative) |
+| Standard | Body template vs sidecar template per type |
+
+### Accordion
+
+Expandable sections for optional detail:
+
+```
+<Accordions>
+<Accordion title="Click to expand">
+
+Hidden detail content.
+
+</Accordion>
+</Accordions>
+```
+
+| Note type | Where to use |
+|-----------|-------------|
+| Concept | Extended derivation in Breakdown |
+| Method | Parameter tuning in Procedure |
+| System | Full config examples in Configuration contract |
+| Map | Per-domain detail in Notes in this map |
+| Standard | Per-type closure checklists |
+| Reference | Template examples |
+
+### Files
+
+Interactive file tree diagrams:
+
+```
+<Files>
+  <Folder name="src" defaultOpen>
+    <Folder name="components">
+      <File name="index.ts" />
+    </Folder>
+    <File name="main.ts" />
+  </Folder>
+</Files>
+```
+
+| Note type | Where to use |
+|-----------|-------------|
+| System | Architecture section (directory layout) |
+| Standard | Expected file structure |
+| Map | Structure section (alternative to ASCII trees) |
+
+### TypeTable
+
+Structured property documentation:
+
+```
+<TypeTable
+  type={{
+    fieldName: {
+      description: 'What it does.',
+      type: 'string',
+      required: true,
+    },
+    optionalField: {
+      description: 'Optional setting.',
+      type: 'number',
+      default: 0,
+    },
+  }}
+/>
+```
+
+| Note type | Where to use |
+|-----------|-------------|
+| Standard | Metadata schema fields |
+| System | Configuration contract keys |
+| Method | Input/output parameter shapes |
+
+### ImageZoom
+
+Click-to-zoom images:
+
+```
+<ImageZoom src="/images/filename.png" alt="Description" />
+```
+
+Place images in `public/images/`.
+
+| Note type | Where to use |
+|-----------|-------------|
+| System | Architecture diagrams |
+| Project | High-level system diagrams |
+| Experiment | Result charts |
+
+### Cards
+
+Navigation link cards:
+
+```
+<Cards>
+  <Card title="Page Title" href="/docs/section/slug">
+    Short description.
+  </Card>
+</Cards>
+```
+
+| Note type | Where to use |
+|-----------|-------------|
+| Map | Notes in this map (navigable cards instead of bullet lists) |
+| Project | Key concepts, methods, systems sections |
+| Reference | Links to each note type section |
+
+### Code blocks
+
+Supports titles, line numbers, highlighting, diffs, and focus:
+
+````
+```python title="example.py" lineNumbers
+def example():
+    return True  # [!code highlight]
+```
+````
+
+Annotations (place at end of line inside fence):
+
+| Annotation | Effect |
+|-----------|--------|
+| `// [!code highlight]` | Highlights the line |
+| `// [!code ++]` | Addition (green) |
+| `// [!code --]` | Removal (red) |
+| `// [!code focus]` | Dims other lines |
+| `// [!code word:term]` | Highlights occurrences of `term` |
+
+| Note type | Where to use |
+|-----------|-------------|
+| Method | Code sketch section (primary use) |
+| System | Configuration contract, Architecture |
+| Concept | Worked example when code clarifies math |
+| Experiment | Setup and Procedure |
+
+### KaTeX math
+
+Inline: `$k = 60$` renders as inline math.
+
+Display:
+
+```
+$$
+\cos(\theta) = \frac{\mathbf{a}\cdot\mathbf{b}}{\|\mathbf{a}\|\|\mathbf{b}\|}
+$$
+```
+
+| Note type | Where to use |
+|-----------|-------------|
+| Concept | Equation section, Breakdown (primary use) |
+| Method | Formal rule or formula |
+| Experiment | Results (quantitative findings) |
+
+### Wiki-links
+
+Use `[[wiki_key]]` to link between notes. Resolved links become clickable; unresolved render as plain text.
+
+```
+- Parent map: [[Learning_Map]]
+- Related: [[cosine_similarity]], [[dot_product]]
+- Used in project: [[ukb_pipeline]]
+```
+
+Use wiki-links in every Where this fits, Related notes, Notes in this map, and Where I have used it section.
+
+## D. Closure rules and quality standards
+
+### Closure dimensions (U-L-D-A-E-M)
+
+Every note is scored 0-6 across six binary dimensions:
+
+| Dim | Name | Satisfied when |
+|-----|------|---------------|
+| U | Upward | Links to at least one parent map |
+| L | Lateral | Links to at least two peer notes or prerequisites |
+| D | Downward | Links to at least one child, example, or comparison |
+| A | Applied | Links to at least one project, system, or experiment |
+| E | Epistemic | States limitations, failure modes, or open questions |
+| M | Maintenance | Has status, review cycle, and last-reviewed date |
+
+### Closure by note type
+
+**Concept**: parent map (U), two peers/prerequisites (L), one child/example (D), one method/system/project (A), open questions (E), review metadata (M).
+
+**Method**: parent map (U), concept dependencies via `uses_concepts` (L), implementation via `implemented_in` (D+A), validation via `validated_by`, project link (A), open questions (E), review metadata (M).
+
+**System**: parent map (U), method link via `implements_methods`, dependency links via `depends_on` (L), project link via `used_in_projects` (A), open questions (E), review metadata (M).
+
+**Decision**: context, options (`alternatives`), why chosen, tradeoffs, consequences, review trigger, `deciders`, `date_decided`.
+
+**Experiment**: question, hypothesis, setup, procedure, results, interpretation, threats to validity, feedback links (`related_methods`/`related_systems`), `date_started`.
+
+**Project**: `key_methods` (>= 1), `key_systems` (>= 1), `related_notes` (>= 1), open questions (E), review metadata (M).
+
+**Map**: `children` (>= 1), review metadata (M).
+
+### Promotion ladder
+
+| Status | Meaning |
+|--------|---------|
+| `draft` | Incomplete or partially linked |
+| `active` | Useful and mostly linked, still changing |
+| `evergreen` | Stable, linked, reviewed, reusable |
+| `archived` | Kept for history only |
+
+No note may be promoted to `evergreen` below 5/6 closure.
+
+### The seven writing rules
+
+1. **Define before explaining** -- state what it is in the first sentence
+2. **Stable section order** -- never reorder sections within a note type
+3. **Plain-English interpretation** -- after every equation or formal rule, explain in plain English
+4. **One worked example** -- every concept, method, and system note needs a concrete example
+5. **Show drawbacks** -- no note only sells the idea; drawbacks section must not be empty
+6. **Link outward** -- at least two `[[wiki_links]]` to other notes
+7. **Decision utility** -- reader leaves knowing what to do, when to use it, when not to
+
+### Type-specific additions
+
+**Math/Concept**: equation in `$$...$$`, breakdown with variable definitions, plain-English interpretation, worked example, ASCII diagram.
+
+**Method**: inputs/outputs, procedure as numbered steps, code sketch, validation section.
+
+**System**: architecture diagram, configuration contract, failure modes, monitoring.
+
+**Decision**: options considered (>= 2), why chosen, tradeoffs accepted, review trigger.
+
+**Experiment**: hypothesis before results, setup/procedure separated, threats to validity, feedback to other notes.
+
+### Failure conditions
+
+- `.mdx` starting with `---` (frontmatter) fails the materialiser build
+- Misspelled component tags render as plain text or cause build errors
+- Missing any of the seven writing rules makes a note incomplete
+- Concept without worked example cannot reach closure
+- Method without procedure cannot reach closure
+- System without failure modes cannot reach closure
+- Inline `style={}` props with hardcoded colours are forbidden

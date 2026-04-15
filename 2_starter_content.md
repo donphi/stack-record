@@ -425,7 +425,7 @@ Each page is an `.mdx` (body only) + `.meta.json` (sidecar) pair.
 - [Standards](/docs/standards)
 ```
 
-### `content-src/docs/concepts/information-retrieval/cosine-similarity.meta.json`
+### `content-src/docs/concepts/information-retrieval/cosine-similarity/index.meta.json`
 
 ```json
 {
@@ -452,7 +452,7 @@ Each page is an `.mdx` (body only) + `.meta.json` (sidecar) pair.
 }
 ```
 
-### `content-src/docs/concepts/information-retrieval/cosine-similarity.mdx`
+### `content-src/docs/concepts/information-retrieval/cosine-similarity/index.mdx`
 
 ````mdx
 ## What this is
@@ -557,7 +557,7 @@ It is useful when vector length is less meaningful than vector direction.
 
 ````
 
-### `content-src/docs/methods/retrieval/rrf-pipeline.meta.json`
+### `content-src/docs/methods/retrieval/rrf-pipeline/index.meta.json`
 
 ```json
 {
@@ -581,7 +581,7 @@ It is useful when vector length is less meaningful than vector direction.
 }
 ```
 
-### `content-src/docs/methods/retrieval/rrf-pipeline.mdx`
+### `content-src/docs/methods/retrieval/rrf-pipeline/index.mdx`
 
 ````mdx
 ## What this method is
@@ -682,7 +682,7 @@ def rrf(rank_lists: list[list[str]], k: int = 60) -> dict[str, float]:
 
 ````
 
-### `content-src/docs/systems/compute/rabbitmq-central-broker.meta.json`
+### `content-src/docs/systems/compute/rabbitmq-central-broker/index.meta.json`
 
 ```json
 {
@@ -706,7 +706,7 @@ def rrf(rank_lists: list[list[str]], k: int = 60) -> dict[str, float]:
 }
 ```
 
-### `content-src/docs/systems/compute/rabbitmq-central-broker.mdx`
+### `content-src/docs/systems/compute/rabbitmq-central-broker/index.mdx`
 
 ````mdx
 ## What this system is
@@ -795,7 +795,7 @@ It amortizes model loading and simplifies horizontal scale-out.
 
 ````
 
-### `content-src/docs/maps/open-loops.meta.json`
+### `content-src/docs/maps/open-loops/index.meta.json`
 
 ```json
 {
@@ -815,7 +815,7 @@ It amortizes model loading and simplifies horizontal scale-out.
 }
 ```
 
-### `content-src/docs/maps/open-loops.mdx`
+### `content-src/docs/maps/open-loops/index.mdx`
 
 ```mdx
 # Open Loops
@@ -842,7 +842,7 @@ It amortizes model loading and simplifies horizontal scale-out.
 Any note below `5/6` closure must appear here until repaired, merged, or archived.
 ```
 
-### `content-src/docs/projects/ukb-pipeline.meta.json`
+### `content-src/docs/projects/ukb-pipeline/index.meta.json`
 
 ```json
 {
@@ -865,7 +865,7 @@ Any note below `5/6` closure must appear here until repaired, merged, or archive
 }
 ```
 
-### `content-src/docs/projects/ukb-pipeline.mdx`
+### `content-src/docs/projects/ukb-pipeline/index.mdx`
 
 ```mdx
 ## What this project is
@@ -922,7 +922,7 @@ Active.
 The standards section defines the rules of the system itself. Each page
 follows the standard body template.
 
-### `content-src/docs/standards/closure-rule.meta.json`
+### `content-src/docs/standards/closure-rule/index.meta.json`
 
 ```json
 {
@@ -941,7 +941,7 @@ follows the standard body template.
 }
 ```
 
-### `content-src/docs/standards/closure-rule.mdx`
+### `content-src/docs/standards/closure-rule/index.mdx`
 
 See `0_overview.md` section 5 for the closure dimensions (U-L-D-A-E-M).
 The full closure-rule body content is in the original `1_main_idea.md`
@@ -949,7 +949,7 @@ sections 10 and should be transcribed using the standard body template,
 covering: dimensions, score formula, interpretation, per-type checklists,
 and the 5/6 promotion rule.
 
-### `content-src/docs/standards/metadata-schema.meta.json`
+### `content-src/docs/standards/metadata-schema/index.meta.json`
 
 ```json
 {
@@ -968,7 +968,7 @@ and the 5/6 promotion rule.
 }
 ```
 
-### `content-src/docs/standards/metadata-schema.mdx`
+### `content-src/docs/standards/metadata-schema/index.mdx`
 
 ```mdx
 # Metadata Schema
@@ -994,7 +994,7 @@ and the 5/6 promotion rule.
 `closure_score` is 0–6. `closure_status` is one of: `open`, `partial`, `closed`, `archived`.
 ```
 
-### `content-src/docs/standards/writing-style.meta.json`
+### `content-src/docs/standards/writing-style/index.meta.json`
 
 ```json
 {
@@ -1013,7 +1013,7 @@ and the 5/6 promotion rule.
 }
 ```
 
-### `content-src/docs/standards/writing-style.mdx`
+### `content-src/docs/standards/writing-style/index.mdx`
 
 ```mdx
 # Writing Style
@@ -1033,7 +1033,7 @@ Every note must be readable by future-you after a long gap.
 ### 7. Write for decision utility
 ```
 
-### `content-src/docs/standards/note-quality-bar.meta.json`
+### `content-src/docs/standards/note-quality-bar/index.meta.json`
 
 ```json
 {
@@ -1052,7 +1052,7 @@ Every note must be readable by future-you after a long gap.
 }
 ```
 
-### `content-src/docs/standards/note-quality-bar.mdx`
+### `content-src/docs/standards/note-quality-bar/index.mdx`
 
 ```mdx
 # Note Quality Bar
@@ -1076,7 +1076,7 @@ Every note must be readable by future-you after a long gap.
 
 ## 6. Appendices
 
-### `content-src/docs/appendices/templates.meta.json`
+### `content-src/docs/appendices/templates/index.meta.json`
 
 ```json
 {
@@ -1493,7 +1493,7 @@ Compute Systems
 
 ## 8. Additional concept page pairs
 
-### `content-src/docs/concepts/information-retrieval/dot-product.meta.json`
+### `content-src/docs/concepts/information-retrieval/dot-product/index.meta.json`
 
 ```json
 {
@@ -1520,7 +1520,7 @@ Compute Systems
 }
 ```
 
-### `content-src/docs/concepts/information-retrieval/dot-product.mdx`
+### `content-src/docs/concepts/information-retrieval/dot-product/index.mdx`
 
 ````mdx
 ## What this is
@@ -1624,7 +1624,7 @@ It is fast, fundamental, and directly supported in many vector indexes.
 
 ````
 
-### `content-src/docs/concepts/information-retrieval/vector-similarity.meta.json`
+### `content-src/docs/concepts/information-retrieval/vector-similarity/index.meta.json`
 
 ```json
 {
@@ -1651,7 +1651,7 @@ It is fast, fundamental, and directly supported in many vector indexes.
 }
 ```
 
-### `content-src/docs/concepts/information-retrieval/vector-similarity.mdx`
+### `content-src/docs/concepts/information-retrieval/vector-similarity/index.mdx`
 
 ````mdx
 ## What this is
@@ -1746,7 +1746,7 @@ It is the conceptual bridge between embeddings and retrieval.
 
 ## 9. Map page pairs
 
-### `content-src/docs/maps/learning-map.meta.json`
+### `content-src/docs/maps/learning-map/index.meta.json`
 
 ```json
 {
@@ -1766,7 +1766,7 @@ It is the conceptual bridge between embeddings and retrieval.
 }
 ```
 
-### `content-src/docs/maps/learning-map.mdx`
+### `content-src/docs/maps/learning-map/index.mdx`
 
 ````mdx
 ## What this map is
@@ -1816,7 +1816,7 @@ Learning
 
 ````
 
-### `content-src/docs/maps/domain-map.meta.json`
+### `content-src/docs/maps/domain-map/index.meta.json`
 
 ```json
 {
@@ -1836,7 +1836,7 @@ Learning
 }
 ```
 
-### `content-src/docs/maps/domain-map.mdx`
+### `content-src/docs/maps/domain-map/index.mdx`
 
 ````mdx
 ## What this map is
@@ -1880,7 +1880,7 @@ Domains
 
 ````
 
-### `content-src/docs/maps/method-map.meta.json`
+### `content-src/docs/maps/method-map/index.meta.json`
 
 ```json
 {
@@ -1900,7 +1900,7 @@ Domains
 }
 ```
 
-### `content-src/docs/maps/method-map.mdx`
+### `content-src/docs/maps/method-map/index.mdx`
 
 ````mdx
 ## What this map is
@@ -1944,7 +1944,7 @@ Methods
 
 ````
 
-### `content-src/docs/maps/system-map.meta.json`
+### `content-src/docs/maps/system-map/index.meta.json`
 
 ```json
 {
@@ -1964,7 +1964,7 @@ Methods
 }
 ```
 
-### `content-src/docs/maps/system-map.mdx`
+### `content-src/docs/maps/system-map/index.mdx`
 
 ````mdx
 ## What this map is
@@ -2012,7 +2012,7 @@ Systems
 
 ## 10. Full closure-rule body
 
-### `content-src/docs/standards/closure-rule.mdx`
+### `content-src/docs/standards/closure-rule/index.mdx`
 
 ```mdx
 # Closure Rule

@@ -44,7 +44,7 @@ SETTINGS_PATH = os.path.join(CONFIG_DIR, "settings.yaml")
 DATA_DIR = os.path.join(BASE_DIR, "data")
 LOG_PATH = os.path.join(DATA_DIR, "sync.log")
 JSON_OUT_PATH = os.path.join(DATA_DIR, "library-registry.data.json")
-SITE_OUT_PATH = os.path.join(BASE_DIR, "site-out", "library-registry.data.json")
+SITE_OUT_PATH = os.path.join(BASE_DIR, "site-out", "library-registry", "library-registry.data.json")
 
 GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN", "")
 

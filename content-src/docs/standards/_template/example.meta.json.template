@@ -1,0 +1,14 @@
+{
+  "title": "",
+  "description": "",
+  "id": "STD-{{CODE}}-{{NUMBER}}",
+  "type": "standard",
+  "domain": "standards",
+  "status": "enforced",
+  "tags": ["standard/{{TAG}}"],
+  "review_cycle": "yearly",
+  "last_reviewed": "",
+  "closure_score": 6,
+  "closure_status": "closed",
+  "open_questions": []
+}

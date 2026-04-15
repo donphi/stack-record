@@ -1,0 +1,20 @@
+{
+  "title": "",
+  "description": "",
+  "id": "E-{{DOMAIN}}-{{NUMBER}}",
+  "type": "experiment",
+  "domain": "",
+  "status": "active",
+  "tags": ["experiment/{{TAG}}"],
+  "related_notes": [],
+  "related_methods": [],
+  "related_systems": [],
+  "related_projects": [],
+  "date_started": "",
+  "date_completed": "",
+  "review_cycle": "never",
+  "last_reviewed": "",
+  "closure_score": 0,
+  "closure_status": "open",
+  "open_questions": []
+}

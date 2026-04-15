@@ -1,0 +1,23 @@
+{
+  "title": "",
+  "description": "",
+  "id": "C-{{DOMAIN}}-{{NUMBER}}",
+  "type": "concept",
+  "domain": "",
+  "status": "draft",
+  "tags": ["concept/{{TAG}}"],
+  "aliases": [],
+  "icon": "",
+  "parent_maps": [],
+  "prerequisites": [],
+  "children": [],
+  "related_notes": [],
+  "related_methods": [],
+  "related_systems": [],
+  "related_projects": [],
+  "review_cycle": "monthly",
+  "last_reviewed": "",
+  "closure_score": 0,
+  "closure_status": "open",
+  "open_questions": []
+}

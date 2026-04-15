@@ -1,0 +1,25 @@
+# ============================================================================
+# FILE: docker-compose.yaml
+# PURPOSE: Mount content-src, run KG build, get SQLite + optional JSON-LD
+# ============================================================================
+#
+# USAGE:
+#   1. Edit config/schema.yaml to control what gets extracted
+#   2. Run:  docker compose run --rm kg-builder
+#   3. Output appears in ./data/kg.sqlite3 (and optionally ./output/)
+#
+# All extraction parameters live in config/schema.yaml — zero defaults in code.
+
+services:
+  kg-builder:
+    build: .
+    stdin_open: true
+    tty: true
+    volumes:
+      - ../../content-src/docs:/app/content:ro
+      - ./config:/app/config:ro
+      - ./data:/app/data
+      - ./output:/app/output
+    command: >
+      python3 scripts/build_kg.py
+      --config /app/config/schema.yaml

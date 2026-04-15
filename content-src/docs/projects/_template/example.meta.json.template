@@ -1,0 +1,21 @@
+{
+  "title": "",
+  "description": "",
+  "id": "P-{{CODE}}-{{NUMBER}}",
+  "type": "project",
+  "domain": "project",
+  "status": "active",
+  "tags": ["project/{{TAG}}"],
+  "related_notes": [],
+  "related_methods": [],
+  "related_systems": [],
+  "related_projects": [],
+  "key_methods": [],
+  "key_systems": [],
+  "key_decisions": [],
+  "review_cycle": "monthly",
+  "last_reviewed": "",
+  "closure_score": 0,
+  "closure_status": "open",
+  "open_questions": []
+}

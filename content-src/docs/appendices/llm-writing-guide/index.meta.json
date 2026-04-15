@@ -1,0 +1,15 @@
+{
+  "title": "LLM Writing Guide",
+  "description": "Complete reference for writing Stack Record notes — body templates, sidecar fields, MDX artifacts, closure rules, and quality standards. Designed for @-referencing in Obsidian Copilot.",
+  "id": "REF-LLM-0001",
+  "type": "reference",
+  "domain": "templates",
+  "status": "evergreen",
+  "tags": ["reference/llm", "reference/writing"],
+  "related_standards": ["metadata-schema", "writing-style", "closure-rule", "note-quality-bar"],
+  "review_cycle": "quarterly",
+  "last_reviewed": "2026-04-15",
+  "closure_score": 6,
+  "closure_status": "closed",
+  "open_questions": []
+}

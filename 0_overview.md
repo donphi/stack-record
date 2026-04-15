@@ -40,8 +40,8 @@ content-src/docs/
 │   ├── index.mdx + index.meta.json
 │   └── information-retrieval/
 │       ├── meta.json
-│       ├── cosine-similarity.mdx + cosine-similarity.meta.json
-│       └── ...
+│       └── cosine-similarity/
+│           └── index.mdx + index.meta.json
 ├── methods/
 ├── systems/
 ├── decisions/
@@ -73,8 +73,8 @@ content-src/docs/
 | `*.mdx` | Body content only — **no frontmatter** | Combined with sidecar, written to `.generated/` |
 
 Hard invariants:
-- Every `.mdx` must have a sibling `.meta.json`
-- Every `.meta.json` must have a sibling `.mdx`
+- Every `.mdx` must have a matching `.meta.json` (same stem: `index.mdx` ↔ `index.meta.json`)
+- Every `.meta.json` must have a matching `.mdx`
 - No `.mdx` under `content-src/` may begin with `---`
 - The materialiser fails on any violation
 

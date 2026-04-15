@@ -1,0 +1,14 @@
+{
+  "title": "",
+  "description": "",
+  "id": "REF-{{CODE}}-{{NUMBER}}",
+  "type": "reference",
+  "domain": "",
+  "status": "evergreen",
+  "tags": ["reference/{{TAG}}"],
+  "review_cycle": "yearly",
+  "last_reviewed": "",
+  "closure_score": 6,
+  "closure_status": "closed",
+  "open_questions": []
+}

@@ -372,6 +372,7 @@ content-src/docs/
 ├── meta.json + index.mdx + index.meta.json
 ├── concepts/          (meta.json + index pair + subfolders: mathematics, statistics,
 │                       information-retrieval, representation-learning, machine-learning, biomedical)
+│                       Each leaf article is a folder: slug/index.mdx + slug/index.meta.json
 ├── methods/           (meta.json + index pair + subfolders: extraction, retrieval,
 │                       evaluation, reproducibility, build)
 ├── systems/           (meta.json + index pair + subfolders: pipeline, data, compute,
@@ -379,11 +380,11 @@ content-src/docs/
 ├── decisions/         (meta.json + index pair + subfolders: accepted, rejected, pending)
 ├── experiments/       (meta.json + index pair + subfolders: active, completed, failed)
 ├── projects/          (meta.json + index pair + subfolders: ukb-pipeline, gatehouse, stack-record)
-├── maps/              (meta.json + index pair + pages: learning-map, domain-map,
-│                       method-map, system-map, open-loops)
-├── standards/         (meta.json + index pair + pages: closure-rule, metadata-schema,
-│                       writing-style, note-quality-bar)
-└── appendices/        (meta.json + pages: glossary, notation, templates)
+├── maps/              (meta.json + index pair + article folders: learning-map/, domain-map/,
+│                       method-map/, system-map/, open-loops/)
+├── standards/         (meta.json + index pair + article folders: closure-rule/, metadata-schema/,
+│                       writing-style/, note-quality-bar/)
+└── appendices/        (meta.json + article folders: glossary/, notation/, templates/)
 ```
 
 ---

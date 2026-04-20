@@ -320,7 +320,7 @@ note ID. See `kg-builder-queries.md` in this folder for more queries.
 | system | `S-` | `S-CMP-0004` |
 | decision | `D-` | `D-PUB-0001` |
 | experiment | `E-` | `E-RET-0001` |
-| project | `P-` | `P-UKB-0001` |
+| project | `P-` | `P-PROJ-0001` |
 | map | `MAP-` | `MAP-LEARN-0001` |
 | standard | `STD-` | `STD-CLS-0001` |
 | reference | `REF-` | `REF-TPL-0001` |

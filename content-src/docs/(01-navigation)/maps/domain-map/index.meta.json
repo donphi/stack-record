@@ -12,7 +12,7 @@
   "related_notes": ["cosine_similarity", "dot_product", "vector_similarity"],
   "related_methods": ["rrf_pipeline"],
   "related_systems": [],
-  "related_projects": ["ukb_pipeline"],
+  "related_projects": [],
   "review_cycle": "quarterly",
   "last_reviewed": "2026-04-14",
   "closure_score": 4,
@@ -20,6 +20,6 @@
   "open_questions": [
     "Should BM25 live under information retrieval or statistics, given it depends on corpus-level statistical properties?",
     "Where does the corpus statistics gap note belong — information retrieval or representation learning?",
-    "Should biomedical domain concepts be split into general (UMLS, ontology mapping) and project-specific (UK Biobank features)?"
+    "Should biomedical domain concepts be split into general (UMLS, ontology mapping) and project-specific?"
   ]
 }

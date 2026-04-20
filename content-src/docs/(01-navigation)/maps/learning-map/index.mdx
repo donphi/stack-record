@@ -13,13 +13,12 @@ This map is that spine. It does not contain knowledge itself. It contains the ro
 - **Concepts** are the ideas you reason with (cosine similarity, embedding manifolds, BM25 scoring).
 - **Methods** are the repeatable procedures you apply (RRF fusion, Jenks classification, contract-pattern pipelines).
 - **Systems** are the concrete implementations that run those methods (RabbitMQ brokers, FAISS indexes, Docker bootstrap scripts).
-- **Projects** tie all three together into real deliverables ([[ukb_pipeline]], [[StackRecord]]).
+- **Projects** tie all three together into real deliverables.
 
 The learning map ensures none of these layers exist in isolation.
 
 ## Where this fits
 
-- Parent: [[StackRecord]]
 - Related maps: [[Domain_Map]], [[Method_Map]], [[System_Map]]
 - Tracks completeness via: [[Open_Loops]]
 
@@ -71,7 +70,6 @@ Learning Map
 * System coverage is concentrated in compute (RabbitMQ broker). Pipeline orchestration (Prefect DAG, contract pattern), data layer (FAISS, Backblaze B2), runtime (Docker bootstrap, GPU dispatch), and security (Infisical, VPS hardening) have no notes yet.
 * No decision or experiment notes exist anywhere in the system.
 * The coding principles document (zero defaults, 600-line max, structural consistency) has no corresponding standard or method note.
-* Gatehouse (code quality enforcement tool) needs at least a project note and a system note.
 * The review automation layer described in the overview is not yet built.
 
 ## Review

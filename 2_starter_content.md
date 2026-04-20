@@ -354,7 +354,7 @@ export default defineConfig({
 {
   "title": "Projects",
   "icon": "ReportColumns",
-  "pages": ["ukb-pipeline", "gatehouse", "stack-record"]
+  "pages": []
 }
 ```
 
@@ -453,7 +453,7 @@ Each page is an `.mdx` (body only) + `.meta.json` (sidecar) pair.
   "related_notes": ["vector_similarity"],
   "related_methods": ["dense_retrieval"],
   "related_systems": ["faiss_setup"],
-  "related_projects": ["ukb_pipeline"],
+  "related_projects": [],
   "review_cycle": "monthly",
   "last_reviewed": "2026-04-14",
   "closure_score": 6,
@@ -479,7 +479,7 @@ In many embedding systems, semantic similarity is better represented by directio
 - Prerequisites: [[vectors]], [[dot_product]], [[magnitude]]
 - Used in method: [[dense_retrieval]]
 - Used in system: [[faiss_setup]]
-- Used in project: [[ukb_pipeline]]
+- Used in project: your project here
 
 ## Core idea
 
@@ -542,7 +542,7 @@ It is useful when vector length is less meaningful than vector direction.
 
 ## Where I have used it
 
-* [[ukb_pipeline]] — embedding similarity comparisons
+* Your project — embedding similarity comparisons
 * [[faiss_setup]] — normalized vector search
 
 ## Questions this note answers
@@ -582,7 +582,7 @@ It is useful when vector length is less meaningful than vector direction.
   "related_notes": ["rank_fusion", "score_distributions", "threshold_selection"],
   "related_methods": [],
   "related_systems": ["rrf_pipeline"],
-  "related_projects": ["ukb_pipeline"],
+  "related_projects": [],
   "review_cycle": "monthly",
   "last_reviewed": "2026-04-14",
   "closure_score": 6,
@@ -607,7 +607,7 @@ Different retrieval systems often produce scores on incompatible scales. Rank fu
 - Parent map: [[Method_Map]]
 - Uses concepts: [[rank_fusion]], [[score_distributions]]
 - Implemented in: [[rrf_pipeline]]
-- Used in project: [[ukb_pipeline]]
+- Used in project: your project here
 
 ## Inputs
 
@@ -665,7 +665,7 @@ def rrf(rank_lists: list[list[str]], k: int = 60) -> dict[str, float]:
 
 ## Where I have used it
 
-* [[ukb_pipeline]] — combining multiple semantic judges
+* Your project — combining multiple semantic judges
 
 ## Validation and evidence
 
@@ -707,7 +707,7 @@ def rrf(rank_lists: list[list[str]], k: int = 60) -> dict[str, float]:
   "related_notes": ["naming_contracts", "contract_system"],
   "related_methods": ["gpu_dispatch", "gpu_worker"],
   "related_systems": [],
-  "related_projects": ["ukb_pipeline"],
+  "related_projects": [],
   "review_cycle": "quarterly",
   "last_reviewed": "2026-04-14",
   "closure_score": 6,
@@ -731,7 +731,7 @@ It decouples dispatch from execution and lets multiple workers compete for jobs 
 
 - Parent map: [[System_Map]]
 - Implements: [[gpu_dispatch]]
-- Used in project: [[ukb_pipeline]]
+- Used in project: your project here
 
 ## Architecture
 
@@ -787,7 +787,7 @@ It amortizes model loading and simplifies horizontal scale-out.
 
 ## Where I have used it
 
-* [[ukb_pipeline]] — persistent GPU worker architecture
+* Your project — persistent GPU worker architecture
 
 ## Related notes
 
@@ -856,9 +856,9 @@ Any note below `5/6` closure must appear here until repaired, merged, or archive
 
 ```json
 {
-  "title": "UK Biobank Extraction Pipeline",
-  "description": "End-to-end pipeline for extracting diseases and UKB features from literature.",
-  "id": "P-UKB-0001",
+  "title": "My Research Pipeline",
+  "description": "End-to-end pipeline for data extraction and processing.",
+  "id": "P-PROJ-0001",
   "type": "project",
   "domain": "project",
   "status": "active",
@@ -884,7 +884,7 @@ A large-scale document processing and extraction system for biomedical literatur
 
 ## Why it exists
 
-To extract, normalize, validate, and analyze UK Biobank feature and disease mentions across a large paper corpus.
+To extract, normalize, validate, and analyze domain-specific mentions across a large document corpus.
 
 ## Scope
 
@@ -1504,7 +1504,7 @@ Compute Systems
 ```mdx
 # Projects
 
-- [UK Biobank Pipeline](/docs/projects/ukb-pipeline)
+Projects will appear here as you add them.
 ```
 
 ---
@@ -1529,7 +1529,7 @@ Compute Systems
   "related_notes": ["vector-similarity"],
   "related_methods": ["dense_retrieval"],
   "related_systems": ["faiss_setup"],
-  "related_projects": ["ukb_pipeline"],
+  "related_projects": [],
   "review_cycle": "monthly",
   "last_reviewed": "2026-04-14",
   "closure_score": 6,
@@ -1555,7 +1555,7 @@ It is the base operation beneath cosine similarity and many vector retrieval sys
 - Prerequisites: [[vectors]], [[magnitude]]
 - Used in method: [[dense_retrieval]]
 - Used in system: [[faiss_setup]]
-- Used in project: [[ukb_pipeline]]
+- Used in project: your project here
 
 ## Core idea
 
@@ -1618,7 +1618,7 @@ It is fast, fundamental, and directly supported in many vector indexes.
 ## Where I have used it
 
 * [[faiss_setup]] — inner-product search
-* [[ukb_pipeline]] — vector comparison reasoning
+* Your project — vector comparison reasoning
 
 ## Questions this note answers
 
@@ -1660,7 +1660,7 @@ It is fast, fundamental, and directly supported in many vector indexes.
   "related_notes": ["dense_retrieval"],
   "related_methods": ["dense_retrieval"],
   "related_systems": ["faiss_setup"],
-  "related_projects": ["ukb_pipeline"],
+  "related_projects": [],
   "review_cycle": "monthly",
   "last_reviewed": "2026-04-14",
   "closure_score": 6,
@@ -1686,7 +1686,7 @@ Embedding systems only become useful when you can compare vectors in a way that 
 - Prerequisites: [[vectors]], [[distance_metrics]]
 - Used in method: [[dense_retrieval]]
 - Used in system: [[faiss_setup]]
-- Used in project: [[ukb_pipeline]]
+- Used in project: your project here
 
 ## Core idea
 
@@ -1735,7 +1735,7 @@ It is the conceptual bridge between embeddings and retrieval.
 
 ## Where I have used it
 
-* [[ukb_pipeline]] — metric reasoning for retrieval design
+* Your project — metric reasoning for retrieval design
 * [[faiss_setup]] — implementation choice discussion
 
 ## Questions this note answers
@@ -1797,7 +1797,7 @@ The learning system is not just a folder tree. It is a graph connecting concepts
 
 ## Where this fits
 
-- Parent: [[StackRecord]]
+- Parent: your project
 - Related maps: [[Domain_Map]], [[Method_Map]], [[System_Map]]
 
 ## Structure

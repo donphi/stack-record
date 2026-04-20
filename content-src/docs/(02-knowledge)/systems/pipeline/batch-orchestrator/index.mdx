@@ -1,6 +1,6 @@
 ## What this system is
 
-A shell-script orchestration layer that executes pipeline stages in a fixed sequence, checks each stage's exit code before proceeding, and routes intermediate data between stages via well-known filesystem paths. It is the top-level entry point for every batch run in the [[ukb_pipeline]].
+A shell-script orchestration layer that executes pipeline stages in a fixed sequence, checks each stage's exit code before proceeding, and routes intermediate data between stages via well-known filesystem paths. It is the top-level entry point for every batch run in the research pipeline.
 
 ## Why this exists
 
@@ -11,7 +11,6 @@ Without a single script that owns the full stage sequence, operators would need 
 - Parent map: [[system_map]]
 - Implements: [[docker_multi_stage]]
 - Depends on: [[rabbitmq_central_broker]]
-- Used in project: [[ukb_pipeline]]
 
 ## Architecture
 
@@ -89,7 +88,7 @@ It provides a single reproducible command (`./run_pipeline.sh`) that an operator
 
 ## Where I have used it
 
-* [[ukb_pipeline]] — orchestrates the full extract → transform → embed → build-KG flow for the UK Biobank literature pipeline.
+* Orchestrates the full extract → transform → embed → build-KG flow for a biomedical literature pipeline.
 
 ## Related notes
 

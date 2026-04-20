@@ -64,7 +64,7 @@ Every `.mdx` file must have a sibling `.meta.json` with the same base name. The 
 | `related_notes` | Any peer notes | `["vector_similarity"]` |
 | `related_methods` | Method notes | `["dense_retrieval"]` |
 | `related_systems` | System notes | `["faiss_setup"]` |
-| `related_projects` | Project notes | `["ukb_pipeline"]` |
+| `related_projects` | Project notes | `["my_project"]` |
 | `related_experiments` | Experiment notes | `["embedding_benchmark"]` |
 | `related_decisions` | Decision notes | `["use_cosine_over_euclidean"]` |
 | `related_standards` | Standard notes | `["metadata-schema"]` |

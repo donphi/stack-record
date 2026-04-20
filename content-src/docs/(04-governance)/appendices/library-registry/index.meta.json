@@ -1,6 +1,6 @@
 {
   "title": "Library Registry",
-  "description": "Verified library and tool inventory for the UKB extraction pipeline.",
+  "description": "Verified library and tool inventory for research extraction pipelines.",
   "id": "REF-LIBS-0001",
   "type": "reference",
   "domain": "tools",

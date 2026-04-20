@@ -155,7 +155,7 @@ The **only custom code** in the build pipeline.
 {
   "title": "", "description": "", "id": "D-{{CODE}}", "type": "decision",
   "domain": "", "status": "accepted", "tags": ["decision/{{TAG}}"],
-  "decision_status": "accepted", "date_decided": "", "deciders": ["Donald Philp"],
+  "decision_status": "accepted", "date_decided": "", "deciders": ["Your Name"],
   "alternatives": [], "related_projects": [],
   "review_cycle": "yearly", "last_reviewed": "",
   "closure_score": 0, "closure_status": "open", "open_questions": []
@@ -382,7 +382,7 @@ content-src/docs/
 │   └── systems/           (meta.json + index pair + subfolders: pipeline, data, compute,
 │                           runtime, security)
 ├── (03-operations)/
-│   ├── projects/          (meta.json + index pair + subfolders: ukb-pipeline, gatehouse, stack-record)
+│   ├── projects/          (meta.json + index pair + subfolders: your-project-name)
 │   ├── decisions/         (meta.json + index pair + subfolders: accepted, rejected, pending)
 │   └── experiments/       (meta.json + index pair + subfolders: active, completed, failed)
 ├── (04-governance)/

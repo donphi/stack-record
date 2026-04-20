@@ -1,6 +1,6 @@
 ## What this system is
 
-A single-file SQLite database that serves as the persistence layer for the knowledge graph built by [[batch_orchestrator]]. Every node, edge, embedding vector, and piece of provenance metadata lives in this one `.db` file, queryable with standard SQL.
+A single-file SQLite database that serves as the persistence layer for the knowledge graph built by the batch orchestrator. Every node, edge, embedding vector, and piece of provenance metadata lives in this one `.db` file, queryable with standard SQL.
 
 ## Why this exists
 
@@ -9,8 +9,7 @@ The pipeline needs a durable store that survives process restarts, supports ad-h
 ## Where this fits
 
 - Parent map: [[system_map]]
-- Upstream producer: [[batch_orchestrator]] (the build-KG stage writes to this store)
-- Used in project: [[ukb_pipeline]]
+- Upstream producer: the batch orchestrator (the build-KG stage writes to this store)
 
 ## Architecture
 
@@ -90,11 +89,11 @@ It eliminates operational overhead. There is no database server to provision, mo
 
 ## Where I have used it
 
-* [[ukb_pipeline]] — stores the complete biomedical knowledge graph produced by the extract → embed → build pipeline.
+* Stores the complete biomedical knowledge graph produced by the extract → embed → build pipeline.
 
 ## Related notes
 
-* [[batch_orchestrator]] — the orchestration script that invokes the build-KG stage writing to this store.
+* The batch orchestrator — the orchestration script that invokes the build-KG stage writing to this store.
 
 ## Open questions
 

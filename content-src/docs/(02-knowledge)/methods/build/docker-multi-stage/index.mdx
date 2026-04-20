@@ -16,7 +16,7 @@ Multi-stage builds operate at the container packaging layer:
 2. Lockfile → **Multi-stage Dockerfile** → Minimal production image
 3. Production image → Container registry → Deployment
 
-In the Stack Record ecosystem, multi-stage builds are used in the [[batch_orchestrator]] service and the [[ukb_pipeline]] worker images.
+Multi-stage builds are used in production services and pipeline worker images.
 
 ## Inputs
 
@@ -123,7 +123,7 @@ docker images myapp:single --format "{{.Size}}"
 
 ## Where I have used it
 
-The [[batch_orchestrator]] service and the [[ukb_pipeline]] worker both use three-stage Dockerfiles (deps → builder → runner). Pinned requirements from [[dependency_pinning]] are installed in the deps stage. The runner stage is based on `python:3.12-slim` and runs as a non-root user. This pattern reduced the UKB pipeline worker image from 1.8 GB to 420 MB.
+Production services and pipeline workers both use three-stage Dockerfiles (deps → builder → runner). Pinned requirements from [[dependency_pinning]] are installed in the deps stage. The runner stage is based on `python:3.12-slim` and runs as a non-root user. This pattern reduced a pipeline worker image from 1.8 GB to 420 MB.
 
 ## Validation and evidence
 
@@ -141,12 +141,11 @@ The [[batch_orchestrator]] service and the [[ukb_pipeline]] worker both use thre
 ## Related notes
 
 - [[dependency_pinning]] — provides the lockfile that the deps stage consumes.
-- [[batch_orchestrator]] — a system that uses multi-stage builds for its worker images.
 
 ## Open questions
 
 - Is BuildKit cache-mount worth the added Dockerfile complexity for sub-60-second builds?
-- Should distroless images replace slim images as the default runner base in the Stack Record ecosystem?
+- Should distroless images replace slim images as the default runner base?
 
 ## Review
 

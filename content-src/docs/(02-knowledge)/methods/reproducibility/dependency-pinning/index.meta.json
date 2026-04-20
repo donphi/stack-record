@@ -13,7 +13,7 @@
   "related_notes": ["docker_multi_stage"],
   "related_methods": ["docker_multi_stage"],
   "related_systems": [],
-  "related_projects": ["ukb_pipeline"],
+  "related_projects": [],
   "review_cycle": "yearly",
   "last_reviewed": "2026-04-16",
   "closure_score": 4,

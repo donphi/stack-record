@@ -15,7 +15,7 @@ Each domain answers a different kind of question:
 - **Information Retrieval** answers: how do you find, rank, and compare items? BM25, TF-IDF, cosine similarity, dot product, vector similarity, approximate nearest neighbors.
 - **Representation Learning** answers: how do discrete things become continuous geometry? Embeddings, manifolds, Word2Vec, BERT, contextual representations, the corpus statistics gap.
 - **Machine Learning** answers: how do models learn and generalize? Gradient descent, loss functions, batch tuning, model evaluation, the compression-expressiveness tradeoff.
-- **Biomedical** answers: what domain-specific knowledge structures exist? UMLS concept identifiers, MONDO ontology, disease extraction, UK Biobank feature taxonomy, NER ensemble design.
+- **Biomedical** answers: what domain-specific knowledge structures exist? UMLS concept identifiers, MONDO ontology, disease extraction, NER ensemble design.
 
 ## Where this fits
 
@@ -45,7 +45,7 @@ Domain Map
 │   └── (gradient descent, loss functions, model evaluation,
 │        batch tuning, BGE-M3 extraction modes)
 └── Biomedical
-    └── (UMLS, MONDO ontology, disease NER, UK Biobank features,
+    └── (UMLS, MONDO ontology, disease NER,
          phenotype-level extraction)
 ```
 
@@ -55,7 +55,7 @@ Domain Map
 * Where does a new concept about embeddings belong — representation learning or information retrieval?
 * Which domains have deep coverage and which are stubs?
 * What are the prerequisite concepts for understanding a method like RRF?
-* Which biomedical domain concepts are specific to the UK Biobank pipeline versus generalizable?
+* Which biomedical domain concepts are project-specific versus generalizable?
 
 ## Notes in this map
 
@@ -85,7 +85,7 @@ Planned: gradient descent, loss functions, batch size tuning, model evaluation m
 
 ### Biomedical (0 notes, stub)
 
-Planned: UMLS concept identifiers, MONDO ontology filtering, 3-NER ensemble for disease extraction, UK Biobank feature taxonomy, phenotype versus disease versus symptom disambiguation. These notes are specific to the UK Biobank pipeline but the NER ensemble pattern and ontology mapping are reusable.
+Planned: UMLS concept identifiers, MONDO ontology filtering, 3-NER ensemble for disease extraction, phenotype versus disease versus symptom disambiguation. The NER ensemble pattern and ontology mapping are reusable across biomedical projects.
 
 ## Gaps and open loops
 

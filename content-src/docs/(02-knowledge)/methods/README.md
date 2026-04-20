@@ -65,7 +65,7 @@ Every `.mdx` must have a sibling `.meta.json` with the same base name.
 | `related_notes` | Any peer notes | `["threshold_selection"]` |
 | `related_methods` | Other method notes | `[]` |
 | `related_systems` | System notes | `["rrf_pipeline"]` |
-| `related_projects` | Project notes | `["ukb_pipeline"]` |
+| `related_projects` | Project notes | `["my_project"]` |
 | `related_experiments` | Experiment notes | `[]` |
 | `related_decisions` | Decision notes | `[]` |
 | `related_standards` | Standard notes | `[]` |

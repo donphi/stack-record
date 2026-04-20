@@ -387,7 +387,7 @@ Every folder needs a `meta.json` controlling sidebar order. Specified in `2_star
 - `decisions/accepted/`, `decisions/rejected/`, `decisions/pending/`
 - `experiments/active/`, `experiments/completed/`, `experiments/failed/`
 
-Per `1_implementation.md` section 6, projects also needs subfolders: `projects/ukb-pipeline/` (content exists at `projects/ukb-pipeline.mdx` level, no subfolder needed), `projects/gatehouse/`, `projects/stack-record/`. These get stub `meta.json` + index pairs.
+Per `1_implementation.md` section 6, projects also needs subfolders for each project. These get stub `meta.json` + index pairs.
 
 ### 3.2 Index page pairs (map notes for every section and subfolder)
 

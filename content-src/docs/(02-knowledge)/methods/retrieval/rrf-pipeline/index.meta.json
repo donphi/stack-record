@@ -10,7 +10,7 @@
   "related_notes": ["rank_fusion", "score_distributions", "threshold_selection"],
   "related_methods": [],
   "related_systems": ["rrf_pipeline"],
-  "related_projects": ["ukb_pipeline"],
+  "related_projects": [],
   "review_cycle": "monthly",
   "last_reviewed": "2026-04-14",
   "closure_score": 6,

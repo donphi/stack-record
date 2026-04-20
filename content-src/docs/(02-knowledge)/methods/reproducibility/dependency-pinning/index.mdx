@@ -16,7 +16,7 @@ Dependency pinning operates at the build and environment layer of a software sys
 2. Lockfile → Deterministic install → Identical environment
 3. Identical environment → [[docker_multi_stage]] build → Reproducible container image
 
-It is a prerequisite for reproducible [[docker_multi_stage]] builds and is used across all projects in the Stack Record ecosystem, including the [[ukb_pipeline]].
+It is a prerequisite for reproducible [[docker_multi_stage]] builds and is used across all production projects.
 
 ## Inputs
 
@@ -112,7 +112,7 @@ pnpm install --frozen-lockfile   # CI mode: fails if lockfile is out of date
 
 ## Where I have used it
 
-All Python projects in the Stack Record ecosystem use `pip-compile` with `--generate-hashes` to produce pinned requirements files. The [[ukb_pipeline]] Dockerfile copies `requirements.txt` into the builder stage of a [[docker_multi_stage]] build to ensure the production image contains exactly the tested dependency set. Node-based projects (including this wiki site) use `pnpm install --frozen-lockfile` in CI.
+All Python projects use `pip-compile` with `--generate-hashes` to produce pinned requirements files. The research pipeline Dockerfile copies `requirements.txt` into the builder stage of a [[docker_multi_stage]] build to ensure the production image contains exactly the tested dependency set. Node-based projects (including this wiki site) use `pnpm install --frozen-lockfile` in CI.
 
 ## Validation and evidence
 

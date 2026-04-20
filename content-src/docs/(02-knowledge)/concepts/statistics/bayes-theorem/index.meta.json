@@ -13,7 +13,7 @@
   "related_notes": ["conditional_probability"],
   "related_methods": ["naive_bayes_classification"],
   "related_systems": [],
-  "related_projects": ["ukb_pipeline"],
+  "related_projects": [],
   "review_cycle": "monthly",
   "last_reviewed": "2026-04-16",
   "closure_score": 5,

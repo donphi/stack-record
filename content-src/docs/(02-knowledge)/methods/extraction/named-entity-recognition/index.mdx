@@ -18,7 +18,7 @@ NER sits at the beginning of an information-extraction pipeline:
 2. Entity spans → Entity Linking → ontology identifiers
 3. Linked entities → Relation Extraction → knowledge triples
 
-In the Stack Record context, NER feeds into the [[ukb_pipeline]] where biomedical entities are extracted from literature before being linked to [[mesh_ontology]] terms.
+NER feeds into the research pipeline where biomedical entities are extracted from literature before being linked to [[mesh_ontology]] terms.
 
 ## Inputs
 
@@ -114,7 +114,7 @@ for token, pred, (start, end) in zip(tokens, predictions, offset_mapping):
 
 ## Where I have used it
 
-NER is used inside the [[ukb_pipeline]] to extract gene, disease, and chemical entities from PubMed abstracts before linking them to MeSH and HGNC identifiers. The extracted entities feed into the knowledge graph that supports retrieval and hypothesis generation.
+NER is used inside the research pipeline to extract gene, disease, and chemical entities from PubMed abstracts before linking them to MeSH and HGNC identifiers. The extracted entities feed into the knowledge graph that supports retrieval and hypothesis generation.
 
 ## Validation and evidence
 

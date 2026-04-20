@@ -10,7 +10,6 @@ Loading a transformer model onto a GPU takes 30–90 seconds depending on model 
 
 - Parent map: [[system_map]]
 - Depends on: [[rabbitmq_central_broker]]
-- Used in project: [[ukb_pipeline]]
 
 ## Architecture
 
@@ -88,7 +87,7 @@ It transforms an expensive model-loading operation from a per-job cost into a on
 
 ## Where I have used it
 
-* [[ukb_pipeline]] — embedding generation stage, where three persistent GPU workers consume text chunks from RabbitMQ and produce dense vectors.
+* Embedding generation stage, where three persistent GPU workers consume text chunks from RabbitMQ and produce dense vectors.
 
 ## Related notes
 

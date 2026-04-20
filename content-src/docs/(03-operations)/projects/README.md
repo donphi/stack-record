@@ -2,7 +2,7 @@
 
 This folder holds **project** notes -- synthesis pages that tie together concepts, methods, systems, and decisions.
 
-Each project gets its own sub-folder (e.g. `ukb-pipeline/`, `gatehouse/`).
+Each project gets its own sub-folder (e.g. `my-project/`).
 
 ## Page structure (MDX body)
 
@@ -29,9 +29,9 @@ The `## Key *` sections must use `[[wiki links]]` to connect to the actual conce
 
 | Field | Type | Example |
 |-------|------|---------|
-| `title` | string | `"UK Biobank Extraction Pipeline"` |
-| `description` | string | `"End-to-end pipeline for extracting diseases and UKB features."` |
-| `id` | string | `"P-UKB-0001"` (prefix `P-`, then code, then number) |
+| `title` | string | `"My Research Pipeline"` |
+| `description` | string | `"End-to-end pipeline for data extraction and processing."` |
+| `id` | string | `"P-PROJ-0001"` (prefix `P-`, then code, then number) |
 | `type` | string | `"project"` (must be exactly this) |
 
 **Mandatory for knowledge graph completeness:**

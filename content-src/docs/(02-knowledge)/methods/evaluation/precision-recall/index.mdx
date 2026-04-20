@@ -18,7 +18,7 @@ Precision and recall are used wherever a system makes binary or multi-class pred
 - Measuring retrieval quality in the [[rrf_pipeline]] (document-level recall@k).
 - Assessing classification heads in supervised learning pipelines.
 
-These metrics sit in the evaluation layer of the Stack Record knowledge system, informing decisions about model selection, threshold tuning, and pipeline configuration.
+These metrics sit in the evaluation layer, informing decisions about model selection, threshold tuning, and pipeline configuration.
 
 ## Inputs
 
@@ -138,7 +138,7 @@ print(f"Entity P={p:.2f}  R={r:.2f}")  # P=0.50  R=0.50
 
 ## Where I have used it
 
-Precision and recall are the primary evaluation metrics in the [[ukb_pipeline]] for benchmarking NER model performance on biomedical corpora. Entity-level strict-match F1 determines whether a model checkpoint is promoted to production. Document-level recall@k is used to evaluate the retrieval stage of the [[rrf_pipeline]].
+Precision and recall are the primary evaluation metrics for benchmarking NER model performance on biomedical corpora. Entity-level strict-match F1 determines whether a model checkpoint is promoted to production. Document-level recall@k is used to evaluate the retrieval stage of the [[rrf_pipeline]].
 
 ## Validation and evidence
 

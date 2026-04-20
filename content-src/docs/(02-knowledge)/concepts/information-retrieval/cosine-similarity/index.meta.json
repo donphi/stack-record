@@ -13,7 +13,7 @@
   "related_notes": ["vector_similarity"],
   "related_methods": ["dense_retrieval"],
   "related_systems": ["faiss_setup"],
-  "related_projects": ["ukb_pipeline"],
+  "related_projects": [],
   "review_cycle": "monthly",
   "last_reviewed": "2026-04-14",
   "closure_score": 6,

@@ -16,6 +16,6 @@ export function baseOptions(): BaseLayoutProps {
     nav: {
       title: 'Stack Record',
     },
-    githubUrl: 'https://github.com/your-username/stack-record',
+    githubUrl: 'https://github.com/donphi/stack-record',
   };
 }

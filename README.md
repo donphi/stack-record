@@ -31,26 +31,13 @@ One custom build step. Everything else is standard Fumadocs.
 git clone https://github.com/donphi/stack-record.git
 cd stack-record
 
-# 2. Install dependencies
-pnpm install
-
-# 3. Materialise content (merges sidecars into frontmatter)
-pnpm docs:materialize
-
-# 4. Start the dev server
-pnpm dev
+# 2. Build and run
+docker compose up --build
 
 # Open http://localhost:3000
 ```
 
-> **Prerequisites:** Node.js 18+ and pnpm. The repo ships with starter content across all nine note types so the site works immediately after clone.
-
-### Docker
-
-```bash
-docker compose up --build
-# Site available at http://localhost:3000
-```
+> **Prerequisites:** [Docker](https://www.docker.com/) and Docker Compose. That's it. The build handles dependency installation, content materialisation, and the Next.js production build inside a multi-stage Dockerfile. The repo ships with starter content across all nine note types so the site works immediately after clone.
 
 ---
 
@@ -64,11 +51,11 @@ content-src/docs/              ← what you edit (body-only .mdx + .meta.json si
     ├── (04-governance)/standards/, appendices/
     └── (05-inbox)/notes/
 
-        ↓  pnpm docs:materialize
+        ↓  docker compose up --build (materialise + build)
 
 .generated/docs/               ← what Fumadocs reads (frontmatter + body, gitignored)
 
-        ↓  pnpm dev / pnpm build
+        ↓  served at localhost:3000
 
 http://localhost:3000           ← the site
 ```
@@ -141,7 +128,7 @@ Stack Record can be authored from [Obsidian](https://obsidian.md/) using wiki-li
 1. Open the `content-src/docs/` folder as an Obsidian vault.
 2. Write notes using `[[wiki_link]]` syntax -- the materialiser resolves these to real links at build time.
 3. Run the note creation script to generate properly paired `.mdx` + `.meta.json` files.
-4. Materialise and preview with `pnpm docs:materialize && pnpm dev`.
+4. Rebuild with `docker compose up --build` to materialise and preview.
 
 Obsidian's graph view, backlinks, and search work naturally with the wiki-link syntax. The `.obsidian/` config directory is gitignored.
 
@@ -239,10 +226,47 @@ node obsidian/scripts/create-note-pair.js concept your-domain your-concept
 
 ## Screenshots
 
-<!-- Add screenshots of your running site here -->
-<!-- Recommended: home page, a concept note, the sidebar, a map page, mobile view -->
+### Light Mode
 
-*Screenshots coming soon -- run `pnpm dev` to see the site locally.*
+<p align="center">
+  <img src="doc/images/light-home.png" alt="Home page -- light mode" width="800" />
+</p>
+
+<p align="center"><em>Home page with navigation to all sections.</em></p>
+
+<p align="center">
+  <img src="doc/images/light-concept.png" alt="Concept note -- light mode" width="800" />
+</p>
+
+<p align="center"><em>A concept note with KaTeX math, callouts, and cross-links.</em></p>
+
+<p align="center">
+  <img src="doc/images/light-sidebar.png" alt="Sidebar navigation -- light mode" width="800" />
+</p>
+
+<p align="center"><em>Sidebar navigation across all nine sections.</em></p>
+
+### Dark Mode
+
+<p align="center">
+  <img src="doc/images/dark-home.png" alt="Home page -- dark mode" width="800" />
+</p>
+
+<p align="center"><em>Home page in dark mode.</em></p>
+
+<p align="center">
+  <img src="doc/images/dark-concept.png" alt="Concept note -- dark mode" width="800" />
+</p>
+
+<p align="center"><em>Same concept note in dark mode with syntax-highlighted code blocks.</em></p>
+
+<p align="center">
+  <img src="doc/images/dark-sidebar.png" alt="Sidebar navigation -- dark mode" width="800" />
+</p>
+
+<p align="center"><em>Sidebar in dark mode.</em></p>
+
+> **To add your own screenshots:** run `docker compose up --build`, take screenshots of the pages listed above in both light and dark mode, save them to `doc/images/` with the filenames shown, and they'll appear here automatically.
 
 ---
 

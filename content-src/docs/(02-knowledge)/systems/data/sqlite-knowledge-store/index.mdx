@@ -1,0 +1,106 @@
+## What this system is
+
+A single-file SQLite database that serves as the persistence layer for the knowledge graph built by [[batch_orchestrator]]. Every node, edge, embedding vector, and piece of provenance metadata lives in this one `.db` file, queryable with standard SQL.
+
+## Why this exists
+
+The pipeline needs a durable store that survives process restarts, supports ad-hoc analytical queries, and requires zero infrastructure to deploy. SQLite satisfies all three constraints: it is an embedded database with no server process, it ships as a single file that can be copied or version-controlled, and its SQL interface makes it easy to inspect and debug the graph without custom tooling.
+
+## Where this fits
+
+- Parent map: [[system_map]]
+- Upstream producer: [[batch_orchestrator]] (the build-KG stage writes to this store)
+- Used in project: [[ukb_pipeline]]
+
+## Architecture
+
+```text
+build_kg.py
+    |
+    |  INSERT nodes, edges, embeddings
+    v
++----------------------------+
+|  kg.db  (SQLite, WAL mode) |
+|                             |
+|  tables:                    |
+|    nodes(id, type, label,   |
+|          metadata_json)     |
+|    edges(src, dst, rel,     |
+|          weight)            |
+|    embeddings(node_id,      |
+|          model, vector_blob)|
+|    provenance(node_id,      |
+|          source, timestamp) |
++----------------------------+
+    |
+    |  SELECT / JOIN
+    v
+Query scripts, notebooks, API layer
+```
+
+The database operates in WAL (Write-Ahead Logging) mode so that a single writer can coexist with concurrent readers without blocking.
+
+## Components
+
+* **Schema migration script** (`init_schema.py`) — creates tables and indices if they do not already exist, using `CREATE TABLE IF NOT EXISTS`.
+* **Node table** — stores entities with a unique ID, a type label (e.g., `paper`, `concept`, `method`), a human-readable label, and a JSON blob for extensible metadata.
+* **Edge table** — stores directed relationships between nodes with a relation type and an optional numeric weight.
+* **Embeddings table** — stores dense vector representations as binary blobs keyed by node ID and model name, enabling nearest-neighbour queries when loaded into memory.
+* **Provenance table** — records which source document and extraction timestamp produced each node, supporting auditability and incremental rebuilds.
+
+## Configuration contract
+
+* `KG_DB_PATH` — absolute path to the `.db` file; the build-KG stage and all downstream consumers must agree on this path.
+* `SQLITE_JOURNAL_MODE` — must be set to `WAL` in the connection pragma for concurrent read access during writes.
+* `SQLITE_BUSY_TIMEOUT_MS` — milliseconds a connection waits for a lock before raising `SQLITE_BUSY`; recommended value is `5000` for batch workloads.
+* Schema version is stored in `PRAGMA user_version`; migration scripts check this value and apply incremental DDL as needed.
+
+## Why it is used
+
+It eliminates operational overhead. There is no database server to provision, monitor, or restart. The entire knowledge graph is a single portable file that can be backed up with `cp`, diffed across runs, and shipped to a colleague on a USB drive.
+
+## Benefits
+
+* Zero-dependency deployment — SQLite is included in Python's standard library.
+* Single-file portability — easy to back up, version, and share.
+* Full SQL query capability for ad-hoc exploration and debugging.
+* WAL mode supports concurrent readers alongside a single writer, which is sufficient for the pipeline's access pattern.
+* Deterministic schema migrations via `user_version` pragma make upgrades safe and repeatable.
+
+## Drawbacks
+
+* Single-writer concurrency — only one process can write at a time; parallel ingest requires external coordination.
+* No native vector-index support — nearest-neighbour searches require loading embeddings into memory or using an extension like `sqlite-vss`.
+* File-level locking on network filesystems (NFS, CIFS) is unreliable; the database must reside on a local or block-attached volume.
+* Large databases (>50 GB) can suffer from long `VACUUM` times and increased checkpoint overhead in WAL mode.
+
+## Failure modes
+
+* **SQLITE_BUSY under concurrent writes** — if two processes attempt to write simultaneously, one receives a busy error. Mitigated by a sufficient `busy_timeout` and ensuring only the build-KG stage writes.
+* **Corrupt WAL on hard crash** — an unclean shutdown (power loss, OOM kill) during a WAL checkpoint can leave the database in a recoverable but inconsistent state. Running `PRAGMA integrity_check` after recovery detects this.
+* **Disk full** — writes fail with `SQLITE_FULL`; the build-KG stage must handle this gracefully and avoid leaving partial transactions committed.
+* **Schema drift** — if a consumer expects columns that a newer migration added but the database has not been migrated, queries fail at runtime. The `user_version` check prevents this when followed.
+
+## Monitoring
+
+* Track file size of `kg.db` and `kg.db-wal` over time to detect unexpected growth.
+* Run `PRAGMA integrity_check` after each pipeline run to catch corruption early.
+* Log row counts per table (`SELECT COUNT(*) FROM nodes`, etc.) at the end of each build to verify completeness.
+* Alert if `kg.db-wal` exceeds a threshold size, indicating checkpoints are not keeping up.
+
+## Where I have used it
+
+* [[ukb_pipeline]] — stores the complete biomedical knowledge graph produced by the extract → embed → build pipeline.
+
+## Related notes
+
+* [[batch_orchestrator]] — the orchestration script that invokes the build-KG stage writing to this store.
+
+## Open questions
+
+* At what graph size does SQLite become a bottleneck compared to a dedicated graph database?
+* Should the embeddings table be split into a separate database to keep the relational graph lightweight?
+
+## Review
+
+* Next review target: benchmark query latency at 10M, 50M, and 100M edges; evaluate `sqlite-vss` for in-database vector search.

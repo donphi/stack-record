@@ -1,0 +1,22 @@
+{
+  "title": "Bayes' Theorem",
+  "description": "A formula for updating the probability of a hypothesis given new evidence.",
+  "id": "C-STAT-0001",
+  "type": "concept",
+  "domain": "statistics",
+  "status": "evergreen",
+  "tags": ["concept/stats"],
+  "aliases": ["Bayes rule", "Bayesian updating"],
+  "parent_maps": ["MAP-CONCEPTS-0001"],
+  "prerequisites": ["conditional_probability"],
+  "children": [],
+  "related_notes": ["conditional_probability"],
+  "related_methods": ["naive_bayes_classification"],
+  "related_systems": [],
+  "related_projects": ["ukb_pipeline"],
+  "review_cycle": "monthly",
+  "last_reviewed": "2026-04-16",
+  "closure_score": 5,
+  "closure_status": "partial",
+  "open_questions": ["How sensitive is posterior quality to prior misspecification in small-sample biomedical studies?"]
+}

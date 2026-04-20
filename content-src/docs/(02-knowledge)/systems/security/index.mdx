@@ -1,0 +1,36 @@
+## What this map is
+
+System notes on security controls: credential management, access control, and supply-chain integrity for the knowledge pipeline.
+
+## Why this matters
+
+The pipeline handles API keys, model weights, and potentially sensitive biomedical data. A single leaked credential or unpatched dependency can compromise the entire system.
+
+## Where this fits
+
+Security systems constrain every other layer: [[runtime]] for secret injection, [[build]] for supply-chain verification, [[data]] for access control, and [[pipeline]] for audit trails.
+
+## Structure
+
+Notes cover secrets management, access policies, and dependency auditing.
+
+## What this map helps answer
+
+- How are API keys rotated and injected into workers?
+- What access controls protect stored data?
+- How do we detect compromised dependencies?
+
+## Notes in this map
+
+- [[api_key_rotation]]
+
+## Gaps and open loops
+
+- Network policies and firewall rules
+- Audit logging and tamper-evident records
+- Dependency scanning (Dependabot, Trivy)
+- Data classification and handling tiers
+
+## Review
+
+Stub map. High priority — security notes should precede production deployment.

@@ -1,0 +1,22 @@
+{
+  "title": "MeSH Ontology",
+  "description": "The Medical Subject Headings controlled vocabulary used by NLM to index biomedical literature.",
+  "id": "C-BIO-0001",
+  "type": "concept",
+  "domain": "biomedical",
+  "status": "evergreen",
+  "tags": ["concept/bio"],
+  "aliases": ["MeSH", "Medical Subject Headings"],
+  "parent_maps": ["MAP-CONCEPTS-0001"],
+  "prerequisites": [],
+  "children": [],
+  "related_notes": [],
+  "related_methods": ["named_entity_recognition"],
+  "related_systems": [],
+  "related_projects": ["ukb_pipeline"],
+  "review_cycle": "quarterly",
+  "last_reviewed": "2026-04-16",
+  "closure_score": 4,
+  "closure_status": "partial",
+  "open_questions": ["How well does MeSH capture emerging disease concepts compared to SNOMED-CT for real-time literature surveillance?"]
+}

@@ -1,0 +1,22 @@
+{
+  "title": "GPU Worker Pool",
+  "description": "A pool of persistent GPU-attached worker processes that consume jobs from a message queue.",
+  "id": "S-RUN-0001",
+  "type": "system",
+  "domain": "runtime",
+  "status": "active",
+  "tags": ["system/runtime"],
+  "parent_maps": ["MAP-SYSTEMS-0001"],
+  "implements_methods": [],
+  "depends_on": ["rabbitmq_central_broker"],
+  "used_in_projects": ["ukb_pipeline"],
+  "related_notes": ["rabbitmq_central_broker"],
+  "related_methods": [],
+  "related_systems": ["rabbitmq_central_broker"],
+  "related_projects": ["ukb_pipeline"],
+  "review_cycle": "quarterly",
+  "last_reviewed": "2026-04-16",
+  "closure_score": 5,
+  "closure_status": "partial",
+  "open_questions": ["Should workers pre-load multiple models or stick to one model per process for memory isolation?"]
+}

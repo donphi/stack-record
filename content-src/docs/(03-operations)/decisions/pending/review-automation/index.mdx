@@ -1,0 +1,86 @@
+## Decision
+
+Whether to build automated notifications that flag notes whose `last_reviewed` date has exceeded their `review_cycle` interval.
+
+## Context
+
+Every note in the wiki carries a `review_cycle` field (weekly, monthly, quarterly, yearly, or never) and a `last_reviewed` date. The governance model described in the closure rule expects stale notes to be revisited so their `closure_score` stays accurate. At the current vault size (~150 notes), a manual scan of the open-loops map is manageable. As the vault grows toward 500+ notes, manually identifying overdue reviews will become unreliable.
+
+The question is whether to invest in automation now or defer until scale forces the issue.
+
+## Why this decision exists
+
+Review discipline is the mechanism that prevents knowledge decay. If overdue reviews are silently missed, notes drift out of date, cross-references break, and the `closure_score` system loses credibility. Deciding on an automation approach now — or explicitly deferring it — avoids ambiguity about who or what is responsible for surfacing stale content.
+
+## Options considered
+
+### Option A — GitHub Actions cron job
+
+A scheduled GitHub Actions workflow runs nightly, scans all `index.meta.json` files, computes which notes are overdue, and opens a single GitHub Issue (or updates an existing one) listing overdue notes grouped by domain.
+
+**Pros:**
+- Runs in existing CI infrastructure with no new services.
+- Output is a GitHub Issue, which integrates with existing project-management workflow.
+- Low maintenance — a single Python or shell script.
+
+**Cons:**
+- Requires the vault to be pushed to the repository before overdue notes are detected.
+- GitHub Issues can become noisy if the list is long.
+
+### Option B — Obsidian plugin
+
+A community or custom Obsidian plugin highlights overdue notes in the sidebar or surfaces them via a dedicated "Review Queue" view.
+
+**Pros:**
+- Feedback is immediate while editing in Obsidian.
+- No dependency on CI infrastructure.
+
+**Cons:**
+- Only works inside Obsidian — not visible to collaborators who browse the web wiki.
+- Custom plugin development and maintenance adds a new codebase.
+- Does not integrate with GitHub project tracking.
+
+### Option C — Manual triage
+
+Continue using the open-loops map and periodic manual scans.
+
+**Pros:**
+- Zero implementation cost.
+- Forces direct engagement with the knowledge base.
+
+**Cons:**
+- Scales poorly beyond a few hundred notes.
+- Relies on discipline rather than systems — a single missed triage session can compound.
+
+## Why the chosen option won
+
+Pending evaluation. No option has been selected yet. The decision is blocked on two inputs:
+
+1. Measured growth rate of the vault over the next quarter.
+2. Whether any overdue reviews are actually missed under the current manual process.
+
+If the vault exceeds 300 notes or a missed review causes a downstream problem, Option A (GitHub Actions) is the likely winner due to its low implementation cost and integration with existing workflows.
+
+## Tradeoffs accepted
+
+Not yet determined. This section will be completed when the decision is made.
+
+## Consequences
+
+Provisional consequences if Option A is selected:
+
+1. A new GitHub Actions workflow file is added to the repository.
+2. The workflow depends on `index.meta.json` files being committed — any notes that exist only in the local Obsidian vault will not be scanned.
+3. A standing GitHub Issue serves as the review queue, updated nightly.
+
+## Where this has been used
+
+Not yet applied. The decision is pending.
+
+## Review trigger
+
+Revisit this ADR:
+
+- When the vault exceeds 300 notes.
+- If a stale note causes a downstream error in [[ukb_pipeline]] or another project.
+- At the next monthly review cycle (2026-05-16).

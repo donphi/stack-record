@@ -1,0 +1,150 @@
+## What this is
+
+MeSH (Medical Subject Headings) is a hierarchical controlled vocabulary maintained by the U.S. National Library of Medicine (NLM). It provides a standardised set of terms — called descriptors — used to index, catalogue, and search biomedical and health-related literature in databases like PubMed and MEDLINE.
+
+## Why this matters
+
+Biomedical text is riddled with synonyms, abbreviations, and evolving terminology. "Heart attack", "myocardial infarction", and "MI" all refer to the same condition. Without a controlled vocabulary, searches miss relevant articles and NLP pipelines fragment identical concepts into separate tokens. MeSH solves this by mapping surface forms to canonical descriptors, enabling consistent retrieval and annotation across millions of publications.
+
+## Where this fits
+
+- Parent map: [[MAP_CONCEPTS_0001]]
+- Prerequisites: none
+- Used in method: [[named_entity_recognition]]
+- Used in project: [[ukb_pipeline]]
+
+## Core idea
+
+MeSH organises biomedical knowledge into a tree structure with 16 top-level branches (Anatomy, Diseases, Chemicals, etc.). Each descriptor sits at one or more positions in the tree, reflecting "is-a" relationships. Descriptors can be paired with qualifiers (subheadings) to narrow scope — e.g., "Aspirin/adverse effects". Human indexers at NLM assign MeSH terms to every article in MEDLINE, and PubMed's search engine automatically expands queries to include narrower terms in the tree.
+
+## Equation or formal logic
+
+MeSH is not defined by equations but by a formal tree-number scheme. Each descriptor receives one or more tree numbers encoding its position:
+
+$$
+\text{Tree number format:} \quad C_{L_1}.C_{L_2}.C_{L_3}.\ldots.C_{L_d}
+$$
+
+where $C_{L_i}$ is the category code at depth $i$ and $d$ is the depth in the hierarchy.
+
+**Example path for "Myocardial Infarction":**
+
+$$
+\texttt{C14.280.647.500}
+$$
+
+- `C14` — Cardiovascular Diseases
+- `C14.280` — Heart Diseases
+- `C14.280.647` — Myocardial Ischemia
+- `C14.280.647.500` — Myocardial Infarction
+
+A descriptor with multiple tree numbers is **polyhierarchical** — it belongs to more than one branch.
+
+## Breakdown
+
+### Terms
+
+- **Descriptor** — a main MeSH heading representing a biomedical concept (e.g., "Diabetes Mellitus")
+- **Qualifier (subheading)** — a modifier that narrows the aspect of the descriptor (e.g., "/genetics", "/therapy")
+- **Supplementary Concept Record (SCR)** — entries for chemicals, drugs, and rare diseases not in the main tree, mapped to the closest descriptor
+- **Entry term** — a synonym or alternate form that maps to a descriptor (e.g., "heart attack" → "Myocardial Infarction")
+- **Tree number** — the alphanumeric code encoding hierarchical position
+
+### What the structure is really doing
+
+The tree encodes taxonomic knowledge. When a user searches PubMed for "Heart Diseases" (C14.280), the engine automatically includes all articles indexed under any child node — Arrhythmias, Cardiomyopathies, Myocardial Infarction, etc. This **automatic explosion** is what makes MeSH-based search far more comprehensive than keyword matching.
+
+## Plain-English explanation
+
+Think of MeSH as a massive family tree for medical concepts. "Diseases" is at the top, and it branches into organ-system categories, then specific conditions, then sub-types. Every PubMed article gets labelled with the most specific terms that apply. When you search for a broad term, PubMed automatically grabs everything under it in the tree, so you do not have to manually list every sub-type. Entry terms handle synonyms — you can type "heart attack" and PubMed knows you mean "Myocardial Infarction."
+
+## Worked example
+
+**Scenario:** You want all PubMed articles about genetic aspects of any type of diabetes.
+
+1. Look up "Diabetes Mellitus" → tree number `C18.452.394.750`
+2. Attach qualifier `/genetics`
+3. PubMed search: `"Diabetes Mellitus/genetics"[MeSH]`
+4. The engine automatically includes:
+   - Diabetes Mellitus, Type 1/genetics
+   - Diabetes Mellitus, Type 2/genetics
+   - Diabetes, Gestational/genetics
+   - all narrower descendants
+
+Without MeSH, you would need to enumerate every diabetes subtype and spelling variant manually.
+
+**NLP application:** In a [[named_entity_recognition]] pipeline, a mention of "T2DM" in an abstract is normalised to MeSH descriptor D003924 (Diabetes Mellitus, Type 2), enabling aggregation with "type 2 diabetes", "non-insulin-dependent diabetes", and other surface forms.
+
+## ASCII diagram
+
+```text
+MeSH Tree (partial)
+
+[A] Anatomy
+[B] Organisms
+[C] Diseases
+ ├── C14 Cardiovascular Diseases
+ │    ├── C14.280 Heart Diseases
+ │    │    ├── C14.280.067 Arrhythmias
+ │    │    ├── C14.280.238 Cardiomyopathies
+ │    │    └── C14.280.647 Myocardial Ischemia
+ │    │         └── C14.280.647.500 Myocardial Infarction
+ │    └── C14.907 Vascular Diseases
+ └── C18 Nutritional and Metabolic Diseases
+      └── C18.452.394.750 Diabetes Mellitus
+           ├── .750.149 Diabetes Mellitus, Type 1
+           └── .750.400 Diabetes Mellitus, Type 2
+[D] Chemicals and Drugs
+...
+[N] Health Care
+```
+
+## Why this is used
+
+1. **Literature retrieval** — MeSH powers PubMed's structured search, used daily by millions of researchers and clinicians.
+2. **Entity normalisation** — NLP systems map free-text mentions to MeSH IDs for consistent downstream analysis.
+3. **Knowledge graph construction** — MeSH descriptors serve as nodes in biomedical knowledge graphs, linked by tree-number parent-child and see-also relations.
+4. **Dataset annotation** — clinical NLP benchmarks (e.g., BioASQ) use MeSH for multi-label classification tasks.
+
+## Benefits
+
+* Comprehensive coverage: ~30,000 descriptors and ~250,000 supplementary records, updated annually.
+* Freely available in XML, RDF, and ASCII formats from the NLM.
+* Mature tooling: UMLS Metathesaurus maps MeSH to ICD-10, SNOMED-CT, and other vocabularies.
+* Search explosion ensures high recall without manual query expansion.
+* Long provenance: in use since 1960, so the vast majority of MEDLINE articles are consistently indexed.
+
+## Drawbacks and failure modes
+
+* **Indexing lag** — new articles take days to weeks to receive MeSH annotations; very new articles are discoverable only via keyword search.
+* **Vocabulary lag** — novel diseases (e.g., a new pandemic pathogen) may take one or more annual release cycles to receive a dedicated descriptor.
+* **Granularity mismatch** — some branches are deeply subdivided (diseases) while others are shallow (techniques), creating uneven resolution.
+* **Human indexer variability** — despite guidelines, inter-annotator agreement is imperfect, introducing noise for ML training.
+* **English-centric** — MeSH is maintained in English; translations exist for some languages but are not always current.
+
+## Where I have used it
+
+* [[ukb_pipeline]] — mapping UK Biobank phenotype codes to MeSH descriptors for literature-phenotype linking.
+* [[named_entity_recognition]] — using MeSH entry terms as a gazetteer for biomedical NER over clinical abstracts.
+
+## Questions this note answers
+
+* What is MeSH and who maintains it?
+* How does MeSH's tree structure enable automatic query expansion in PubMed?
+* What is the difference between a descriptor, a qualifier, and a supplementary concept record?
+* How is MeSH used in NLP entity normalisation?
+
+## Related notes
+
+*(No related concept notes yet — future links to ontology comparison notes.)*
+
+## Open questions
+
+* How well does MeSH capture emerging disease concepts compared to SNOMED-CT for real-time literature surveillance?
+* Can MeSH tree numbers be used as features in hierarchical classification models, and does depth in the tree correlate with classification difficulty?
+* What is the best strategy for handling supplementary concept records that lack stable tree numbers in a knowledge graph?
+
+## Review
+
+* Next review target: add comparison table of MeSH vs SNOMED-CT vs ICD-10 coverage and granularity
+* Consider adding worked example of MeSH-to-UMLS CUI mapping for [[ukb_pipeline]]

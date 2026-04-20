@@ -1,0 +1,137 @@
+## What this is
+
+Bayes' theorem is a formula that describes how to update the probability of a hypothesis $H$ after observing new evidence $E$. It inverts conditional probabilities: given that you know $P(E \mid H)$, it tells you $P(H \mid E)$.
+
+## Why this matters
+
+Most real-world reasoning is uncertain. Bayes' theorem provides the mathematically correct way to revise beliefs when new data arrives. It underpins diagnostic testing, spam filtering, Bayesian neural networks, and any system that must weigh prior knowledge against fresh observations.
+
+## Where this fits
+
+- Parent map: [[MAP_CONCEPTS_0001]]
+- Prerequisites: [[conditional_probability]]
+- Used in method: [[naive_bayes_classification]]
+- Used in project: [[ukb_pipeline]]
+
+## Core idea
+
+If you start with a prior belief about how likely a hypothesis is, and then observe evidence whose likelihood under that hypothesis you can quantify, Bayes' theorem combines the two into a posterior — your updated belief.
+
+## Equation
+
+$$
+P(H \mid E) = \frac{P(E \mid H) \; P(H)}{P(E)}
+$$
+
+The denominator expands via the law of total probability:
+
+$$
+P(E) = P(E \mid H)\,P(H) + P(E \mid \neg H)\,P(\neg H)
+$$
+
+## Breakdown
+
+### Terms
+
+- $P(H)$ — **prior**: probability of the hypothesis before seeing evidence
+- $P(E \mid H)$ — **likelihood**: probability of observing the evidence if the hypothesis is true
+- $P(E)$ — **marginal likelihood** (evidence): total probability of the evidence under all hypotheses
+- $P(H \mid E)$ — **posterior**: updated probability of the hypothesis after seeing the evidence
+
+### What the equation is really doing
+
+It re-weights the prior by how well the hypothesis explains the observed evidence, then normalises so probabilities sum to one. A hypothesis that predicts the evidence well gets boosted; one that predicts it poorly gets suppressed.
+
+## Plain-English explanation
+
+Imagine you take a medical test for a rare disease. The test is accurate but not perfect. Bayes' theorem answers: "Given a positive result, what is the actual probability I have the disease?" The answer depends not just on test accuracy, but also on how rare the disease is. If only 1 in 10,000 people have it, even a good test produces many false positives relative to true positives. Bayes' theorem accounts for that base rate automatically.
+
+## Worked example
+
+**Scenario:** A disease affects 1% of a population. A diagnostic test has:
+- Sensitivity (true positive rate): $P(\text{pos} \mid \text{disease}) = 0.95$
+- Specificity (true negative rate): $P(\text{neg} \mid \text{healthy}) = 0.90$, so false positive rate $P(\text{pos} \mid \text{healthy}) = 0.10$
+
+**Question:** You test positive. What is the probability you actually have the disease?
+
+**Step 1 — Identify priors:**
+
+$$
+P(\text{disease}) = 0.01, \quad P(\text{healthy}) = 0.99
+$$
+
+**Step 2 — Compute the marginal likelihood:**
+
+$$
+P(\text{pos}) = (0.95)(0.01) + (0.10)(0.99) = 0.0095 + 0.099 = 0.1085
+$$
+
+**Step 3 — Apply Bayes' theorem:**
+
+$$
+P(\text{disease} \mid \text{pos}) = \frac{(0.95)(0.01)}{0.1085} = \frac{0.0095}{0.1085} \approx 0.0876
+$$
+
+**Result:** Despite a 95%-sensitive test, a positive result only means an ~8.8% chance of disease. The low base rate dominates.
+
+## ASCII diagram
+
+```text
+Population: 10,000 people
+
+  Disease (100)              Healthy (9,900)
+   /       \                  /          \
+ Pos(95)  Neg(5)          Pos(990)    Neg(8,910)
+
+Total positive = 95 + 990 = 1,085
+P(disease | pos) = 95 / 1,085 ≈ 8.8%
+```
+
+## Why this is used
+
+Bayes' theorem appears whenever a system must combine prior knowledge with observed data:
+
+1. **Medical diagnosis** — combining disease prevalence with test accuracy.
+2. **Spam classification** — [[naive_bayes_classification]] scores words against prior spam/ham rates.
+3. **Bayesian optimisation** — updating a surrogate model of hyperparameter performance.
+4. **Clinical trial analysis** — incorporating historical control data as an informative prior.
+
+## Benefits
+
+* Provides the uniquely correct way to update probabilities (Cox's theorem).
+* Handles small samples gracefully by leveraging prior information.
+* Makes assumptions explicit — the prior is a declared modelling choice, not hidden.
+* Naturally quantifies uncertainty in the posterior distribution.
+
+## Drawbacks and failure modes
+
+* **Prior sensitivity** — a badly chosen prior can dominate the posterior when data is scarce, producing overconfident wrong answers.
+* **Computational cost** — exact Bayesian inference is intractable for most real models; approximations (MCMC, variational inference) add complexity.
+* **Subjectivity criticism** — critics argue that priors inject researcher bias, though empirical Bayes and reference priors partially address this.
+* **Base-rate neglect in practice** — humans routinely ignore $P(H)$, leading to clinical misinterpretation of test results even when Bayes' theorem is known.
+
+## Where I have used it
+
+* [[ukb_pipeline]] — Bayesian phenotype-disease association scoring with prevalence priors
+* [[naive_bayes_classification]] — text classification baseline for biomedical abstracts
+
+## Questions this note answers
+
+* What does Bayes' theorem calculate?
+* Why can a positive test result still mean a low probability of disease?
+* How does the prior influence the posterior?
+* What is the difference between likelihood and posterior?
+
+## Related notes
+
+* [[conditional_probability]] — prerequisite concept for understanding $P(A \mid B)$
+
+## Open questions
+
+* How sensitive is posterior quality to prior misspecification in small-sample biomedical studies?
+* When does empirical Bayes outperform fully specified subjective priors for phenome-wide association studies?
+
+## Review
+
+* Next review target: add conjugate prior examples (Beta-Binomial) and connect to Bayesian updating in sequence
+* Consider worked example using biomedical data from [[ukb_pipeline]]

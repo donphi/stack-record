@@ -1,0 +1,174 @@
+## What this method is
+
+Precision and recall are complementary metrics that quantify the quality of a classification or retrieval system from two different perspectives. Precision measures the fraction of predicted positives that are truly positive. Recall measures the fraction of actual positives that the system successfully identifies. Together they reveal the trade-off between being selective and being thorough.
+
+F1 score is the harmonic mean of precision and recall, providing a single number that balances both concerns. The harmonic mean penalises extreme imbalances: a system with perfect precision but zero recall scores F1 = 0, not F1 = 0.5.
+
+## Why this is used
+
+Accuracy alone is misleading when classes are imbalanced. A spam filter evaluated on a dataset where 1% of emails are spam achieves 99% accuracy by predicting "not spam" for every message, yet it catches zero spam. Precision and recall expose this failure by evaluating performance specifically on the positive class.
+
+In biomedical extraction, missing a disease mention (low recall) could mean an adverse-event signal goes undetected, while flagging too many false entities (low precision) wastes downstream curator time. Choosing which metric to prioritise depends on the cost asymmetry of false positives versus false negatives.
+
+## Where this fits
+
+Precision and recall are used wherever a system makes binary or multi-class predictions:
+
+- Evaluating [[named_entity_recognition]] models (entity-level P/R/F1).
+- Measuring retrieval quality in the [[rrf_pipeline]] (document-level recall@k).
+- Assessing classification heads in supervised learning pipelines.
+
+These metrics sit in the evaluation layer of the Stack Record knowledge system, informing decisions about model selection, threshold tuning, and pipeline configuration.
+
+## Inputs
+
+| Input | Description |
+|---|---|
+| Ground-truth labels | A set of gold-standard annotations (positive/negative per instance). |
+| Predicted labels | The system's output predictions for the same instances. |
+| Matching criteria | The rule that defines a correct prediction (exact match, partial overlap, IoU threshold, etc.). |
+
+## Outputs
+
+| Output | Description |
+|---|---|
+| Precision | $\text{TP} / (\text{TP} + \text{FP})$ — fraction of predictions that are correct. |
+| Recall | $\text{TP} / (\text{TP} + \text{FN})$ — fraction of gold positives that are found. |
+| F1 score | $2 \cdot \text{Precision} \cdot \text{Recall} \;/\; (\text{Precision} + \text{Recall})$. |
+| Confusion matrix | A 2×2 (or $k \times k$) table of TP, FP, FN, TN counts. |
+
+## Procedure
+
+1. **Collect predictions and ground truth.** Align each predicted instance with its gold-standard label.
+2. **Count the four cells** of the confusion matrix:
+   - True Positives (TP): predicted positive, actually positive.
+   - False Positives (FP): predicted positive, actually negative.
+   - False Negatives (FN): predicted negative, actually positive.
+   - True Negatives (TN): predicted negative, actually negative.
+3. **Compute precision:** $P = \text{TP} / (\text{TP} + \text{FP})$.
+4. **Compute recall:** $R = \text{TP} / (\text{TP} + \text{FN})$.
+5. **Compute F1:** $F_1 = 2PR / (P + R)$.
+6. **For multi-class problems**, compute per-class P/R/F1 and aggregate using micro-averaging (pool all TP/FP/FN) or macro-averaging (arithmetic mean of per-class scores).
+
+## Formal rule or formula
+
+The confusion matrix for binary classification:
+
+|  | Predicted Positive | Predicted Negative |
+|---|---|---|
+| **Actual Positive** | TP | FN |
+| **Actual Negative** | FP | TN |
+
+$$\text{Precision} = \frac{TP}{TP + FP}$$
+
+$$\text{Recall} = \frac{TP}{TP + FN}$$
+
+$$F_1 = \frac{2 \cdot P \cdot R}{P + R} = \frac{2 \cdot TP}{2 \cdot TP + FP + FN}$$
+
+The generalised $F_\beta$ score weights recall $\beta$ times as much as precision:
+
+$$F_\beta = (1 + \beta^2) \cdot \frac{P \cdot R}{\beta^2 \cdot P + R}$$
+
+Setting $\beta = 2$ emphasises recall (useful in medical screening); $\beta = 0.5$ emphasises precision.
+
+## Why it works
+
+Precision and recall decompose overall performance along the two axes that matter for decision-making: "Can I trust a positive prediction?" (precision) and "Am I finding everything I should?" (recall). By applying [[bayes_theorem]], precision can be reinterpreted as the posterior probability that a flagged instance is truly positive given the model's sensitivity and the base rate.
+
+The harmonic mean used in F1 ensures that both metrics must be reasonably high for the combined score to be high. This is more conservative than the arithmetic mean, which would allow a lopsided system to score well.
+
+## Code sketch
+
+```python
+from collections import Counter
+
+
+def precision_recall_f1(y_true: list[int], y_pred: list[int]) -> dict[str, float]:
+    counts = Counter()
+    for gold, pred in zip(y_true, y_pred):
+        if pred == 1 and gold == 1:
+            counts["tp"] += 1
+        elif pred == 1 and gold == 0:
+            counts["fp"] += 1
+        elif pred == 0 and gold == 1:
+            counts["fn"] += 1
+
+    tp, fp, fn = counts["tp"], counts["fp"], counts["fn"]
+    precision = tp / (tp + fp) if (tp + fp) > 0 else 0.0
+    recall = tp / (tp + fn) if (tp + fn) > 0 else 0.0
+    f1 = (2 * precision * recall / (precision + recall)) if (precision + recall) > 0 else 0.0
+    return {"precision": precision, "recall": recall, "f1": f1}
+
+
+# Entity-level evaluation (strict matching)
+gold_entities = {("Aspirin", 0, 7, "CHEMICAL"), ("Alzheimer", 31, 40, "DISEASE")}
+pred_entities = {("Aspirin", 0, 7, "CHEMICAL"), ("risk", 23, 27, "DISEASE")}
+
+tp = len(gold_entities & pred_entities)
+fp = len(pred_entities - gold_entities)
+fn = len(gold_entities - pred_entities)
+
+p = tp / (tp + fp) if (tp + fp) else 0.0
+r = tp / (tp + fn) if (tp + fn) else 0.0
+print(f"Entity P={p:.2f}  R={r:.2f}")  # P=0.50  R=0.50
+```
+
+## Benefits
+
+- Simple to compute and universally understood across ML, IR, and biomedical communities.
+- Directly exposes the precision–recall trade-off, enabling informed threshold tuning.
+- Per-class breakdown reveals which categories a model struggles with.
+- F-beta generalisation lets practitioners encode domain-specific cost asymmetries.
+
+## Drawbacks
+
+- Ignores true negatives entirely, which can matter when the negative class is informative.
+- Macro-averaging treats rare and common classes equally, which may not reflect operational impact.
+- A single F1 number hides the shape of the precision–recall curve; different thresholds can yield the same F1 with very different P/R balances.
+- Entity-level evaluation is sensitive to the matching criterion (strict vs. partial), making cross-paper comparisons difficult.
+
+## Failure modes
+
+| Failure | Cause | Mitigation |
+|---|---|---|
+| Misleading high F1 | Severe class imbalance where the majority class dominates micro-averaging. | Report per-class metrics and use macro or weighted averaging. |
+| Threshold sensitivity | A small shift in decision threshold flips many predictions. | Report the full PR curve and area under the PR curve (AUPRC). |
+| Partial match ambiguity | Entity spans partially overlap gold spans; strict match counts them as FP+FN. | Define and report both strict and relaxed matching criteria. |
+| Optimising F1 masks recall failures | F1 is symmetric in P and R, but a recall miss may be costlier. | Use $F_2$ when recall is safety-critical. |
+
+## Where I have used it
+
+Precision and recall are the primary evaluation metrics in the [[ukb_pipeline]] for benchmarking NER model performance on biomedical corpora. Entity-level strict-match F1 determines whether a model checkpoint is promoted to production. Document-level recall@k is used to evaluate the retrieval stage of the [[rrf_pipeline]].
+
+## Validation and evidence
+
+- The CoNLL-2003 shared task established entity-level F1 as the standard NER evaluation metric (Tjong Kim Sang & De Meulder, 2003).
+- Manning et al. (2008), *Introduction to Information Retrieval*, Ch. 8 provides the canonical treatment of precision, recall, and the PR curve for retrieval systems.
+- Davis & Goadrich (2006) showed that PR curves are more informative than ROC curves under class imbalance.
+
+## Questions this note answers
+
+- What is the difference between precision and recall?
+- How is F1 score computed and why use the harmonic mean?
+- When should F-beta be used instead of F1?
+- How do micro and macro averaging differ for multi-class evaluation?
+
+## Related notes
+
+- [[bayes_theorem]] — provides the probabilistic interpretation of precision as a posterior.
+- [[named_entity_recognition]] — a primary consumer of entity-level precision/recall evaluation.
+- [[rrf_pipeline]] — uses recall@k to evaluate the retrieval stage.
+
+## Open questions
+
+- When does optimising for F1 mask a critical recall failure in safety-sensitive biomedical extraction?
+- Is there a principled way to set $\beta$ in $F_\beta$ from the cost ratio of false positives to false negatives?
+
+## Review
+
+| Field | Value |
+|---|---|
+| Last reviewed | 2026-04-16 |
+| Review cycle | monthly |
+| Closure score | 5 / 5 |
+| Closure status | partial |

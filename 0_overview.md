@@ -35,21 +35,31 @@ content-src/docs/
 ├── meta.json                    ← Fumadocs folder nav (copied as-is)
 ├── index.mdx                    ← body only, never has frontmatter
 ├── index.meta.json              ← page metadata sidecar
-├── concepts/
-│   ├── meta.json
-│   ├── index.mdx + index.meta.json
-│   └── information-retrieval/
+├── (01-navigation)/             ← folder group (transparent to URLs)
+│   └── maps/
 │       ├── meta.json
-│       └── cosine-similarity/
+│       ├── index.mdx + index.meta.json
+│       └── learning-map/
 │           └── index.mdx + index.meta.json
-├── methods/
-├── systems/
-├── decisions/
-├── experiments/
-├── projects/
-├── maps/
-├── standards/
-└── appendices/
+├── (02-knowledge)/              ← folder group
+│   ├── concepts/
+│   │   ├── meta.json
+│   │   ├── index.mdx + index.meta.json
+│   │   └── mathematics/
+│   │       ├── meta.json
+│   │       └── vectors/
+│   │           └── index.mdx + index.meta.json
+│   ├── methods/
+│   └── systems/
+├── (03-operations)/             ← folder group
+│   ├── projects/
+│   ├── decisions/
+│   └── experiments/
+├── (04-governance)/             ← folder group
+│   ├── standards/
+│   └── appendices/
+└── (05-inbox)/                  ← folder group
+    └── notes/
 ```
 
 ### Generated tree (`.generated/docs/`) — what Fumadocs reads
@@ -99,6 +109,14 @@ Nine top-level sections. Each maps to a note type.
 Sections nest via subfolders (e.g. `concepts/information-retrieval/`,
 `systems/compute/`). Every subfolder needs a `meta.json` and typically an
 `index.mdx` + `index.meta.json` pair acting as a map note.
+
+All nine sections live inside Fumadocs folder groups for filesystem
+organization: `(01-navigation)/maps`, `(02-knowledge)/concepts`,
+`(02-knowledge)/methods`, `(02-knowledge)/systems`,
+`(03-operations)/projects`, `(03-operations)/decisions`,
+`(03-operations)/experiments`, `(04-governance)/standards`,
+`(04-governance)/appendices`. The `(05-inbox)/notes` section holds raw
+captures. Folder groups are transparent to routing and URLs.
 
 ---
 
@@ -342,6 +360,26 @@ The templates enforce:
 Folder depth is navigation. The knowledge graph lives in sidecars and links.
 Do not let folder depth become the main conceptual hierarchy.
 
+### Max depth rule — four levels
+
+```
+Level 1: content-src/docs/                          (root)
+Level 2: concepts/ | methods/ | systems/ | ...      (section)
+Level 3: mathematics/ | retrieval/ | compute/ | ... (domain)
+Level 4: vectors/index.mdx | rrf-pipeline/index.mdx (article)
+```
+
+Articles live at Level 4. Domain folders (Level 3) may not contain
+sub-domain folders. If a domain grows too large, split it into sibling
+domains at Level 3 rather than nesting deeper.
+
+### Folder groups — filesystem organization only
+
+Folder groups (`(01-navigation)/`, `(02-knowledge)/`, etc.) are Fumadocs
+route groups: transparent to URLs, invisible in the sidebar. They exist
+only for filesystem organization. The `meta.json` extract syntax
+(`"...(01-navigation)"`) inlines their contents into the parent page tree.
+
 ---
 
 ## What not to do
@@ -355,3 +393,6 @@ Do not let folder depth become the main conceptual hierarchy.
 - Never add custom Fumadocs loaders, custom routing, or custom page-tree logic
 - Never skip the materialiser in dev or build scripts
 - Never promote a note to `evergreen` below 5/6 closure
+- Never nest domain folders inside domain folders (max depth = 4)
+- Never add numbered prefixes to visible folders (they pollute URLs)
+- Never put content directly inside a folder group — content must be inside a section folder within the group

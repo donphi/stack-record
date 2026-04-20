@@ -1,0 +1,185 @@
+## What this is
+
+A vector is an ordered list of numbers that encodes both magnitude and direction in $n$-dimensional space. In machine learning and information retrieval, vectors are the fundamental data structure used to represent features, embeddings, and geometric relationships.
+
+## Why this matters
+
+Almost every modern ML pipeline converts raw data (text, images, patient records) into vectors before any computation happens. Understanding vectors is prerequisite to understanding similarity search, gradient-based optimisation, and neural network internals. If you cannot reason about vectors, you cannot reason about how models learn or how retrieval systems rank results.
+
+## Where this fits
+
+- Parent map: [[MAP_CONCEPTS_0001]]
+- Prerequisites: none (foundational concept)
+- Children: [[dot_product]], [[cosine_similarity]]
+- Used in method: [[dense_retrieval]]
+- Used in system: [[faiss_setup]]
+- Used in project: [[ukb_pipeline]]
+
+## Core idea
+
+A vector $\mathbf{v}$ in $\mathbb{R}^n$ is an $n$-tuple of real numbers. Geometrically it represents an arrow from the origin to a point in space. Algebraically it supports addition, scalar multiplication, and inner products — operations that let us measure distances, angles, and projections between data points.
+
+## Equation or formal logic
+
+### Vector notation
+
+A vector in $\mathbb{R}^n$ is written as:
+
+$$
+\mathbf{v} = \begin{bmatrix} v_1 \\ v_2 \\ \vdots \\ v_n \end{bmatrix}
+$$
+
+### Vector addition
+
+$$
+\mathbf{a} + \mathbf{b} = \begin{bmatrix} a_1 + b_1 \\ a_2 + b_2 \\ \vdots \\ a_n + b_n \end{bmatrix}
+$$
+
+### Scalar multiplication
+
+$$
+c\,\mathbf{v} = \begin{bmatrix} c \cdot v_1 \\ c \cdot v_2 \\ \vdots \\ c \cdot v_n \end{bmatrix}
+$$
+
+### Magnitude (Euclidean norm)
+
+$$
+\|\mathbf{v}\| = \sqrt{v_1^2 + v_2^2 + \cdots + v_n^2}
+$$
+
+### Dot product
+
+$$
+\mathbf{a} \cdot \mathbf{b} = \sum_{i=1}^{n} a_i \, b_i
+$$
+
+## Breakdown
+
+### Terms
+
+- $\mathbf{v} \in \mathbb{R}^n$ — a vector living in $n$-dimensional real space
+- $v_i$ — the $i$-th component (scalar element) of the vector
+- $\|\mathbf{v}\|$ — the Euclidean norm, measuring the length of the vector from the origin
+- $c$ — a scalar (single real number) used to scale the vector
+- $\mathbf{a} \cdot \mathbf{b}$ — the dot product, a scalar summary of how aligned two vectors are
+
+### What the equation is really doing
+
+Each operation has a geometric interpretation. Addition translates one vector by another (tip-to-tail). Scalar multiplication stretches or shrinks the vector without changing its direction (unless the scalar is negative, which flips it). The magnitude computes how far the tip of the arrow is from the origin. The dot product projects one vector onto another and scales by both lengths — it is the building block of cosine similarity and matrix multiplication.
+
+## Plain-English explanation
+
+Think of a vector as coordinates on a map. A 2D vector `[3, 4]` means "go 3 steps east and 4 steps north." Adding two vectors chains the journeys. Multiplying by a scalar changes how far you go without changing the direction. The length of the vector tells you total distance from the starting point. When you have thousands of dimensions instead of two, the maths stays identical — you just cannot draw it on paper anymore.
+
+In NLP, each dimension might loosely correspond to some latent semantic property. A 768-dimensional embedding for the word "heart" has 768 numbers, each contributing a small piece of meaning. Operations like addition and dot product let us compare meanings numerically.
+
+## Worked example
+
+Given two 2D vectors:
+
+$$
+\mathbf{a} = \begin{bmatrix} 3 \\ 4 \end{bmatrix}, \quad \mathbf{b} = \begin{bmatrix} 1 \\ 2 \end{bmatrix}
+$$
+
+**Addition:**
+
+$$
+\mathbf{a} + \mathbf{b} = \begin{bmatrix} 3+1 \\ 4+2 \end{bmatrix} = \begin{bmatrix} 4 \\ 6 \end{bmatrix}
+$$
+
+**Scalar multiplication** ($c = 2$):
+
+$$
+2\,\mathbf{a} = \begin{bmatrix} 6 \\ 8 \end{bmatrix}
+$$
+
+**Magnitude of $\mathbf{a}$:**
+
+$$
+\|\mathbf{a}\| = \sqrt{3^2 + 4^2} = \sqrt{9 + 16} = \sqrt{25} = 5
+$$
+
+**Dot product:**
+
+$$
+\mathbf{a} \cdot \mathbf{b} = (3)(1) + (4)(2) = 3 + 8 = 11
+$$
+
+**Cosine similarity** (preview of child concept):
+
+$$
+\cos(\theta) = \frac{11}{5 \times \sqrt{5}} = \frac{11}{5\sqrt{5}} \approx 0.984
+$$
+
+The vectors are nearly aligned — the angle between them is small.
+
+## ASCII diagram
+
+```text
+y
+^
+|           * a+b (4,6)
+|         /
+|       /
+|   * a (3,4)
+|  /  \
+| /    \--- angle θ between a and b
+|/ * b (1,2)
++-------------------> x
+
+Vectors a and b start at the origin.
+a+b reaches the point (4,6) via tip-to-tail addition.
+```
+
+## Why this is used
+
+Vectors provide the shared mathematical language across statistics, ML, and retrieval. They let us:
+
+1. **Encode heterogeneous data** into a uniform numeric format.
+2. **Measure similarity** using dot products, cosine, or Euclidean distance.
+3. **Perform optimisation** — gradients are vectors pointing toward steepest loss increase.
+4. **Index for fast search** — approximate nearest-neighbour libraries like FAISS operate directly on vectors.
+
+## Benefits
+
+* Universal representation — text, images, graphs, and tabular data all reduce to vectors.
+* Mathematically rich — well-studied operations (projection, orthogonality, decomposition) transfer directly to ML.
+* Hardware-friendly — GPUs and SIMD instructions are optimised for bulk vector arithmetic.
+* Composable — complex operations (attention, convolution) decompose into sequences of vector/matrix operations.
+
+## Drawbacks and failure modes
+
+* **Curse of dimensionality** — in very high dimensions, distances between all pairs of points converge, making nearest-neighbour search less discriminating.
+* **Interpretability** — individual dimensions of a learned embedding rarely map to human-readable concepts.
+* **Fixed dimensionality** — once an embedding model is trained with dimension $d$, all downstream systems must use $d$; changing it means retraining or projection, both lossy.
+* **Magnitude conflation** — raw vectors conflate direction (semantic content) with magnitude (frequency, confidence), which is why normalisation or cosine similarity is often preferred over raw dot product.
+
+## Where I have used it
+
+* [[ukb_pipeline]] — biomedical concept embeddings stored as 768-d vectors for phenotype similarity search.
+* [[faiss_setup]] — IVF-PQ index built over normalised vectors for sub-millisecond retrieval.
+* [[dense_retrieval]] — query and document vectors compared via cosine similarity at inference time.
+
+## Questions this note answers
+
+* What is a vector in the context of ML and retrieval?
+* How do you add, scale, and measure vectors?
+* Why are vectors the default data structure in modern ML pipelines?
+* What practical problems arise in high-dimensional vector spaces?
+
+## Related notes
+
+* [[dot_product]] — the core operation for measuring vector alignment
+* [[cosine_similarity]] — normalised dot product for direction-only comparison
+* [[vector_similarity]] — survey of distance/similarity functions over vectors
+
+## Open questions
+
+* When does dimensionality reduction lose critical semantic axes for biomedical embeddings?
+* Is there a principled way to choose embedding dimension $d$ for a given corpus size and downstream task?
+* How do sparse-dense hybrid representations compare to pure dense vectors for rare biomedical terms?
+
+## Review
+
+* Next review target: add section on unit vectors and normalisation as bridge to [[cosine_similarity]]
+* Consider adding comparison table of $L_1$, $L_2$, and $L_\infty$ norms with retrieval implications

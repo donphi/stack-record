@@ -1,0 +1,109 @@
+## What this system is
+
+A scheduled process that generates new API keys, distributes them to consuming services, and revokes the old keys after a configurable overlap period. It ensures that no single API key remains valid long enough for a leaked credential to be exploited.
+
+## Why this exists
+
+Static API keys that never change are a persistent security liability. If a key is accidentally committed to a repository, logged in plaintext, or exfiltrated from a compromised host, the attacker has indefinite access. Periodic rotation caps the useful lifetime of any credential, reducing the blast radius of exposure from "forever" to the length of the rotation interval.
+
+## Where this fits
+
+- Parent map: [[system_map]]
+- Used in project: [[ukb_pipeline]]
+
+## Architecture
+
+```text
+cron (every 30 days)
+    |
+    v
+rotate_keys.sh
+    |
+    +---> 1. Generate new key (openssl rand -hex 32)
+    |
+    +---> 2. Write new key to secrets store
+    |         (e.g., .env.secrets or Vault)
+    |
+    +---> 3. Update consuming services' env vars
+    |         via deploy/restart
+    |
+    +---> 4. Overlap period begins
+    |         (old key + new key both valid)
+    |
+    +---> 5. After OVERLAP_HOURS, revoke old key
+    |
+    +---> 6. Log rotation event
+    v
+rotation_log.jsonl
+```
+
+During the overlap period both the old and new keys are accepted by the API gateway or upstream service. This window prevents in-flight requests authenticated with the old key from failing during the transition.
+
+## Components
+
+* **Rotation script** (`rotate_keys.sh`) — the entry point, invoked by cron or a CI/CD scheduled job. Orchestrates generation, distribution, overlap, and revocation.
+* **Key generator** — uses `openssl rand -hex 32` (256-bit entropy) to produce cryptographically random keys.
+* **Secrets store** — the file, environment, or vault where keys are persisted. In the simplest case this is a `.env.secrets` file on an encrypted volume; in production it could be HashiCorp Vault or AWS Secrets Manager.
+* **Service restarter** — a function within the rotation script that triggers a rolling restart or env-var reload for each consuming service so they pick up the new key.
+* **Revocation step** — after the overlap window expires, the old key is removed from the secrets store and a final restart ensures no service still holds it in memory.
+* **Rotation log** — a JSON-lines file recording each rotation event: timestamp, key fingerprint (SHA-256 of the key, never the key itself), services updated, and any errors.
+
+## Configuration contract
+
+* `ROTATION_INTERVAL_DAYS` — number of days between rotations; default `30`.
+* `OVERLAP_HOURS` — how long both old and new keys coexist as valid credentials; default `24`.
+* `SECRETS_STORE_PATH` — path to the secrets file or Vault endpoint.
+* `SERVICES_TO_RESTART` — comma-separated list of service names or systemd units that need a restart after key injection.
+* `ROTATION_LOG_PATH` — path to the JSON-lines rotation log; must be writable by the cron user.
+* The rotation script must run as a user with write access to the secrets store and restart permissions for the listed services.
+
+## Why it is used
+
+It converts credential management from a manual, error-prone process into an automated, auditable one. Operators do not need to remember to rotate keys, and the log provides a clear audit trail for compliance reviews.
+
+## Benefits
+
+* Limits the window of exploitation for any leaked credential to at most `ROTATION_INTERVAL_DAYS + OVERLAP_HOURS`.
+* Fully automated — once the cron job is set, no human intervention is required for routine rotations.
+* Overlap period prevents downtime during key transitions; in-flight requests are not interrupted.
+* Rotation log provides an auditable history of every credential change, useful for incident response and compliance.
+* Simple implementation with standard Unix tools (`openssl`, `cron`, shell scripting) — no additional infrastructure required.
+
+## Drawbacks
+
+* The overlap period means two valid keys exist simultaneously, temporarily doubling the attack surface.
+* Services that cache credentials in memory (connection pools, long-lived SDK clients) may not pick up the new key without a process restart.
+* The rotation script has elevated privileges (secrets write, service restart) making it a high-value target; compromise of the script grants full credential access.
+* Calendar-driven rotation does not respond to actual compromise signals — a leaked key remains valid until the next scheduled rotation.
+
+## Failure modes
+
+* **Expired key in flight** — if the overlap period is too short and a service has not restarted, requests authenticated with the revoked key fail. Mitigated by increasing `OVERLAP_HOURS` or implementing graceful env-var reload without restart.
+* **Missed rotation** — if the cron job fails silently (host down, cron daemon stopped), keys persist beyond their intended lifetime. Mitigated by monitoring for expected rotation log entries.
+* **Partial rollout** — if the rotation script restarts some services but crashes before completing all, a subset of services holds the old key while the rest hold the new key. Mitigated by making the restart loop idempotent and re-runnable.
+* **Secrets store unavailable** — if Vault or the secrets file is inaccessible, the script cannot write the new key. It should exit non-zero and alert, leaving the old key in place rather than entering an inconsistent state.
+* **Log tampering** — if an attacker gains access to the rotation log, they can see key fingerprints and rotation timestamps. The log must reside on a restricted-access, append-only volume.
+
+## Monitoring
+
+* Alert if no rotation log entry appears within `ROTATION_INTERVAL_DAYS + 1` day.
+* Monitor the rotation script's exit code via cron output or a wrapper that posts to an alerting endpoint.
+* Track the age of the current active key; alert if it exceeds `ROTATION_INTERVAL_DAYS * 1.5`.
+* Audit secrets store access logs for unexpected reads or writes outside rotation windows.
+
+## Where I have used it
+
+* [[ukb_pipeline]] — rotates API keys used for external data-source access (PubMed, UMLS) and internal service authentication between pipeline stages.
+
+## Related notes
+
+(No related notes yet.)
+
+## Open questions
+
+* Should rotation be calendar-driven or triggered by usage anomaly detection?
+* Is the overlap period long enough for services with long-lived connection pools?
+
+## Review
+
+* Next review target: evaluate integrating HashiCorp Vault for secrets storage and automatic lease-based expiration instead of script-driven revocation.

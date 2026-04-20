@@ -370,21 +370,27 @@ No frontmatter. Omit inapplicable sections but preserve order.
 ```
 content-src/docs/
 ├── meta.json + index.mdx + index.meta.json
-├── concepts/          (meta.json + index pair + subfolders: mathematics, statistics,
-│                       information-retrieval, representation-learning, machine-learning, biomedical)
-│                       Each leaf article is a folder: slug/index.mdx + slug/index.meta.json
-├── methods/           (meta.json + index pair + subfolders: extraction, retrieval,
-│                       evaluation, reproducibility, build)
-├── systems/           (meta.json + index pair + subfolders: pipeline, data, compute,
-│                       runtime, security)
-├── decisions/         (meta.json + index pair + subfolders: accepted, rejected, pending)
-├── experiments/       (meta.json + index pair + subfolders: active, completed, failed)
-├── projects/          (meta.json + index pair + subfolders: ukb-pipeline, gatehouse, stack-record)
-├── maps/              (meta.json + index pair + article folders: learning-map/, domain-map/,
-│                       method-map/, system-map/, open-loops/)
-├── standards/         (meta.json + index pair + article folders: closure-rule/, metadata-schema/,
-│                       writing-style/, note-quality-bar/)
-└── appendices/        (meta.json + article folders: glossary/, notation/, templates/)
+├── (01-navigation)/
+│   └── maps/              (meta.json + index pair + article folders: learning-map/, domain-map/,
+│                           method-map/, system-map/, open-loops/)
+├── (02-knowledge)/
+│   ├── concepts/          (meta.json + index pair + subfolders: mathematics, statistics,
+│   │                       information-retrieval, representation-learning, machine-learning, biomedical)
+│   │                       Each leaf article is a folder: slug/index.mdx + slug/index.meta.json
+│   ├── methods/           (meta.json + index pair + subfolders: extraction, retrieval,
+│   │                       evaluation, reproducibility, build)
+│   └── systems/           (meta.json + index pair + subfolders: pipeline, data, compute,
+│                           runtime, security)
+├── (03-operations)/
+│   ├── projects/          (meta.json + index pair + subfolders: ukb-pipeline, gatehouse, stack-record)
+│   ├── decisions/         (meta.json + index pair + subfolders: accepted, rejected, pending)
+│   └── experiments/       (meta.json + index pair + subfolders: active, completed, failed)
+├── (04-governance)/
+│   ├── standards/         (meta.json + index pair + article folders: closure-rule/, metadata-schema/,
+│   │                       writing-style/, note-quality-bar/)
+│   └── appendices/        (meta.json + article folders: glossary/, notation/, templates/)
+└── (05-inbox)/
+    └── notes/             (meta.json + index pair + inbox notes)
 ```
 
 ---
@@ -468,3 +474,6 @@ threats to validity, feedback links
 - Add custom Fumadocs loaders, custom routing, or custom page-tree logic
 - Skip the materialiser in dev or build
 - Promote a note to `evergreen` below 5/6 closure
+- Nest domain folders inside domain folders (max depth = 4 levels)
+- Add numbered prefixes to visible folders (they pollute URLs; only use on folder groups)
+- Put content directly inside a folder group — content must be inside section folders

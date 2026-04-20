@@ -1,0 +1,149 @@
+## What this method is
+
+Named Entity Recognition (NER) is a token-level classification task in natural language processing. Given a sequence of tokens, a NER model assigns each token a label that indicates whether it is part of a named entity and, if so, which category that entity belongs to. Common entity categories include Person, Organisation, Location, Gene, Chemical, and Disease, though the label set is defined by the annotation schema.
+
+Most modern NER systems use the BIO tagging scheme (Begin, Inside, Outside). A token that starts an entity receives a `B-<type>` label, subsequent tokens inside the same entity span receive `I-<type>`, and all non-entity tokens receive `O`. The IOB2 variant ensures the first token of every entity always carries a `B-` prefix, removing ambiguity at entity boundaries.
+
+## Why this is used
+
+Downstream knowledge-extraction pipelines need structured mentions before they can link entities to ontologies, build knowledge graphs, or populate databases. NER is the first extraction step that turns running prose into discrete, typed spans. Without it, relation extraction and entity linking have nothing to operate on.
+
+In biomedical text mining, NER is critical because literature volumes make manual annotation infeasible. Automated NER over PubMed abstracts and full-text articles enables large-scale phenotype–genotype association mining, adverse-event surveillance, and systematic review automation.
+
+## Where this fits
+
+NER sits at the beginning of an information-extraction pipeline:
+
+1. Raw text → **NER** → entity spans + labels
+2. Entity spans → Entity Linking → ontology identifiers
+3. Linked entities → Relation Extraction → knowledge triples
+
+In the Stack Record context, NER feeds into the [[ukb_pipeline]] where biomedical entities are extracted from literature before being linked to [[mesh_ontology]] terms.
+
+## Inputs
+
+| Input | Description |
+|---|---|
+| Raw text | A document, paragraph, or sentence as a string of characters. |
+| Tokeniser | A tokeniser compatible with the downstream model (e.g. WordPiece for BERT). |
+| Label schema | The set of entity types and tagging scheme (BIO, BIOES, etc.). |
+| Pre-trained model weights | A language model checkpoint, optionally fine-tuned on domain-specific corpora. |
+
+## Outputs
+
+| Output | Description |
+|---|---|
+| Entity spans | Start and end character offsets for each detected entity. |
+| Entity labels | The category assigned to each span (e.g. `GENE`, `DISEASE`). |
+| Confidence scores | Per-token or per-span softmax probabilities from the classification head. |
+
+## Procedure
+
+1. **Tokenise** the input text using the model's tokeniser. Record the mapping from sub-word tokens back to original character offsets.
+2. **Encode** the token sequence through a transformer encoder (e.g. BioBERT, PubMedBERT) to produce contextualised [[word_embeddings]] for each token.
+3. **Classify** each token by passing its embedding through a linear layer followed by softmax over the BIO label set.
+4. **Decode** the BIO tag sequence into entity spans. Merge consecutive `B-`/`I-` tokens of the same type into a single span. Map sub-word boundaries back to character offsets.
+5. **Post-process** by applying optional rules: drop spans below a confidence threshold, resolve overlapping spans with longest-match heuristics, or apply a Viterbi decoder over a CRF layer if the model includes one.
+
+## Formal rule or formula
+
+For a token sequence $x = (x_1, \ldots, x_n)$, the model produces hidden states $h_i = \text{Encoder}(x)_i$. The probability of label $y_i$ at position $i$ under a softmax classifier is:
+
+$$P(y_i \mid x) = \frac{\exp(W_{y_i} h_i + b_{y_i})}{\sum_{j} \exp(W_j h_i + b_j)}$$
+
+When a CRF layer is added, the model scores entire label sequences:
+
+$$P(y \mid x) = \frac{\exp\!\bigl(\sum_{i=1}^{n} \bigl(W_{y_i} h_i + T_{y_{i-1}, y_i}\bigr)\bigr)}{\sum_{y'} \exp\!\bigl(\sum_{i=1}^{n} \bigl(W_{y'_i} h_i + T_{y'_{i-1}, y'_i}\bigr)\bigr)}$$
+
+where $T$ is a learnable transition matrix that penalises illegal tag transitions (e.g. `I-GENE` following `B-DISEASE`).
+
+## Why it works
+
+Transformer encoders capture long-range context, so the representation of each token is informed by the full sentence. This contextualisation allows the classifier to distinguish between "Washington" as a person name versus a location. The BIO scheme reduces the structured prediction problem to a simple per-token classification that standard cross-entropy training can handle, while the optional CRF layer re-introduces sequence-level consistency at decode time.
+
+Pre-training on large biomedical corpora (PubMed, PMC) injects domain-specific lexical and syntactic knowledge, which is why domain-adapted models like PubMedBERT consistently outperform general-domain BERT on biomedical NER benchmarks.
+
+## Code sketch
+
+```python
+from transformers import AutoTokenizer, AutoModelForTokenClassification
+import torch
+
+model_name = "microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract"
+tokenizer = AutoTokenizer.from_pretrained(model_name)
+model = AutoModelForTokenClassification.from_pretrained(model_name, num_labels=7)
+
+text = "Aspirin may reduce the risk of Alzheimer's disease."
+inputs = tokenizer(text, return_tensors="pt", return_offsets_mapping=True)
+offset_mapping = inputs.pop("offset_mapping")[0]
+
+with torch.no_grad():
+    logits = model(**inputs).logits
+predictions = torch.argmax(logits, dim=-1)[0]
+
+id2label = model.config.id2label
+tokens = tokenizer.convert_ids_to_tokens(inputs["input_ids"][0])
+for token, pred, (start, end) in zip(tokens, predictions, offset_mapping):
+    label = id2label[pred.item()]
+    if label != "O":
+        print(f"{text[start:end]:<20} {label}")
+```
+
+## Benefits
+
+- Converts unstructured text into structured entity mentions at scale.
+- Transformer-based models generalise well across domains when pre-trained on domain text.
+- The BIO scheme is simple to implement and compatible with standard sequence-labelling tooling.
+- Adding a CRF head improves boundary detection with negligible latency cost.
+
+## Drawbacks
+
+- Requires annotated training data, which is expensive for specialised domains.
+- Sub-word tokenisation can split entity names, requiring careful offset realignment.
+- Performance degrades on nested or overlapping entities unless the model architecture explicitly handles them.
+- Inference latency scales linearly with sequence length, which can be a bottleneck on long documents.
+
+## Failure modes
+
+| Failure | Cause | Mitigation |
+|---|---|---|
+| Boundary errors | Sub-word tokens split mid-entity; BIO decoder merges incorrectly. | Use word-level alignment and CRF decoding. |
+| Novel entities | Entities unseen in training (new drug names, rare genes). | Augment training data with gazetteers; use few-shot prompting. |
+| Label confusion | Ambiguous tokens (e.g. "IL-6" as gene vs. protein). | Refine annotation guidelines; merge overlapping types. |
+| Domain shift | Model trained on abstracts applied to clinical notes with abbreviations. | Fine-tune on target-domain data or apply domain-adaptive pre-training. |
+
+## Where I have used it
+
+NER is used inside the [[ukb_pipeline]] to extract gene, disease, and chemical entities from PubMed abstracts before linking them to MeSH and HGNC identifiers. The extracted entities feed into the knowledge graph that supports retrieval and hypothesis generation.
+
+## Validation and evidence
+
+- Devlin et al. (2019) showed BERT-based sequence labelling achieves state-of-the-art NER on CoNLL-2003.
+- Gu et al. (2021) demonstrated that PubMedBERT outperforms BioBERT on biomedical NER benchmarks (BC5CDR, NCBI Disease, JNLPBA) by 0.5–1.5 F1 points.
+- The [[precision_recall]] metrics (entity-level) are the standard evaluation protocol: a predicted span is correct only if both the boundaries and the label exactly match the gold annotation.
+
+## Questions this note answers
+
+- What is the BIO tagging scheme and why is it used?
+- How does a transformer-based NER model produce entity spans from raw text?
+- Why do biomedical NER models need domain-specific pre-training?
+
+## Related notes
+
+- [[word_embeddings]] — contextualised representations that NER classifiers consume.
+- [[mesh_ontology]] — the target ontology for biomedical entity linking downstream of NER.
+- [[precision_recall]] — the standard metrics used to evaluate NER model performance.
+
+## Open questions
+
+- Does fine-tuning a biomedical NER model on silver-standard MeSH annotations outperform gold-standard training on small corpora?
+- Can span-based architectures replace BIO tagging to handle nested entities without pipeline complexity?
+
+## Review
+
+| Field | Value |
+|---|---|
+| Last reviewed | 2026-04-16 |
+| Review cycle | monthly |
+| Closure score | 4 / 5 |
+| Closure status | partial |

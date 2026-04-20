@@ -1,0 +1,22 @@
+{
+  "title": "Dependency Pinning",
+  "description": "A practice of locking software dependency versions to ensure reproducible builds.",
+  "id": "M-REP-0001",
+  "type": "method",
+  "domain": "reproducibility",
+  "status": "evergreen",
+  "tags": ["method/reproducibility"],
+  "parent_maps": ["MAP-METHODS-0001"],
+  "uses_concepts": [],
+  "implemented_in": [],
+  "validated_by": [],
+  "related_notes": ["docker_multi_stage"],
+  "related_methods": ["docker_multi_stage"],
+  "related_systems": [],
+  "related_projects": ["ukb_pipeline"],
+  "review_cycle": "yearly",
+  "last_reviewed": "2026-04-16",
+  "closure_score": 4,
+  "closure_status": "partial",
+  "open_questions": ["Should transitive dependencies be pinned individually or only via a lockfile hash?"]
+}

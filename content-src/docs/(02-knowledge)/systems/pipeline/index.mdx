@@ -1,0 +1,36 @@
+## What this map is
+
+System notes on pipeline orchestration: how tasks are scheduled, sequenced, and recovered after failure.
+
+## Why this matters
+
+The knowledge pipeline chains extraction, embedding, indexing, and evaluation stages. If orchestration is brittle, one failed stage can silently corrupt everything downstream.
+
+## Where this fits
+
+Pipeline systems consume [[build]] artifacts, run on [[compute]] and [[runtime]] infrastructure, store outputs in [[data]] systems, and are monitored through [[evaluation]] methods.
+
+## Structure
+
+Notes cover DAG design, scheduling strategies, and failure handling.
+
+## What this map helps answer
+
+- How are pipeline stages ordered and what triggers re-runs?
+- What happens when a mid-pipeline stage fails?
+- How do we add a new stage without breaking existing ones?
+
+## Notes in this map
+
+- [[batch_orchestrator]]
+
+## Gaps and open loops
+
+- DAG-based orchestration tooling (Airflow, Prefect, custom)
+- Failure recovery and idempotency guarantees
+- Pipeline observability (stage timing, data quality checks)
+- Incremental versus full re-processing strategies
+
+## Review
+
+Stub map. Expand as orchestration moves from scripts to a formal DAG system.

@@ -1,0 +1,36 @@
+## What this map is
+
+Methods for ensuring that experiments and builds can be repeated with identical results: dependency pinning, environment capture, and data versioning.
+
+## Why this matters
+
+Irreproducible results waste time and erode trust. Locking dependencies, capturing seeds, and versioning data are cheap insurance against silent drift.
+
+## Where this fits
+
+Reproducibility methods support [[experiments]] directly and are enforced by [[build]] and [[pipeline]] systems. They overlap with [[security]] where supply-chain integrity is concerned.
+
+## Structure
+
+Notes cover dependency management, environment specification, and data/model versioning.
+
+## What this map helps answer
+
+- How do we pin Python dependencies without blocking security patches?
+- What metadata should every experiment run capture?
+- How should datasets be versioned alongside code?
+
+## Notes in this map
+
+- [[dependency_pinning]]
+
+## Gaps and open loops
+
+- Data versioning strategies (DVC, git-lfs, content-addressed stores)
+- Experiment tracking systems (MLflow, Weights & Biases)
+- Random seed management across distributed workers
+- Container image provenance and signing
+
+## Review
+
+Stub map. Expand as the experiment tracking infrastructure is formalised.

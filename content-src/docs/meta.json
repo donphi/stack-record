@@ -3,19 +3,14 @@
   "pages": [
     "index",
     "---Navigation---",
-    "maps",
+    "...(01-navigation)",
     "---Knowledge---",
-    "concepts",
-    "methods",
-    "systems",
+    "...(02-knowledge)",
     "---Operations---",
-    "projects",
-    "decisions",
-    "experiments",
+    "...(03-operations)",
     "---Governance---",
-    "standards",
-    "appendices",
+    "...(04-governance)",
     "---Inbox---",
-    "notes"
+    "...(05-inbox)"
   ]
 }

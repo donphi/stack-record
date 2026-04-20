@@ -1,0 +1,36 @@
+## What this map is
+
+System notes on data storage and persistence: where extracted knowledge, embeddings, and metadata live at rest.
+
+## Why this matters
+
+Choosing the wrong storage layer creates bottlenecks that are expensive to migrate away from. Getting persistence right early means retrieval, evaluation, and auditing all benefit.
+
+## Where this fits
+
+Data systems receive outputs from [[pipeline]] stages and [[extraction]] methods. They serve [[retrieval]] at query time and are backed up and versioned according to [[reproducibility]] methods.
+
+## Structure
+
+Notes cover relational stores, vector databases, and file-based persistence.
+
+## What this map helps answer
+
+- Where are extracted triples and metadata persisted?
+- What storage backend supports similarity search at our scale?
+- How do we migrate data when schemas evolve?
+
+## Notes in this map
+
+- [[sqlite_knowledge_store]]
+
+## Gaps and open loops
+
+- Vector database selection and benchmarking
+- Data lake design for raw document archives
+- Schema migration strategies
+- Backup and disaster recovery procedures
+
+## Review
+
+Stub map. Prioritise vector database notes once embedding index grows.

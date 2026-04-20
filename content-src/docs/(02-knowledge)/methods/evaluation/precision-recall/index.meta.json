@@ -1,0 +1,22 @@
+{
+  "title": "Precision and Recall",
+  "description": "Complementary metrics for measuring retrieval and classification quality.",
+  "id": "M-EVAL-0001",
+  "type": "method",
+  "domain": "evaluation",
+  "status": "evergreen",
+  "tags": ["method/evaluation"],
+  "parent_maps": ["MAP-METHODS-0001"],
+  "uses_concepts": ["bayes_theorem"],
+  "implemented_in": [],
+  "validated_by": [],
+  "related_notes": ["bayes_theorem", "named_entity_recognition"],
+  "related_methods": ["rrf_pipeline"],
+  "related_systems": [],
+  "related_projects": ["ukb_pipeline"],
+  "review_cycle": "monthly",
+  "last_reviewed": "2026-04-16",
+  "closure_score": 5,
+  "closure_status": "partial",
+  "open_questions": ["When does optimising for F1 mask a critical recall failure in safety-sensitive biomedical extraction?"]
+}

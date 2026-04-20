@@ -1,0 +1,31 @@
+## What this map is
+
+This map covers how raw inputs become vectors or sequences of vectors that downstream models consume: embeddings, encoders, and geometry of learned spaces. It is the conceptual home for “what is being represented” before you argue about architecture or training recipes. Use it when language, graphs, or multimodal stacks all claim to “embed” something.
+
+## Why this matters
+
+Representation choices determine what similarity means, what can be retrieved, and what failure modes look like in production. When representations are documented here, we can trace a bad ranking or drift symptom back to the intended geometry and invariants. That saves debugging time across retrieval, monitoring, and evaluation.
+
+## Where this fits
+
+Representation learning sits between core ML concepts and information-retrieval maps, and it touches systems notes on feature stores and embedding pipelines. Prefer links to small notes per representation family rather than model zoo pages.
+
+## Structure
+
+- [[word_embeddings]] — static distributed semantics and vocabulary-induced geometry.
+
+## What this map helps answer
+
+What object lives in embedding space for this task? Which invariances did we assume when we chose this representation? How does this relate to classical features or hand-built indices? Where should a new representation note attach?
+
+## Notes in this map
+
+- [[word_embeddings]]
+
+## Gaps and open loops
+
+We still owe clear notes on contextual embeddings (sequence models, layer-wise behaviour) and on dimensionality reduction (PCA, manifold intuitions, when compression helps versus hurts). Multimodal alignment and graph embeddings are referenced elsewhere but not yet first-class here.
+
+## Review
+
+Update when we adopt a new default encoder or when evaluation shows representation mismatch; keep “default story” and “deprecated story” explicit in linked notes.

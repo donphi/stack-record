@@ -1,0 +1,22 @@
+{
+  "title": "Gradient Descent",
+  "description": "An iterative optimisation algorithm that adjusts parameters in the direction of steepest loss reduction.",
+  "id": "C-ML-0001",
+  "type": "concept",
+  "domain": "machine_learning",
+  "status": "evergreen",
+  "tags": ["concept/ml"],
+  "aliases": ["GD", "steepest descent"],
+  "parent_maps": ["MAP-CONCEPTS-0001"],
+  "prerequisites": ["vectors"],
+  "children": [],
+  "related_notes": ["vectors", "word_embeddings"],
+  "related_methods": [],
+  "related_systems": [],
+  "related_projects": ["ukb_pipeline"],
+  "review_cycle": "monthly",
+  "last_reviewed": "2026-04-16",
+  "closure_score": 4,
+  "closure_status": "partial",
+  "open_questions": ["At what dataset scale does SGD with momentum consistently outperform Adam for biomedical fine-tuning?"]
+}

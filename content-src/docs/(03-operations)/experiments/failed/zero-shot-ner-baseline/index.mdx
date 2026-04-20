@@ -1,0 +1,99 @@
+## Question
+
+Can a general-purpose large language model performing zero-shot named entity recognition match or exceed the F1 score of a fine-tuned biomedical NER model on the [[ukb_pipeline]] entity extraction task?
+
+## Hypothesis
+
+A state-of-the-art general-purpose LLM (GPT-4-class) prompted with entity type definitions and few-shot examples will achieve at least 0.80 F1 on the biomedical NER benchmark, closing the gap with the fine-tuned PubMedBERT NER model (0.87 F1 baseline) to within 7 points, because recent LLMs demonstrate strong zero-shot generalisation on structured extraction tasks.
+
+## Why this matters
+
+Fine-tuning a biomedical NER model requires labelled training data, domain expertise for annotation, and a training pipeline that must be re-run whenever the entity taxonomy changes. If a zero-shot LLM approach achieves comparable accuracy, the [[ukb_pipeline]] extraction stage could be simplified: no training data curation, no fine-tuning compute, and immediate adaptability when new entity types (e.g., novel gene–disease associations) are added to the [[mesh_ontology]].
+
+## Setup
+
+### Models under test
+
+| Model | Approach | Details |
+|---|---|---|
+| PubMedBERT-NER (baseline) | Fine-tuned | PubMedBERT fine-tuned on 5,000 annotated PubMed abstracts with 12 biomedical entity types |
+| GPT-4 (zero-shot) | Prompted | System prompt defining 12 entity types + 3 few-shot examples per type |
+
+### Entity types
+
+Diseases, genes, proteins, drugs, chemicals, anatomical structures, organisms, cell types, biological processes, molecular functions, clinical measurements, and MeSH qualifiers.
+
+### Evaluation corpus
+
+- 500 PubMed abstracts held out from the fine-tuning set.
+- Gold-standard annotations by two domain experts with adjudication (inter-annotator Cohen's $\kappa = 0.91$).
+
+### Metrics
+
+- Entity-level F1 (strict match: both span boundaries and entity type must match).
+- Precision and Recall reported separately to diagnose error patterns.
+- Per-entity-type breakdown to identify where the LLM underperforms.
+
+## Procedure
+
+1. Run PubMedBERT-NER on the 500-abstract evaluation set. Record per-entity predictions.
+2. Send each abstract to GPT-4 via API with a structured prompt requesting JSON-formatted entity spans and types.
+3. Parse GPT-4 responses. Discard malformed outputs (log the discard rate).
+4. Align predicted spans to gold-standard annotations using strict boundary matching.
+5. Compute entity-level F1, Precision, and Recall for both models.
+6. Break down results by entity type to identify systematic failure modes.
+
+## Results
+
+| Metric | PubMedBERT-NER | GPT-4 zero-shot |
+|---|---|---|
+| F1 (strict) | **0.87** | 0.41 |
+| Precision | 0.89 | 0.52 |
+| Recall | 0.85 | 0.34 |
+| Malformed output rate | 0% | 8.2% |
+
+### Per-entity-type F1 (GPT-4 zero-shot)
+
+| Entity type | F1 |
+|---|---|
+| Diseases | 0.61 |
+| Drugs | 0.55 |
+| Genes | 0.38 |
+| Proteins | 0.34 |
+| Clinical measurements | 0.29 |
+| Cell types | 0.24 |
+| MeSH qualifiers | 0.11 |
+
+The remaining entity types (chemicals, anatomical structures, organisms, biological processes, molecular functions) ranged from 0.18 to 0.42.
+
+## Interpretation
+
+The zero-shot LLM achieved 0.41 F1 — far below the 0.80 threshold and less than half the fine-tuned baseline. The failure is driven by three systematic problems:
+
+1. **Hallucinated entity types.** GPT-4 frequently invented entity types not in the taxonomy (e.g., labelling "BMI" as a "biomarker" instead of "clinical measurement") or assigned plausible but incorrect types (labelling gene symbols as drug names).
+
+2. **Missed rare terms.** Entities with low frequency in general-purpose training data — rare gene symbols (e.g., *SERPINA1*), MeSH qualifiers (e.g., "/pharmacology"), and specialised cell types (e.g., "podocytes") — were missed entirely. Recall on these categories was below 0.20.
+
+3. **Span boundary errors.** Even when the correct entity was identified, GPT-4 often returned inexact spans (e.g., "type 2 diabetes mellitus" instead of the gold-standard "type 2 diabetes") or included surrounding context in the span. Strict matching penalises these errors heavily.
+
+4. **Output format instability.** 8.2% of responses were malformed JSON that could not be parsed, effectively producing zero recall on those abstracts.
+
+The fine-tuned model avoids all four problems because it was trained on in-domain annotations with exact span boundaries and a fixed entity taxonomy.
+
+## Threats to validity
+
+- **Prompt sensitivity** — the zero-shot prompt was iterated three times but not exhaustively optimised. A more sophisticated prompt engineering effort (chain-of-thought, self-consistency) might improve results, though likely not by the 39 F1 points needed to reach the fine-tuned baseline.
+- **Model version** — results are specific to the GPT-4 snapshot available in January 2026. Future model releases may narrow the gap.
+- **Strict matching bias** — strict span matching disproportionately penalises the LLM, which tends toward approximate spans. A relaxed matching criterion (e.g., token overlap > 0.8) would raise the LLM's F1 to approximately 0.56, still well below baseline.
+- **Cost comparison omitted** — this experiment compared accuracy only. A full cost-benefit analysis (API cost vs. fine-tuning compute) was not performed.
+
+## What this changes
+
+1. The [[ukb_pipeline]] extraction stage retains the fine-tuned PubMedBERT-NER model as the production NER component.
+2. Zero-shot LLM NER is not viable as a drop-in replacement at current model capability.
+3. A hybrid approach — using the LLM as a second-pass validator rather than a primary extractor — remains a potential future experiment but is out of scope for this result.
+4. The [[named_entity_recognition]] method note was updated to reference this negative result.
+
+## Final status
+
+Failed — abandoned in favour of the fine-tuned approach. The zero-shot LLM achieved 0.41 F1 against a 0.80 minimum threshold, a gap too large to bridge with prompt engineering alone.

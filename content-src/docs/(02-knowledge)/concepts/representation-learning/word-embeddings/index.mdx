@@ -1,0 +1,142 @@
+## What this is
+
+Word embeddings are dense, low-dimensional [[vectors]] that represent words as points in a continuous vector space. Each word is mapped to a real-valued vector (typically 100–768 dimensions) such that words appearing in similar contexts occupy nearby regions of the space.
+
+## Why this matters
+
+Traditional NLP represented words as one-hot vectors — sparse, high-dimensional, and semantically blind. Word embeddings solved three problems at once: they reduced dimensionality, captured semantic similarity, and enabled transfer learning by pre-training on large corpora. Every modern NLP system builds on this idea, even if the specific method has evolved from Word2Vec to contextual transformers.
+
+## Where this fits
+
+- Parent map: [[MAP_CONCEPTS_0001]]
+- Prerequisites: [[vectors]]
+- Related notes: [[cosine_similarity]]
+- Used in method: [[dense_retrieval]]
+- Used in system: [[faiss_setup]]
+- Used in project: [[ukb_pipeline]]
+
+## Core idea
+
+The **distributional hypothesis** (Firth, 1957) states: "You shall know a word by the company it keeps." Word embeddings operationalise this by training a model to predict a word from its neighbours (or vice versa), then extracting the learned weight matrix as the embedding table. Words with similar contexts get similar vectors.
+
+## Equation or formal logic
+
+### Skip-gram objective (Word2Vec)
+
+Given a centre word $w_c$ and a context word $w_o$, Skip-gram maximises:
+
+$$
+J = \frac{1}{T} \sum_{t=1}^{T} \sum_{\substack{-k \le j \le k \\ j \ne 0}} \log P(w_{t+j} \mid w_t)
+$$
+
+where $T$ is the corpus length and $k$ is the context window size.
+
+The conditional probability is modelled with a softmax over the vocabulary $V$:
+
+$$
+P(w_o \mid w_c) = \frac{\exp(\mathbf{u}_{w_o}^\top \mathbf{v}_{w_c})}{\sum_{w=1}^{|V|} \exp(\mathbf{u}_w^\top \mathbf{v}_{w_c})}
+$$
+
+Here $\mathbf{v}_{w_c}$ is the input (centre) embedding and $\mathbf{u}_{w_o}$ is the output (context) embedding.
+
+## Breakdown
+
+### Terms
+
+- $T$ — total number of tokens in the training corpus
+- $k$ — context window radius (e.g., 5 words each side)
+- $\mathbf{v}_{w}$ — the embedding vector for word $w$ (what we keep after training)
+- $\mathbf{u}_{w}$ — the output weight vector for word $w$ (often discarded)
+- $|V|$ — vocabulary size
+
+### What the equation is really doing
+
+The model learns to position each word's vector so that the dot product $\mathbf{u}_{w_o}^\top \mathbf{v}_{w_c}$ is high when $w_o$ genuinely appears near $w_c$ in real text, and low otherwise. After training, the input matrix $\mathbf{V}$ serves as the embedding table.
+
+## Plain-English explanation
+
+Imagine reading millions of sentences. You notice "doctor" often appears near "hospital", "patient", and "diagnosis", while "banana" appears near "fruit", "yellow", and "peel". An embedding model absorbs these co-occurrence patterns and assigns similar vectors to words that share contexts. After training, you can ask "which word is to *king* as *woman* is to *man*?" and the vector arithmetic $\mathbf{v}_{\text{king}} - \mathbf{v}_{\text{man}} + \mathbf{v}_{\text{woman}}$ lands near $\mathbf{v}_{\text{queen}}$.
+
+## Worked example
+
+**Classic analogy test:**
+
+$$
+\mathbf{v}_{\text{king}} - \mathbf{v}_{\text{man}} + \mathbf{v}_{\text{woman}} \approx \mathbf{v}_{\text{queen}}
+$$
+
+Using pretrained 300-d GloVe vectors, the nearest neighbour of the result vector is indeed "queen" with [[cosine_similarity]] > 0.85.
+
+**Biomedical example:**
+
+In embeddings trained on PubMed abstracts, $\mathbf{v}_{\text{aspirin}}$ is close to $\mathbf{v}_{\text{ibuprofen}}$ and $\mathbf{v}_{\text{NSAID}}$, but distant from $\mathbf{v}_{\text{penicillin}}$. This emergent clustering enables drug-class discovery without manual ontology curation.
+
+## ASCII diagram
+
+```text
+Embedding space (2D projection via t-SNE)
+
+        queen ·
+              \
+    king ·     \
+         \      · woman
+          \    /
+     man · --/
+
+  ---- medical cluster ----
+   aspirin · · ibuprofen
+              · NSAID
+
+            · penicillin  (distant)
+```
+
+## Why this is used
+
+1. **Semantic similarity** — [[cosine_similarity]] between embeddings correlates with human similarity judgements.
+2. **Transfer learning** — embeddings pretrained on large corpora improve downstream tasks with limited labelled data.
+3. **Dimensionality reduction** — from $|V|$-dimensional one-hot to $d$-dimensional dense, enabling efficient computation.
+4. **Feature input** — embeddings serve as the first layer of nearly every neural NLP model.
+
+## Benefits
+
+* Captures semantic and syntactic regularities (analogies, plurals, tense).
+* Pretrained embeddings are freely available (GloVe, fastText, BioWordVec) and easy to integrate.
+* Low storage: 1M words × 300 dims = ~1.2 GB in float32.
+* Enables unsupervised discovery of concept clusters in domain-specific corpora.
+
+## Drawbacks and failure modes
+
+* **Polysemy blindness** — static embeddings assign one vector per word; "bank" (river) and "bank" (finance) share the same vector. Contextual models (BERT, GPT) address this.
+* **Bias amplification** — embeddings absorb societal biases present in training data (gender, racial stereotypes).
+* **Out-of-vocabulary problem** — words unseen during training have no embedding. Subword models (fastText, BPE) mitigate this.
+* **Static representations** — do not adapt to sentence-level context, limiting performance on tasks requiring disambiguation.
+* **Training corpus dependency** — embeddings trained on Wikipedia perform poorly on biomedical text, and vice versa; domain match matters.
+
+## Where I have used it
+
+* [[ukb_pipeline]] — BioWordVec embeddings for phenotype-concept matching before upgrading to contextual encoders.
+* [[faiss_setup]] — indexing static word vectors for fast nearest-neighbour lookup during vocabulary exploration.
+* [[dense_retrieval]] — word embeddings as baseline comparison against contextual sentence embeddings.
+
+## Questions this note answers
+
+* What is the distributional hypothesis and how do embeddings implement it?
+* How does Word2Vec's Skip-gram objective work?
+* Why does vector arithmetic on word embeddings produce meaningful analogies?
+* What are the key limitations of static word embeddings?
+
+## Related notes
+
+* [[vectors]] — foundational concept; embeddings are vectors with learned dimensions
+* [[cosine_similarity]] — primary similarity metric used to compare embeddings
+
+## Open questions
+
+* Do contextual embeddings (BERT-style) obsolete static word embeddings for all biomedical retrieval tasks?
+* Is there a minimum corpus size below which static embeddings outperform contextual fine-tuned models for rare-disease NLP?
+* How should out-of-vocabulary biomedical terms (novel drug names, gene variants) be handled when a subword tokeniser was not trained on domain text?
+
+## Review
+
+* Next review target: add GloVe and fastText comparisons with concrete benchmark numbers
+* Consider section on subword embeddings (BPE, WordPiece) as a bridge to transformer tokenisation

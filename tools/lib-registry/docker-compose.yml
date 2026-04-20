@@ -15,4 +15,4 @@ services:
       - ./config:/app/config:ro
       - ./data:/app/data
       - ./backups:/app/backups
-      - ../../content-src/docs/appendices:/app/site-out
+      - "../../content-src/docs/(04-governance)/appendices:/app/site-out"

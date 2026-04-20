@@ -1,0 +1,22 @@
+{
+  "title": "Docker Multi-Stage Build",
+  "description": "A Dockerfile pattern that separates build dependencies from the runtime image to reduce size and attack surface.",
+  "id": "M-BLD-0001",
+  "type": "method",
+  "domain": "build",
+  "status": "evergreen",
+  "tags": ["method/build"],
+  "parent_maps": ["MAP-METHODS-0001"],
+  "uses_concepts": [],
+  "implemented_in": ["batch_orchestrator"],
+  "validated_by": [],
+  "related_notes": ["dependency_pinning"],
+  "related_methods": ["dependency_pinning"],
+  "related_systems": ["batch_orchestrator"],
+  "related_projects": ["ukb_pipeline"],
+  "review_cycle": "yearly",
+  "last_reviewed": "2026-04-16",
+  "closure_score": 5,
+  "closure_status": "partial",
+  "open_questions": ["Is BuildKit cache-mount worth the added Dockerfile complexity for sub-60-second builds?"]
+}

@@ -600,29 +600,41 @@ obsidian/                             ← vault root (open THIS in Obsidian)
 │   └── copilot-custom-prompts/       ← shared prompt templates
 ├── README.md                         ← this file
 ├── kg-builder-queries.md             ← SQL query reference for the KG
-├── appendices -> ../content-src/docs/appendices
-├── concepts -> ../content-src/docs/concepts
-├── decisions -> ../content-src/docs/decisions
-├── experiments -> ../content-src/docs/experiments
-├── maps -> ../content-src/docs/maps
-├── methods -> ../content-src/docs/methods
-├── notes -> ../content-src/docs/notes
-├── projects -> ../content-src/docs/projects
-├── standards -> ../content-src/docs/standards
-└── systems -> ../content-src/docs/systems
+├── maps -> ../content-src/docs/(01-navigation)/maps
+├── concepts -> ../content-src/docs/(02-knowledge)/concepts
+├── methods -> ../content-src/docs/(02-knowledge)/methods
+├── systems -> ../content-src/docs/(02-knowledge)/systems
+├── projects -> ../content-src/docs/(03-operations)/projects
+├── decisions -> ../content-src/docs/(03-operations)/decisions
+├── experiments -> ../content-src/docs/(03-operations)/experiments
+├── standards -> ../content-src/docs/(04-governance)/standards
+├── appendices -> ../content-src/docs/(04-governance)/appendices
+└── notes -> ../content-src/docs/(05-inbox)/notes
 
 content-src/docs/                     ← documentation source (clean)
-├── appendices/
-├── concepts/
-├── methods/
-├── ...
-├── index.mdx
-├── index.meta.json
-└── meta.json
+├── meta.json
+├── index.mdx + index.meta.json
+├── (01-navigation)/
+│   └── maps/
+├── (02-knowledge)/
+│   ├── concepts/
+│   ├── methods/
+│   └── systems/
+├── (03-operations)/
+│   ├── projects/
+│   ├── decisions/
+│   └── experiments/
+├── (04-governance)/
+│   ├── standards/
+│   └── appendices/
+└── (05-inbox)/
+    └── notes/
 ```
 
 The content folders in `obsidian/` are symlinks tracked in git. Cloning the
 repo recreates them automatically on Linux/macOS. Edits made through Obsidian
 write directly to `content-src/docs/` — git sees changes there, not in
-`obsidian/`. VS Code/Cursor shows an arrow overlay on symlinked folders to
-distinguish them from real folders.
+`obsidian/`. The folder groups `(01-navigation)/`, `(02-knowledge)/`, etc. are
+Fumadocs folder groups: transparent to routing and URLs, they exist only for
+filesystem organization. VS Code/Cursor shows an arrow overlay on symlinked
+folders to distinguish them from real folders.

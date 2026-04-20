@@ -18,7 +18,7 @@
 # ── Paths (resolved relative to project root inside Docker) ──────────────
 paths:
   content_src: "/app/content"
-  library_registry_json: "/app/content/appendices/library-registry/library-registry.data.json"
+  library_registry_json: "/app/content/(04-governance)/appendices/library-registry/library-registry.data.json"
   db_output: "/app/data/kg.sqlite3"
   jsonld_output: "/app/output/knowledge_graph.jsonld"
 

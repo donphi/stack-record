@@ -1,0 +1,31 @@
+## What this map is
+
+This map gathers biomedical concepts we rely on when normalising text, coding entities, or reasoning about phenotypes and diseases in pipelines. It is the conceptual layer above raw ontologies and below project-specific study notes. Use it when MeSH, disease labels, or clinical variables appear in design docs.
+
+## Why this matters
+
+Biomedical naming is noisy and politically loaded; small mismatches propagate into retrieval, cohort definitions, and compliance arguments. When we anchor terms here, we can say which ontology or coding system we mean and how it maps to features in code. That reduces silent relabelling across UKB, literature, and internal corpora.
+
+## Where this fits
+
+Biomedical concepts connect to information retrieval (entity linking), governance appendices, and operations projects that touch health data. Links should prefer stable identifiers and short explanations of how we use each resource in this organisation.
+
+## Structure
+
+- [[mesh_ontology]] — controlled vocabulary for indexing biomedical literature and related tagging workflows.
+
+## What this map helps answer
+
+Which controlled vocabulary are we using for this entity type? How do we talk about “disease” versus “phenotype” in our docs? What is the minimum reading before touching a biomedical pipeline? Where do we document mapping tables and edge cases?
+
+## Notes in this map
+
+- [[mesh_ontology]]
+
+## Gaps and open loops
+
+We still need explicit coverage of disease ontologies (e.g. hierarchy, equivalence, versioning) and of phenotype representation (EHR-derived versus survey-derived, normalisation, time). Genetic and variant-level concepts remain mostly out of scope until a project demands them.
+
+## Review
+
+Touch this index when ontologies are upgraded, when a new data source introduces a coding system, or when legal review flags ambiguous biomedical language in public-facing material.

@@ -1,0 +1,106 @@
+## What this system is
+
+A shell-script orchestration layer that executes pipeline stages in a fixed sequence, checks each stage's exit code before proceeding, and routes intermediate data between stages via well-known filesystem paths. It is the top-level entry point for every batch run in the [[ukb_pipeline]].
+
+## Why this exists
+
+Without a single script that owns the full stage sequence, operators would need to invoke each stage manually and track which stages succeeded. The batch orchestrator eliminates that toil by encoding the directed acyclic graph of stages as an ordered list, halting on the first non-zero exit code and emitting a structured log of what ran, how long it took, and where outputs landed.
+
+## Where this fits
+
+- Parent map: [[system_map]]
+- Implements: [[docker_multi_stage]]
+- Depends on: [[rabbitmq_central_broker]]
+- Used in project: [[ukb_pipeline]]
+
+## Architecture
+
+```text
+run_pipeline.sh
+    |
+    |  1. Extract
+    v
+[ extract.py ] --> /data/staging/extracted/
+    |
+    |  2. Transform
+    v
+[ transform.py ] --> /data/staging/transformed/
+    |
+    |  3. Embed (dispatches to RabbitMQ)
+    v
+[ dispatch_embed.py ] ---> [ RabbitMQ ] ---> GPU workers
+    |                          |
+    |  wait for sentinel       |
+    v                          v
+[ build_kg.py ] <--- /data/staging/embeddings/
+    |
+    |  4. Build knowledge graph
+    v
+/data/output/kg.db
+```
+
+Each box is a subprocess launched by the orchestrator. Arrows represent data-flow paths on the shared filesystem. The RabbitMQ leg is asynchronous; the orchestrator polls for a sentinel file or a completion message before advancing to the graph-build stage.
+
+## Components
+
+* **run_pipeline.sh** — top-level Bash script that sources a shared `.env`, iterates through stages, and gates progression on exit codes.
+* **Stage scripts** — individual Python entry points (`extract.py`, `transform.py`, `dispatch_embed.py`, `build_kg.py`) each reading from a well-known input directory and writing to a well-known output directory.
+* **Sentinel mechanism** — a zero-byte `.done` file or RabbitMQ completion message that signals the asynchronous embedding stage has finished.
+* **Structured logger** — a small Bash function that writes JSON lines to `/data/logs/pipeline_<timestamp>.jsonl` capturing stage name, start/end epoch, exit code, and output path.
+
+## Configuration contract
+
+* `PIPELINE_STAGES` — ordered comma-separated list of stage names; the orchestrator iterates this list in order.
+* Each stage must expose an executable at `stages/<name>/run.sh` or `stages/<name>/main.py`.
+* Input and output directories follow the convention `/data/staging/<stage_name>/`.
+* Environment variables `RABBITMQ_HOST`, `RABBITMQ_QUEUE`, and `EMBED_SENTINEL_PATH` must be set when the embed stage is included.
+* A non-zero exit code from any stage halts the pipeline immediately; no subsequent stages execute.
+
+## Why it is used
+
+It provides a single reproducible command (`./run_pipeline.sh`) that an operator or a cron job can invoke to execute the full extraction-to-knowledge-graph flow without remembering stage order or inter-stage paths.
+
+## Benefits
+
+* Reproducible end-to-end runs triggered by a single command.
+* Fail-fast behavior prevents wasted compute on downstream stages when an upstream stage fails.
+* Structured logs make post-run debugging straightforward — every stage's duration and exit code is captured.
+* Adding a new stage requires only appending its name to `PIPELINE_STAGES` and placing the script in the expected directory.
+
+## Drawbacks
+
+* Strictly sequential execution means independent stages cannot run in parallel without refactoring into a DAG scheduler.
+* The sentinel-polling mechanism introduces idle wait time; a callback-based approach would be more efficient.
+* Shell-script control flow is fragile for complex conditional logic — edge cases like partial retries require careful quoting and error handling.
+
+## Failure modes
+
+* **Non-zero exit code mid-pipeline** — the orchestrator halts and logs the failure, but previously written staging data remains on disk and may be stale on the next run if not cleaned up.
+* **Sentinel never arrives** — if the embedding workers crash without writing the sentinel, the orchestrator blocks indefinitely unless a timeout is configured.
+* **Disk full** — intermediate staging directories can accumulate large Parquet or JSONL files; if the volume fills, the current stage exits non-zero and the pipeline halts.
+* **Environment variable drift** — if `.env` is edited between stages (e.g., by another process), the orchestrator may pass inconsistent config to later stages.
+
+## Monitoring
+
+* Tail `/data/logs/pipeline_<timestamp>.jsonl` for per-stage duration and exit codes.
+* Set an external alert if no new log file appears within the expected cron window.
+* Monitor disk usage on `/data/staging/` to catch accumulation before it causes failures.
+* Track RabbitMQ queue depth during the embed stage to verify workers are draining jobs.
+
+## Where I have used it
+
+* [[ukb_pipeline]] — orchestrates the full extract → transform → embed → build-KG flow for the UK Biobank literature pipeline.
+
+## Related notes
+
+* [[rabbitmq_central_broker]] — the message broker used during the asynchronous embedding stage.
+* [[docker_multi_stage]] — the containerization method that packages each stage's dependencies.
+
+## Open questions
+
+* Should the orchestrator retry failed stages automatically or require manual intervention?
+* Is the sentinel-file approach robust enough, or should it be replaced with a RabbitMQ completion callback?
+
+## Review
+
+* Next review target: evaluate adding a configurable timeout to the sentinel-polling loop and explore parallel execution for independent stages.

@@ -1,0 +1,104 @@
+## What this system is
+
+A pool of long-lived Python processes, each pinned to a specific GPU, that pull jobs from a [[rabbitmq_central_broker]] queue, run inference (typically embedding generation), and write results to a shared output directory. Workers start once, load a model into GPU memory, and then process jobs indefinitely until the queue drains or a shutdown signal arrives.
+
+## Why this exists
+
+Loading a transformer model onto a GPU takes 30–90 seconds depending on model size and disk speed. If every job paid that startup cost, throughput would collapse. The worker pool amortizes model loading across thousands of jobs by keeping the model resident in GPU memory for the lifetime of the process.
+
+## Where this fits
+
+- Parent map: [[system_map]]
+- Depends on: [[rabbitmq_central_broker]]
+- Used in project: [[ukb_pipeline]]
+
+## Architecture
+
+```text
+                      +-----------+
+                      | RabbitMQ  |
+                      |  Queue    |
+                      +-----+-----+
+                            |
+            +---------------+---------------+
+            |               |               |
+            v               v               v
+    +-------+---+   +-------+---+   +-------+---+
+    | Worker 0  |   | Worker 1  |   | Worker 2  |
+    | GPU 0     |   | GPU 1     |   | GPU 2     |
+    | model.bin |   | model.bin |   | model.bin |
+    +-------+---+   +-------+---+   +-------+---+
+            |               |               |
+            v               v               v
+      /data/staging/embeddings/  (shared output)
+```
+
+Each worker binds to a GPU via `CUDA_VISIBLE_DEVICES`, opens a persistent connection to RabbitMQ, and enters a consume loop. Jobs are acknowledged only after the result file is successfully flushed to disk, ensuring at-least-once delivery semantics.
+
+## Components
+
+* **Worker launcher** (`launch_workers.sh`) — spawns N worker processes (one per available GPU), sets `CUDA_VISIBLE_DEVICES` for each, and writes PID files for process management.
+* **Worker process** (`worker.py`) — connects to RabbitMQ, loads the model, enters the consume-process-ack loop, and handles graceful shutdown on `SIGTERM`.
+* **Health-check endpoint** — each worker exposes a lightweight HTTP endpoint on `localhost:<base_port + gpu_id>` returning model name, uptime, and jobs processed, used by the monitoring layer.
+* **Prefetch tuning** — RabbitMQ `basic_qos(prefetch_count=1)` ensures a worker only holds one job at a time, preventing memory spikes from buffering multiple large payloads.
+
+## Configuration contract
+
+* `GPU_WORKER_COUNT` — number of workers to launch; must not exceed the number of available GPUs.
+* `CUDA_VISIBLE_DEVICES` — set per worker by the launcher; each worker sees exactly one GPU.
+* `RABBITMQ_HOST`, `RABBITMQ_QUEUE` — must match the dispatch side's configuration exactly.
+* `MODEL_PATH` — filesystem path to the model weights; must be accessible from every worker (shared volume or pre-copied to local disk).
+* `OUTPUT_DIR` — shared directory where workers write result files; must have sufficient space and POSIX write permissions for all worker UIDs.
+* `WORKER_HEALTH_PORT_BASE` — starting port for health-check endpoints; worker on GPU N listens on `base + N`.
+
+## Why it is used
+
+It transforms an expensive model-loading operation from a per-job cost into a one-time startup cost, raising effective throughput by one to two orders of magnitude for embedding-heavy workloads.
+
+## Benefits
+
+* Amortizes GPU model-loading cost across the entire job queue.
+* Horizontal scaling — add more GPUs and increase `GPU_WORKER_COUNT` to scale linearly.
+* At-least-once delivery via post-write acknowledgement prevents data loss on worker crash.
+* Graceful shutdown on `SIGTERM` allows orchestrators to drain workers without losing in-flight jobs.
+* Per-worker health-check endpoints enable targeted diagnostics without disrupting the consume loop.
+
+## Drawbacks
+
+* One model per process means switching model versions requires restarting the worker pool, causing a brief throughput gap.
+* GPU memory is fully reserved even during idle periods between jobs; no automatic release or sharing.
+* The shared output directory becomes a bottleneck under high write throughput if backed by a network filesystem.
+* Debugging a single worker requires correlating logs by PID and GPU ID, which is harder than single-process debugging.
+
+## Failure modes
+
+* **OOM on GPU** — if the model or a batch exceeds GPU memory, the CUDA runtime kills the process. The un-acknowledged job returns to the queue, but the worker must be relaunched.
+* **Stale model version** — if `MODEL_PATH` is updated on disk while workers are running, the in-memory model diverges from the on-disk version. Workers must be restarted to pick up changes.
+* **RabbitMQ connection drop** — network blips sever the AMQP connection. Workers must implement reconnect-with-backoff; without it, the worker silently stops consuming.
+* **Disk full on output directory** — write failures cause the worker to reject the job (nack), which re-queues it. If disk remains full, the job bounces indefinitely.
+* **Zombie PID files** — if a worker is OOM-killed without running its shutdown handler, the PID file persists and the launcher may skip re-spawning that slot.
+
+## Monitoring
+
+* Track per-worker job throughput (jobs/minute) via the health-check endpoint or structured logs.
+* Monitor RabbitMQ queue depth — a rising queue with stable worker count indicates workers are falling behind.
+* Alert on worker process exit (non-zero exit code or missing health-check response).
+* Track GPU memory utilization via `nvidia-smi` or DCGM to detect memory leaks.
+* Monitor disk usage on the output directory to prevent write failures.
+
+## Where I have used it
+
+* [[ukb_pipeline]] — embedding generation stage, where three persistent GPU workers consume text chunks from RabbitMQ and produce dense vectors.
+
+## Related notes
+
+* [[rabbitmq_central_broker]] — the message broker that feeds jobs to the worker pool.
+
+## Open questions
+
+* Should workers pre-load multiple models or stick to one model per process for memory isolation?
+* Would a dynamic batching layer in front of the worker improve throughput for small payloads?
+
+## Review
+
+* Next review target: instrument per-job latency percentiles (p50, p95, p99) and evaluate dynamic batching for payloads under 512 tokens.

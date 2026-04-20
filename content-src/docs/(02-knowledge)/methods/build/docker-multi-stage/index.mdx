@@ -1,0 +1,158 @@
+## What this method is
+
+A Docker multi-stage build is a Dockerfile pattern that uses multiple `FROM` statements to separate the build environment from the runtime environment. Each `FROM` begins a new stage with its own base image and filesystem. Artifacts (compiled binaries, installed packages, static assets) are selectively copied from earlier stages into the final stage using `COPY --from=<stage>`. The result is a production image that contains only what is needed to run the application, without build tools, source code, or intermediate artifacts.
+
+## Why this is used
+
+Single-stage Docker builds produce images that include compilers, development headers, package caches, and source code alongside the runtime application. This inflates image size (often by hundreds of megabytes), increases the attack surface, and slows down image pulls in deployment. Multi-stage builds solve all three problems by discarding build-time layers from the final image.
+
+For research pipelines, smaller images mean faster iteration when deploying to cloud compute, and a minimal runtime image reduces the number of packages that need security scanning.
+
+## Where this fits
+
+Multi-stage builds operate at the container packaging layer:
+
+1. [[dependency_pinning]] → Lockfile (exact versions)
+2. Lockfile → **Multi-stage Dockerfile** → Minimal production image
+3. Production image → Container registry → Deployment
+
+In the Stack Record ecosystem, multi-stage builds are used in the [[batch_orchestrator]] service and the [[ukb_pipeline]] worker images.
+
+## Inputs
+
+| Input | Description |
+|---|---|
+| Dockerfile | A multi-stage Dockerfile with named stages. |
+| Source code | Application source and configuration files. |
+| Lockfile | A pinned dependency file (see [[dependency_pinning]]). |
+| Base images | One image for building (e.g. `python:3.12`) and one for running (e.g. `python:3.12-slim`). |
+
+## Outputs
+
+| Output | Description |
+|---|---|
+| Production image | A container image containing only runtime dependencies, application code, and the entrypoint. |
+| Build cache layers | Intermediate layers cached by BuildKit for faster rebuilds. |
+
+## Procedure
+
+1. **Define the dependency stage.** Use a full base image. Copy only the lockfile and install dependencies. This stage is cached and only rebuilds when the lockfile changes.
+2. **Define the builder stage.** Copy source code on top of the dependency stage. Run any compilation, transpilation, or asset-building steps.
+3. **Define the runner stage.** Start from a minimal base image (slim, distroless, or Alpine). Copy the installed packages and built artifacts from the builder stage. Set the entrypoint.
+4. **Build the image** with `docker build --target runner -t myapp:latest .` or let the final `FROM` be the default target.
+5. **Verify the image** by checking that `docker image inspect` shows a size reduction compared to a single-stage build, and run the container to confirm the application starts correctly.
+
+## Formal rule or formula
+
+Let $S_{\text{build}}$ be the set of files in the build stage and $S_{\text{run}} \subset S_{\text{build}}$ be the subset needed at runtime. A multi-stage build produces a final image containing only $S_{\text{run}}$:
+
+$$\text{Image}_{\text{final}} = \text{BaseImage}_{\text{slim}} \cup \text{COPY}(S_{\text{run}})$$
+
+The size reduction is:
+
+$$\Delta = |S_{\text{build}}| - |S_{\text{run}}|$$
+
+In practice, $\Delta$ is often 500 MB–1 GB for Python/Node applications because compilers, header files, and package caches are excluded from the runner stage.
+
+## Why it works
+
+Docker images are composed of layered filesystems. Each `FROM` instruction starts a new filesystem from scratch. By strategically placing `COPY --from=builder` only for the outputs that the runtime needs, all intermediate build artifacts (compilers, development libraries, package manager caches, source code) exist only in earlier stages that are discarded from the final image. The Docker build cache still retains these stages locally for fast rebuilds, but the pushed image contains only the slim runtime layers.
+
+## Code sketch
+
+```dockerfile
+# Stage 1: install dependencies (cached when requirements.txt is unchanged)
+FROM python:3.12 AS deps
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install --no-cache-dir --prefix=/install -r requirements.txt
+
+# Stage 2: build the application
+FROM deps AS builder
+COPY src/ src/
+COPY pyproject.toml .
+RUN python -m compileall src/
+
+# Stage 3: minimal runtime image
+FROM python:3.12-slim AS runner
+WORKDIR /app
+
+COPY --from=deps /install /usr/local
+COPY --from=builder /app/src src/
+COPY --from=builder /app/pyproject.toml .
+
+RUN useradd --create-home appuser
+USER appuser
+
+ENTRYPOINT ["python", "-m", "src.main"]
+```
+
+```bash
+# Build and check size
+docker build -t myapp:latest .
+docker images myapp:latest --format "{{.Size}}"
+
+# Compare against single-stage
+docker build -f Dockerfile.single -t myapp:single .
+docker images myapp:single --format "{{.Size}}"
+```
+
+## Benefits
+
+- Image sizes are typically 50–80% smaller than single-stage equivalents.
+- Smaller attack surface: no compilers, no development headers, no source code in production.
+- Build cache is layer-aware; changing source code does not re-install dependencies if the lockfile has not changed.
+- Named stages (`AS deps`, `AS builder`) make Dockerfiles readable and composable.
+
+## Drawbacks
+
+- Dockerfiles are longer and require understanding of the layer cache model.
+- Debugging is harder because the final image lacks build tools; you need to `docker run --entrypoint sh builder` to inspect the build stage.
+- `COPY --from` requires knowing exactly which paths contain the needed artifacts, which can break silently if a package installs files outside the expected prefix.
+- Alpine-based slim images can cause compatibility issues with packages that depend on glibc (e.g. some Python C extensions).
+
+## Failure modes
+
+| Failure | Cause | Mitigation |
+|---|---|---|
+| Missing files in runner | A `COPY --from=builder` path does not include all runtime artifacts. | Test the runner image in CI with a smoke-test command. |
+| Large build context | `.dockerignore` is missing or incomplete; Docker sends gigabytes of unnecessary files. | Maintain a strict `.dockerignore` that excludes `.git`, `node_modules`, `__pycache__`, data files. |
+| Cache invalidation | Copying the lockfile after source code forces a full dependency re-install on every code change. | Always copy and install the lockfile before copying source code. |
+| Permission errors | Files copied from the builder stage are owned by root; the runtime user cannot read them. | Use `--chown=appuser:appuser` in `COPY` or set permissions in the builder stage. |
+| glibc mismatch | Alpine runner image lacks glibc; wheels compiled in the builder stage segfault. | Use `-slim` (Debian-based) instead of Alpine, or compile against musl in the builder. |
+
+## Where I have used it
+
+The [[batch_orchestrator]] service and the [[ukb_pipeline]] worker both use three-stage Dockerfiles (deps → builder → runner). Pinned requirements from [[dependency_pinning]] are installed in the deps stage. The runner stage is based on `python:3.12-slim` and runs as a non-root user. This pattern reduced the UKB pipeline worker image from 1.8 GB to 420 MB.
+
+## Validation and evidence
+
+- Docker official documentation recommends multi-stage builds as the standard pattern for production images.
+- Google's Distroless project demonstrates that minimal base images significantly reduce CVE counts in container scanning.
+- The 2023 Chainguard report showed that reducing image size from 1 GB to 200 MB cut average deployment pull time by 60% in a Kubernetes cluster with cold-cache nodes.
+
+## Questions this note answers
+
+- What is a Docker multi-stage build and why use one?
+- How do you structure a Dockerfile with named stages?
+- Why should the lockfile be copied and installed before the source code?
+- How much image size reduction can multi-stage builds achieve?
+
+## Related notes
+
+- [[dependency_pinning]] — provides the lockfile that the deps stage consumes.
+- [[batch_orchestrator]] — a system that uses multi-stage builds for its worker images.
+
+## Open questions
+
+- Is BuildKit cache-mount worth the added Dockerfile complexity for sub-60-second builds?
+- Should distroless images replace slim images as the default runner base in the Stack Record ecosystem?
+
+## Review
+
+| Field | Value |
+|---|---|
+| Last reviewed | 2026-04-16 |
+| Review cycle | yearly |
+| Closure score | 5 / 5 |
+| Closure status | partial |

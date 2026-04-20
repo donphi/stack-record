@@ -1,0 +1,22 @@
+{
+  "title": "Vectors",
+  "description": "Ordered collections of numbers that represent magnitude and direction in n-dimensional space.",
+  "id": "C-MATH-0001",
+  "type": "concept",
+  "domain": "mathematics",
+  "status": "evergreen",
+  "tags": ["concept/maths"],
+  "aliases": ["vector", "feature vector", "embedding vector"],
+  "parent_maps": ["MAP-CONCEPTS-0001"],
+  "prerequisites": [],
+  "children": ["dot-product", "cosine-similarity"],
+  "related_notes": ["dot_product", "cosine_similarity", "vector_similarity"],
+  "related_methods": ["dense_retrieval"],
+  "related_systems": ["faiss_setup"],
+  "related_projects": ["ukb_pipeline"],
+  "review_cycle": "monthly",
+  "last_reviewed": "2026-04-16",
+  "closure_score": 6,
+  "closure_status": "closed",
+  "open_questions": ["When does dimensionality reduction lose critical semantic axes for biomedical embeddings?"]
+}

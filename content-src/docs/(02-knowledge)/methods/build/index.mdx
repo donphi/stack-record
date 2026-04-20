@@ -1,0 +1,36 @@
+## What this map is
+
+Methods for building, packaging, and deploying software artifacts: containerisation patterns, CI/CD workflows, and build optimisation.
+
+## Why this matters
+
+Reliable builds turn source code into reproducible, deployable artifacts. Slow or flaky builds block iteration on every other part of the system.
+
+## Where this fits
+
+Build methods are consumed by [[pipeline]] and [[compute]] systems. They enforce [[reproducibility]] guarantees and produce artifacts deployed into [[runtime]] environments.
+
+## Structure
+
+Notes cover container strategies, CI/CD patterns, and dependency/artifact caching.
+
+## What this map helps answer
+
+- When should a multi-stage Docker build be preferred over a single stage?
+- How do we cache layers effectively across CI runs?
+- What build matrix is needed for cross-platform support?
+
+## Notes in this map
+
+- [[docker_multi_stage]]
+
+## Gaps and open loops
+
+- CI pipeline design (GitHub Actions, GitLab CI patterns)
+- Artifact caching strategies (layer caching, build-cache mounts)
+- Monorepo build orchestration
+- Build reproducibility (deterministic timestamps, ordered layers)
+
+## Review
+
+Stub map. Expand when CI/CD patterns are codified from current ad-hoc scripts.

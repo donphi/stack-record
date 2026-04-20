@@ -4,6 +4,7 @@ PURPOSE: Build a SQLite knowledge graph from content-src metadata,
 
 OWNS:
   - Walking content-src for *.meta.json, meta.json, and *.mdx files
+  - Stripping Fumadocs folder-group segments from paths (parenthesized dirs)
   - Populating all tables defined in config/schema.yaml
   - Building the key_to_note lookup for chain resolution
   - Wiki-link extraction from MDX bodies
@@ -72,10 +73,23 @@ def list_files_recursive(directory: str) -> list[str]:
     return out
 
 
+# ── Folder-group stripping ────────────────────────────────────────────────
+
+def strip_folder_groups(rel_path: str) -> str:
+    """Remove Fumadocs folder-group segments (parenthesized dirs) from a path.
+
+    Folder groups like ``(01-navigation)`` are transparent to Fumadocs routing
+    and must not appear in slugs or folder_path values stored in the KG.
+    """
+    parts = rel_path.split("/")
+    return "/".join(p for p in parts if not (p.startswith("(") and p.endswith(")")))
+
+
 # ── Slug derivation (mirrors materialize-fumadocs.ts) ────────────────────
 
 def slug_from_meta_path(meta_path: str, content_src: str) -> str:
     rel = os.path.relpath(meta_path, content_src).replace(os.sep, "/")
+    rel = strip_folder_groups(rel)
     without_ext = re.sub(r"\.meta\.json$", "", rel)
     if without_ext.endswith("/index") or without_ext == "index":
         directory = re.sub(r"/?index$", "", without_ext)
@@ -85,6 +99,7 @@ def slug_from_meta_path(meta_path: str, content_src: str) -> str:
 
 def slug_from_mdx_path(mdx_path: str, content_src: str) -> str:
     rel = os.path.relpath(mdx_path, content_src).replace(os.sep, "/")
+    rel = strip_folder_groups(rel)
     without_ext = re.sub(r"\.mdx$", "", rel)
     if without_ext.endswith("/index") or without_ext == "index":
         directory = re.sub(r"/?index$", "", without_ext)
@@ -334,12 +349,18 @@ def ingest_folders(
     count = 0
 
     for meta_path in folder_metas:
+        raw_rel = os.path.relpath(os.path.dirname(meta_path), content_src)
+        raw_posix = raw_rel.replace(os.sep, "/")
+
+        dir_name = os.path.basename(os.path.dirname(meta_path))
+        if dir_name.startswith("(") and dir_name.endswith(")"):
+            continue
+
         with open(meta_path, "r", encoding="utf-8") as f:
             data = json.load(f)
 
-        rel = os.path.relpath(os.path.dirname(meta_path), content_src)
-        folder_path = rel.replace(os.sep, "/")
-        if folder_path == ".":
+        folder_path = strip_folder_groups(raw_posix)
+        if folder_path == "." or folder_path == "":
             folder_path = ""
 
         parent_path = None

@@ -1,0 +1,36 @@
+## What this map is
+
+System notes on runtime environments: how workers are managed, GPUs are allocated, and containers are orchestrated in production.
+
+## Why this matters
+
+Embedding generation and model inference are resource-intensive. Poor runtime management leads to idle GPUs, OOM kills, and unpredictable latency.
+
+## Where this fits
+
+Runtime systems execute [[pipeline]] stages using [[build]] artifacts on [[compute]] infrastructure. They interact with [[security]] for credential injection and [[data]] systems for I/O.
+
+## Structure
+
+Notes cover worker pool design, GPU scheduling, and container runtime configuration.
+
+## What this map helps answer
+
+- How are GPU workers allocated to embedding jobs?
+- What container runtime is used and how are resources limited?
+- How do we scale workers up or down with demand?
+
+## Notes in this map
+
+- [[gpu_worker_pool]]
+
+## Gaps and open loops
+
+- Container orchestration (Kubernetes, Docker Compose in production)
+- Resource scheduling and preemption policies
+- Health checks and graceful shutdown
+- Autoscaling triggers and cooldown periods
+
+## Review
+
+Stub map. Expand once GPU worker infrastructure is documented from current setup.

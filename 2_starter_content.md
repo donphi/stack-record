@@ -257,8 +257,17 @@ export default defineConfig({
 {
   "title": "Stack Record",
   "pages": [
-    "index", "maps", "concepts", "methods", "systems",
-    "projects", "decisions", "experiments", "standards", "appendices"
+    "index",
+    "---Navigation---",
+    "...(01-navigation)",
+    "---Knowledge---",
+    "...(02-knowledge)",
+    "---Operations---",
+    "...(03-operations)",
+    "---Governance---",
+    "...(04-governance)",
+    "---Inbox---",
+    "...(05-inbox)"
   ]
 }
 ```
@@ -268,9 +277,9 @@ export default defineConfig({
 ```json
 {
   "title": "Concepts",
-  "defaultOpen": true,
+  "icon": "Sparks",
   "pages": [
-    "index", "mathematics", "statistics", "information-retrieval",
+    "mathematics", "statistics", "information-retrieval",
     "representation-learning", "machine-learning", "biomedical"
   ]
 }
@@ -344,7 +353,8 @@ export default defineConfig({
 ```json
 {
   "title": "Projects",
-  "pages": ["index", "ukb-pipeline"]
+  "icon": "ReportColumns",
+  "pages": ["ukb-pipeline", "gatehouse", "stack-record"]
 }
 ```
 
@@ -1237,7 +1247,11 @@ Information Retrieval
 
 ## Domains
 
+- [Extraction](/docs/methods/extraction)
 - [Retrieval](/docs/methods/retrieval)
+- [Evaluation](/docs/methods/evaluation)
+- [Reproducibility](/docs/methods/reproducibility)
+- [Build](/docs/methods/build)
 ```
 
 ### `content-src/docs/methods/retrieval/index.meta.json`
@@ -1331,7 +1345,11 @@ Retrieval Methods
 
 ## Domains
 
+- [Pipeline](/docs/systems/pipeline)
+- [Data](/docs/systems/data)
 - [Compute](/docs/systems/compute)
+- [Runtime](/docs/systems/runtime)
+- [Security](/docs/systems/security)
 ```
 
 ### `content-src/docs/systems/compute/index.meta.json`

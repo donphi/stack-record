@@ -1,0 +1,155 @@
+## What this is
+
+Gradient descent is an iterative optimisation algorithm that finds a local minimum of a differentiable function by repeatedly stepping in the direction opposite to the gradient. In machine learning, it is the primary mechanism by which models learn — adjusting parameters to reduce a loss function.
+
+## Why this matters
+
+Every neural network, logistic regression, and most modern ML models are trained by some variant of gradient descent. Understanding the algorithm is essential to diagnosing training failures (divergence, slow convergence, saddle points) and to making informed choices about learning rates, batch sizes, and optimiser selection.
+
+## Where this fits
+
+- Parent map: [[MAP_CONCEPTS_0001]]
+- Prerequisites: [[vectors]] (gradients are vectors)
+- Related notes: [[word_embeddings]] (trained via gradient descent)
+- Used in project: [[ukb_pipeline]]
+
+## Core idea
+
+The gradient $\nabla L(\boldsymbol{\theta})$ of a loss function $L$ with respect to parameters $\boldsymbol{\theta}$ points in the direction of steepest increase. To minimise the loss, move in the opposite direction. Repeat until the loss stops decreasing meaningfully.
+
+## Equation or formal logic
+
+### Update rule (vanilla gradient descent)
+
+$$
+\boldsymbol{\theta}_{t+1} = \boldsymbol{\theta}_t - \eta \, \nabla_{\boldsymbol{\theta}} L(\boldsymbol{\theta}_t)
+$$
+
+### Stochastic gradient descent (SGD)
+
+Instead of computing the gradient over the full dataset, SGD approximates it using a mini-batch $\mathcal{B}$ of size $B$:
+
+$$
+\nabla_{\boldsymbol{\theta}} L(\boldsymbol{\theta}_t) \approx \frac{1}{B} \sum_{i \in \mathcal{B}} \nabla_{\boldsymbol{\theta}} \ell(\boldsymbol{\theta}_t; x_i, y_i)
+$$
+
+### SGD with momentum
+
+$$
+\mathbf{m}_{t+1} = \beta \, \mathbf{m}_t + \nabla_{\boldsymbol{\theta}} L(\boldsymbol{\theta}_t)
+$$
+$$
+\boldsymbol{\theta}_{t+1} = \boldsymbol{\theta}_t - \eta \, \mathbf{m}_{t+1}
+$$
+
+## Breakdown
+
+### Terms
+
+- $\boldsymbol{\theta}$ — the model's learnable parameters (a [[vectors|vector]] in parameter space)
+- $L(\boldsymbol{\theta})$ — the loss function measuring how wrong the model's predictions are
+- $\nabla_{\boldsymbol{\theta}} L$ — the gradient: a vector of partial derivatives, one per parameter
+- $\eta$ — the **learning rate**: a scalar controlling step size
+- $t$ — the iteration (step) index
+- $\mathbf{m}_t$ — the momentum accumulator: an exponentially weighted running average of past gradients
+- $\beta$ — the momentum coefficient (commonly 0.9)
+
+### What the equation is really doing
+
+At each step, the algorithm asks: "Which direction in parameter space would increase the loss fastest?" Then it steps in exactly the opposite direction, scaled by the learning rate. Momentum smooths out noisy gradients by blending the current gradient with a memory of recent gradients, helping the optimiser roll through shallow local minima and narrow ravines.
+
+## Plain-English explanation
+
+Imagine you are on a foggy hillside and want to reach the lowest valley. You cannot see the whole landscape, but you can feel the slope under your feet. Gradient descent says: "Take a step downhill. Feel the slope again. Repeat." The learning rate controls how big each step is — too big and you overshoot the valley, too small and you take forever. Momentum is like a heavy ball rolling downhill: it carries speed from previous steps, helping you push through flat areas and gentle bumps.
+
+In ML, the "hillside" is the loss surface, the "slope" is the gradient computed via backpropagation, and each "step" updates millions of model parameters simultaneously.
+
+## Worked example
+
+**1D optimisation:** minimise $L(\theta) = (\theta - 3)^2$.
+
+The gradient is $\frac{dL}{d\theta} = 2(\theta - 3)$.
+
+Starting at $\theta_0 = 0$ with learning rate $\eta = 0.1$:
+
+| Step | $\theta_t$ | $\nabla L$ | $\theta_{t+1} = \theta_t - \eta \nabla L$ |
+|------|-----------|------------|-------------------------------------------|
+| 0    | 0.000     | -6.000     | 0.600                                     |
+| 1    | 0.600     | -4.800     | 1.080                                     |
+| 2    | 1.080     | -3.840     | 1.464                                     |
+| 3    | 1.464     | -3.072     | 1.771                                     |
+| 4    | 1.771     | -2.458     | 2.017                                     |
+
+After 10 steps: $\theta \approx 2.68$. After 20 steps: $\theta \approx 2.97$. The parameter converges toward the true minimum at $\theta = 3$.
+
+With $\eta = 0.01$, convergence takes ~200 steps. With $\eta = 1.1$, the updates overshoot and diverge — the loss explodes.
+
+## ASCII diagram
+
+```text
+Loss L(θ)
+  |
+  |  *                          *
+  |   \                        /
+  |    \                      /
+  |     \                    /
+  |      \       ___        /
+  |       \     /   \      /
+  |        \   /     \    /
+  |         \_/       \__/
+  |       local min    global min
+  +-------------------------------------> θ
+
+  ←step  ←step  ←step
+  (gradient points right, so we step left toward minimum)
+```
+
+## Why this is used
+
+1. **Scalability** — SGD processes one batch at a time, making it feasible for datasets with billions of examples.
+2. **Generality** — works for any differentiable loss function, from linear regression to transformer language models.
+3. **Implicit regularisation** — the noise in SGD mini-batches acts as a regulariser, often improving generalisation.
+4. **Ecosystem support** — every deep learning framework (PyTorch, TensorFlow, JAX) implements gradient descent and its variants natively.
+
+## Benefits
+
+* Simple to implement and understand conceptually.
+* Variants (Adam, AdaGrad, RMSProp) adapt the learning rate per-parameter, improving convergence.
+* Mini-batch SGD enables training on datasets that do not fit in memory.
+* Well-studied convergence guarantees exist for convex and certain non-convex settings.
+
+## Drawbacks and failure modes
+
+* **Learning rate sensitivity** — too high causes divergence, too low causes slow convergence or getting stuck in poor local minima.
+* **Saddle points** — in high-dimensional spaces, gradient descent can stall at saddle points where the gradient is near zero but the point is not a minimum.
+* **Non-convex landscapes** — deep network loss surfaces have many local minima; gradient descent finds one, not necessarily the best one.
+* **Vanishing/exploding gradients** — in deep networks, gradients can shrink to zero or grow unboundedly across layers, stalling or destabilising training.
+* **Hyperparameter burden** — learning rate, momentum, batch size, weight decay, and warm-up schedules all require tuning.
+
+## Where I have used it
+
+* [[ukb_pipeline]] — fine-tuning biomedical language models using AdamW (Adam with decoupled weight decay), a gradient descent variant.
+* [[word_embeddings]] — training Word2Vec Skip-gram with SGD on PubMed abstracts.
+
+## Questions this note answers
+
+* What is gradient descent and why is it central to ML?
+* How does the learning rate affect convergence?
+* What is the difference between batch, mini-batch, and stochastic gradient descent?
+* Why does momentum help optimisation?
+
+## Related notes
+
+* [[vectors]] — gradients are vectors in parameter space
+* [[word_embeddings]] — trained via SGD on a prediction objective
+
+## Open questions
+
+* At what dataset scale does SGD with momentum consistently outperform Adam for biomedical fine-tuning?
+* How do second-order methods (L-BFGS, K-FAC) compare to first-order SGD variants for small biomedical datasets where compute is not the bottleneck?
+* What is the relationship between batch size, learning rate, and generalisation gap in practice?
+
+## Review
+
+* Next review target: add Adam/AdamW update rules and practical learning-rate schedule recipes
+* Consider worked example with 2D loss surface contour plot

@@ -1,0 +1,22 @@
+{
+  "title": "Word Embeddings",
+  "description": "Dense vector representations of words learned from distributional patterns in text.",
+  "id": "C-RL-0001",
+  "type": "concept",
+  "domain": "representation_learning",
+  "status": "evergreen",
+  "tags": ["concept/rl"],
+  "aliases": ["word vectors", "distributed representations"],
+  "parent_maps": ["MAP-CONCEPTS-0001"],
+  "prerequisites": ["vectors"],
+  "children": [],
+  "related_notes": ["vectors", "cosine_similarity"],
+  "related_methods": ["dense_retrieval"],
+  "related_systems": ["faiss_setup"],
+  "related_projects": ["ukb_pipeline"],
+  "review_cycle": "monthly",
+  "last_reviewed": "2026-04-16",
+  "closure_score": 5,
+  "closure_status": "partial",
+  "open_questions": ["Do contextual embeddings (BERT-style) obsolete static word embeddings for all biomedical retrieval tasks?"]
+}

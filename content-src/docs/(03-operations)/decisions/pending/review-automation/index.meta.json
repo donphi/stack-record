@@ -1,0 +1,20 @@
+{
+  "title": "Automate Review Cycle Notifications",
+  "description": "Pending ADR for whether to build automated reminders for notes due for review.",
+  "id": "D-REV-0001",
+  "type": "decision",
+  "domain": "workflow",
+  "status": "draft",
+  "tags": ["decision/workflow"],
+  "decision_status": "pending",
+  "date_decided": "",
+  "deciders": ["Donald Philp"],
+  "alternatives": ["GitHub Actions cron job", "Obsidian plugin", "Manual triage"],
+  "related_projects": ["ukb_pipeline"],
+  "related_notes": [],
+  "review_cycle": "monthly",
+  "last_reviewed": "2026-04-16",
+  "closure_score": 3,
+  "closure_status": "open",
+  "open_questions": ["Is the overhead of building automation justified at current vault size?"]
+}

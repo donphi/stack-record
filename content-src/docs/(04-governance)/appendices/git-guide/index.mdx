@@ -1,0 +1,1123 @@
+# Git, From Zero to DAG
+
+*A complete mental model of version control, built from first principles.*
+
+---
+
+## Part 0 — How to Read This Document
+
+This is not a tutorial. Tutorials teach you commands; this document teaches you the **model underneath the commands** so you can derive the commands yourself when you need them. That distinction is the whole point.
+
+### The shape of the book
+
+The document is structured as a **spiral**. Each major concept appears three times, at three depths:
+
+1. **Intuition** — what it is in plain language, why it exists.
+2. **Mechanism** — how it actually works, what data structures are involved.
+3. **Practice** — the commands, workflows, and professional habits.
+
+This is deliberately redundant. Redundancy is how things stick. If you find yourself thinking "we already covered this," check whether we're covering it at a *different depth* — we almost certainly are.
+
+### How to read it
+
+- **First pass: skim.** Read only the headings, the bolded sentences, and the "Takeaway" at the end of each section. Don't try to understand anything. You're building a map of the territory.
+- **Second pass: linear and slow.** Read every word, look at every diagram. Stop when something doesn't click. Re-read the previous section; the confusion is almost always from a missed foundation, not the current paragraph.
+- **Third pass: as reference.** When you hit a real Git situation, come back to the relevant section. By then you'll have enough context that it reads fast.
+
+Trying to deeply absorb this in one linear read will burn you out around Part 4. Don't do that.
+
+### What you can skip
+
+- If you've never used Git at all, **don't skip anything**.
+- If you're already comfortable with `add`, `commit`, `push`, `pull`, and branches but shaky on *why* — which is where you told me you are — you can skim Part 1 and go slow from Part 2 onward. Parts 2 and 3 are where the payoff starts.
+- Parts 8–10 are intentionally lighter. They're pattern recognition built on top of Parts 2–7, and you'll absorb most of them by doing real work once the foundation is solid.
+
+### A note on what Git actually is
+
+Most people think Git is "the thing that saves versions of my code." That's what it *does*. What it *is* — mechanically — is a small, elegant data structure: a graph of immutable snapshots, addressed by cryptographic hashes. Every Git command, no matter how intimidating its name, is just a way to add to that graph, move pointers around inside it, or copy pieces of it between computers.
+
+Once you see the graph, Git stops being a collection of magic incantations and becomes obvious. That's the goal of this document.
+
+---
+
+## Part 1 — The Problem Git Solves
+
+Before we look at Git, let's look at the problem. If you don't feel the problem, Git's solution looks arbitrary. If you do feel it, the solution looks inevitable.
+
+### 1.1 — Why version control exists
+
+Imagine writing an essay. You save `essay.docx`. The next day you want to try a different intro but you're not sure it's better, so you save `essay_v2.docx`. Then `essay_v2_final.docx`. Then `essay_v2_final_REAL.docx`. You've invented version control, badly.
+
+The problems are obvious: you can't tell what changed between versions without opening both, you can't easily go back to a specific earlier state, and if two people are editing, merging their changes is a nightmare of email attachments and copy-paste.
+
+Version control is the discipline of solving these problems properly. It gives you:
+
+- **A complete history** of every change ever made.
+- **The ability to go back** to any point in that history.
+- **A way to work in parallel** without overwriting each other.
+- **A record of who changed what, when, and why.**
+
+Everything Git does is in service of these four things.
+
+### 1.2 — Centralized vs. distributed
+
+The first generation of version control systems (CVS, SVN) were **centralized**. There was one master copy on a server. To do anything — see history, commit a change — you had to talk to the server. If the server was down, you were stuck. If you were on a plane, you were stuck. If the server died and you hadn't backed up, years of history vanished.
+
+Git is **distributed**. Every person working on the project has a *complete copy of the entire history* on their own machine. No central server is required for Git to work. You can commit, branch, merge, inspect history, and dig back through ten years of changes — all offline, all instantly.
+
+GitHub, which you've probably conflated with Git, is *not* Git. GitHub is one particular website that happens to host Git repositories and adds collaboration features on top (pull requests, issues, permissions). But Git itself predates GitHub and doesn't need it. You could host a Git repository on a USB stick and it would work identically.
+
+This is worth internalizing because a lot of confusion comes from thinking of "the repo on GitHub" as the *real* one and your local copy as a *copy*. They are equally real. They are peers. We'll come back to this in Part 5.
+
+### 1.3 — Git's one big idea
+
+Every version control system before Git thought in terms of **changes** (deltas). "Here's what changed between version 3 and version 4." Storage was cheap-ish but not free, so storing diffs made sense.
+
+Git threw that model out. Git's idea is:
+
+> **Every commit is a full snapshot of every file, addressed by the hash of its contents.**
+
+When you commit, Git doesn't store "line 42 changed from X to Y." It stores the entire state of your project at that moment. If a file didn't change, Git is smart enough to reuse the storage (via hashes — we'll see how), so the total size stays reasonable. But conceptually, every commit is a complete photograph, not a sticky note about what moved.
+
+This sounds wasteful until you realize what it buys you:
+
+- **Integrity.** Because every snapshot is identified by the hash of its contents, any tampering — even a single bit flipped — changes the hash and is immediately detectable.
+- **Speed.** You never have to reconstruct a version by replaying deltas. Every version is already sitting there, fully formed.
+- **Simplicity.** Operations that are hard in delta-based systems (branching, merging, cherry-picking) become trivial when every version is a self-contained snapshot.
+
+The "snapshots addressed by content hashes" idea is the single most important thing in Git. Everything else — branches, merges, remotes, the whole command line — is a consequence of that choice.
+
+### Takeaway
+
+Git exists because centralized, delta-based version control was fragile and slow. Git's answer is: every version is a complete, hash-addressed snapshot, and every user has the full history locally. Hold onto that. The rest of the document is unpacking it.
+
+---
+
+## Part 2 — The Object Model
+
+This is the foundation. Every Git command ultimately reads from or writes to the object model. If you understand this part deeply, everything else in Git becomes derivable rather than memorized. I'll go slowly.
+
+### 2.1 — Hashes: identifying things by content
+
+A **hash function** takes any input — a word, a file, a 4K movie — and produces a fixed-length string that uniquely fingerprints that input. Change a single bit of the input and the hash changes completely and unpredictably.
+
+Git uses SHA-1 (and increasingly SHA-256), producing a 40-character hexadecimal string that looks like:
+
+```
+e83c5163316f89bfbde7d9ab23ca2e25604af290
+```
+
+The critical property is this: **if two things have the same hash, they are the same content.** Not "probably the same" — the probability of two different inputs colliding is so small it's treated as zero in practice.
+
+Git uses hashes as **IDs for everything**. Every file, every directory snapshot, every commit has a hash. You never think about what that hash is — Git computes it. But the moment you internalize that "things are identified by what they contain, not by a name or a version number," Git starts making sense.
+
+This is called **content-addressable storage**. The address of something *is* its content's fingerprint. Rename a file, move it, copy it a thousand times — if the content is the same, the hash is the same, and Git stores it exactly once.
+
+### 2.2 — The four object types
+
+Everything in Git's repository is one of four kinds of objects. Just four. That's the whole vocabulary.
+
+**Blob.** A blob is the contents of a single file. That's it. No filename, no permissions, no directory — just the raw bytes of the file, hashed. If you have two files with identical contents but different names, Git stores *one* blob, and the filename is recorded elsewhere.
+
+**Tree.** A tree is a snapshot of a directory. It's a list of entries, where each entry is: a filename, a mode (file or directory, executable or not), and a hash pointing to either a blob (if it's a file) or another tree (if it's a subdirectory). Trees are how Git represents folder structure.
+
+**Commit.** A commit is a single snapshot in the history. It contains:
+- A hash pointing to a tree (the snapshot of the whole project at that moment).
+- A hash (or hashes) pointing to the parent commit(s) — the previous state(s).
+- Author, committer, timestamp.
+- A commit message.
+
+Notice what's *not* in a commit: the actual files. The commit points to a tree, which points to blobs. The commit itself is tiny — it's metadata plus a few hashes.
+
+**Tag.** A tag is a named, usually-permanent pointer to a specific commit, with optional metadata (who tagged it, when, a message). Version releases like `v1.0.3` are tags. We'll mostly ignore tags until Part 3.
+
+That's it. Four object types. Every `.git` directory in the world, for every project ever, is ultimately made of these four things.
+
+### 2.3 — What a commit *actually* is
+
+Let's look at a commit up close, because "a commit is a snapshot" is the single most misunderstood sentence in Git.
+
+When you run `git commit`, here's what happens mechanically:
+
+<Steps>
+<Step>
+
+### Stage lookup
+
+Git looks at the files you've staged (we'll cover staging in Part 4; for now just imagine "the files you said you want to save").
+
+</Step>
+<Step>
+
+### Create blobs
+
+For each staged file, Git computes its hash and stores the content as a **blob** — if that blob doesn't already exist.
+
+</Step>
+<Step>
+
+### Build trees
+
+Git builds **tree** objects representing the directory structure, with hashes pointing to the blobs.
+
+</Step>
+<Step>
+
+### Create commit object
+
+Git creates a **commit** object containing: the hash of the top-level tree, the hash of the previous commit (the parent), your name, the timestamp, and your message.
+
+</Step>
+<Step>
+
+### Write to object store
+
+Git writes all of these objects into `.git/objects/`, each filed under its own hash.
+
+</Step>
+</Steps>
+
+So a commit is not a diff, not a patch, not a changelog entry. **A commit is a tiny metadata object that points to a complete snapshot of the project via one tree hash.**
+
+Here's a picture of one commit:
+
+```
+┌─────────────────────────────────────────┐
+│ commit a3f2b1...                        │
+│   tree:    9c8d7e...                    │
+│   parent:  (none — this is the first)   │
+│   author:  alice <alice@example.com>    │
+│   date:    2026-01-15 10:32             │
+│   message: Initial commit               │
+└─────────────────────────────────────────┘
+              │
+              ▼
+┌─────────────────────────────────────────┐
+│ tree 9c8d7e...                          │
+│   100644 blob 1f3a...  README.md        │
+│   100644 blob 7b2c...  main.py          │
+│   040000 tree 4e5f...  src/             │
+└─────────────────────────────────────────┘
+              │               │
+              ▼               ▼
+        (README.md bytes)   (src/ subtree → more blobs)
+```
+
+The commit has no files in it. The commit has *one hash* that points to the tree, and the tree has hashes pointing to the blobs. That indirection is why Git can store thousands of commits cheaply: if a file didn't change between commits, both commits' trees point to the same blob. Storage is shared automatically by the hash mechanism.
+
+### 2.4 — Why this makes Git a DAG
+
+Now add a second commit. You change `main.py` and commit.
+
+```
+┌───────────────────────┐       ┌───────────────────────┐
+│ commit a3f2b1         │◄──────│ commit b8e4d2         │
+│   tree:   9c8d7e      │parent │   tree:   5a1c9f      │
+│   parent: (none)      │       │   parent: a3f2b1      │
+└───────────────────────┘       └───────────────────────┘
+```
+
+The second commit's `parent` field contains the hash of the first commit. That's the only link. There is no list of commits anywhere — the history is reconstructed by starting at the latest commit and following parent pointers backward.
+
+Now here's the crucial move: **a commit can have more than one parent**. When you merge two branches, the resulting commit has two parents — one for each history line it's joining. And commits can have multiple *children* too, because two different branches might both start from the same commit.
+
+This means Git's history is not a list. It's not even a tree (in the computer-science sense). It's a **Directed Acyclic Graph** — a DAG:
+
+- **Graph:** nodes (commits) connected by edges (parent links).
+- **Directed:** edges have a direction — each commit points to its parent(s), not the other way around.
+- **Acyclic:** you can never have a cycle, because a commit's parent is always *older* than the commit itself (its hash is already fixed), so you can't loop back.
+
+Here's a DAG with a branch and a merge:
+
+```
+              ┌─── D ─── E ───┐
+              │               │
+    A ─── B ──┤               ├─── F
+              │               │
+              └─── C ─────────┘
+
+    (time flows left to right;
+     each arrow is a parent pointer, going right-to-left)
+```
+
+Commit `F` has two parents: `E` and `C`. It's a merge. Commits `D` and `C` both have `B` as a parent — that's where the branch split. Everything in Git — every branch, every merge, every rebase, every cherry-pick — is either reading this DAG, adding nodes to it, or moving pointers around in it.
+
+**Git is a DAG.** Hold onto that phrase. We'll come back to it in every remaining part.
+
+### 2.5 — Walking the graph by hand
+
+Let's do this concretely. Imagine a fresh repo where I run:
+
+```bash
+echo "hello" > greeting.txt
+git add greeting.txt
+git commit -m "Add greeting"
+```
+
+Git now contains:
+
+- A **blob** for the content `hello\n`, with some hash — call it `ce01362`.
+- A **tree** listing `greeting.txt → blob ce01362`, with its own hash — call it `a4b2c8d`.
+- A **commit** with `tree: a4b2c8d`, no parent, my name, my message — with its own hash, `f1e2d3c`.
+
+Now I edit the file:
+
+```bash
+echo "hello world" > greeting.txt
+git add greeting.txt
+git commit -m "Expand greeting"
+```
+
+Git now *additionally* contains:
+
+- A new **blob** for `hello world\n` — hash `b9a8c7d`. (The old blob `ce01362` still exists, untouched.)
+- A new **tree** listing `greeting.txt → blob b9a8c7d` — hash `e5f4a3b`.
+- A new **commit** with `tree: e5f4a3b`, `parent: f1e2d3c`, new message — hash `2c3d4e5`.
+
+The DAG now looks like:
+
+```
+    f1e2d3c ◄────── 2c3d4e5
+   (add greeting)  (expand greeting)
+```
+
+Nothing was modified. The original blob, tree, and commit are all still there, byte-for-byte. Git only *added* new objects. This is why Git is so hard to lose data in — it almost never deletes anything; it mostly just stops pointing at things.
+
+If I check out the first commit (`git checkout f1e2d3c`), Git reads the commit object, follows its tree pointer, finds the `hello` blob, and writes `hello\n` into my working directory. I'm not "going back in time" — I'm just asking Git to materialize a different node of the DAG into my filesystem.
+
+### Takeaway
+
+Everything in Git is one of four objects: blob (file contents), tree (directory listing), commit (snapshot + parent pointer), tag (named pointer). Commits link backward via parent pointers, forming a DAG. Objects are identified by the hash of their contents, so identical content is stored once and tampering is impossible. The `.git/objects/` directory is just a pile of these four kinds of objects, and every operation in Git is ultimately a read, write, or pointer update on this pile.
+
+If this part feels dense, re-read it. The rest of the document assumes it.
+
+---
+
+## Part 3 — References: How Git Knows Where You Are
+
+The object model gives us a graph of immutable snapshots. But something is missing: if every commit is just a 40-character hash, how do you find the *current* one? How does Git know what "latest" means? How does a branch called `main` work?
+
+The answer is **references** — tiny files that name specific commits. References are the only mutable thing in Git. Everything else is immutable objects; refs are the moving pointers that tell Git what's where.
+
+### 3.1 — What a branch actually is
+
+A branch in Git is not a folder. It is not a copy of the code. It is not a long-lived entity with a lifecycle. A branch is:
+
+> **A file containing a single commit hash. That's it.**
+
+Inside `.git/refs/heads/`, there's a file for each branch. `main` is a file called `main` containing a single line — a commit hash. `feature-x` is a file called `feature-x` containing a commit hash.
+
+When you commit on branch `main`, Git creates the new commit object, then **updates the file `.git/refs/heads/main` to point to the new commit's hash**. The branch "moved forward" not because anything substantial happened, but because one line of text in one file changed.
+
+When you create a new branch:
+
+```bash
+git branch feature-x
+```
+
+Git creates a file `.git/refs/heads/feature-x` containing the *current* commit's hash. That's the entire operation. No files copied, no history duplicated. Branching in Git is effectively free, which is why Git encourages you to branch constantly — a habit that would be insane in SVN.
+
+When two branches diverge, the DAG looks like this:
+
+```
+                        ┌── D ── E          ◄── feature-x
+                        │
+    A ── B ── C ────────┤
+                        │
+                        └── F ── G          ◄── main
+```
+
+`feature-x` is a file with the hash of `E`. `main` is a file with the hash of `G`. The underlying commits (`A` through `G`) are just sitting in the object store, connected by their parent pointers. The branches are post-it notes stuck onto specific commits.
+
+This is why "deleting a branch" sounds scary but isn't: deleting a branch means deleting that one file. The commits it pointed to still exist in the object store; they're just no longer reachable by that name. If nothing else points to them, Git will eventually garbage-collect them, but not for a while.
+
+### 3.2 — HEAD, and the idea of "where you are"
+
+Among all the branches and commits in the DAG, Git needs to know one more thing: **which commit is currently checked out in your working directory?** That's what `HEAD` is.
+
+`HEAD` is a file at `.git/HEAD`. It usually contains something like:
+
+```
+ref: refs/heads/main
+```
+
+That's called a **symbolic ref** — `HEAD` points to the branch `main`, which points to a commit. So "where am I?" is answered by a double lookup: HEAD → branch → commit.
+
+When you run `git checkout feature-x`, Git rewrites `HEAD` to say `ref: refs/heads/feature-x`, then reads the commit that branch points to, follows its tree, and writes those files into your working directory.
+
+When you commit, Git reads HEAD to find out which branch you're on, creates the new commit object, and updates that branch's file to the new hash. This is how commits "land on the right branch" — via HEAD.
+
+**Detached HEAD.** Sometimes HEAD points directly to a commit instead of to a branch:
+
+```
+(HEAD contains the literal hash a3f2b1... instead of "ref: refs/heads/main")
+```
+
+This happens when you `git checkout <some-commit-hash>` directly. It's called "detached HEAD," and the warning Git shows you makes it sound dangerous.
+
+<Callout title="Detached HEAD is not dangerous" type="info">
+It just means HEAD points directly at a commit instead of at a branch. If you make new commits and then switch away, those commits become unreachable. The fix is trivial: run `git branch new-branch-name` before you switch, and now a branch points at your work.
+</Callout>
+
+### 3.3 — Tags vs branches
+
+A **tag** is like a branch — a file with a commit hash in it — but with two differences:
+
+1. **Tags don't move.** When you commit on a branch, the branch advances. Tags stay put. `v1.0.0` always points at the exact commit you tagged.
+2. **Tags can carry metadata.** An "annotated tag" has its own object (the fourth type from Part 2.2) with a message, tagger, and timestamp. `v1.0.0` might say "Released January 15, tagged by Alice, signed with GPG key X."
+
+Tags are how you mark releases. Branches are how you mark ongoing lines of work. Mechanically they're almost identical; conventionally they're used very differently.
+
+### 3.4 — The reflog: Git's safety net
+
+Here's something most Git tutorials hide until it's too late: **Git keeps a log of every time HEAD or a branch pointer moves.** That log is the **reflog**.
+
+Every time you commit, checkout, merge, rebase, reset, or do anything else that moves a pointer, Git appends a line to the reflog saying "at time T, this pointer moved from hash X to hash Y because of operation Z."
+
+```bash
+git reflog
+```
+
+Output looks like:
+
+```
+2c3d4e5 HEAD@{0}: commit: expand greeting
+f1e2d3c HEAD@{1}: commit (initial): add greeting
+```
+
+<Callout title="Safety net" type="info">
+If you ever think you've "lost" work, you almost certainly haven't. The commits are still in the object store, and the reflog remembers where HEAD pointed — even after you've rebased, reset, or deleted branches.
+</Callout>
+
+You can recover almost any recent state with:
+
+```bash
+git checkout HEAD@{3}   # where you were 3 operations ago
+git reset --hard <hash-from-reflog>
+```
+
+The reflog is local and it expires (90 days by default for reachable entries), but inside that window, it is nearly a complete undo history. Knowing the reflog exists removes most of the fear from experimenting with rebase and reset later.
+
+### Takeaway
+
+References are tiny mutable files that name specific commits. A branch is one such file. HEAD is a special ref that tracks "where you currently are," usually by pointing at a branch. Tags are refs that don't move. The reflog is a log of every pointer movement, which lets you recover from almost any accident. The object graph is immutable; refs are the moving parts on top of it.
+
+---
+
+## Part 4 — The Three Areas: Working Directory, Index, and Repository
+
+You now know Git's storage model (objects + refs). But when you're editing code, what you see is *files in folders*, not hashes and trees. How do edits turn into objects? That's what this part is about.
+
+Git has three "areas" where your work lives at different stages. Understanding all three is what makes commands like `add`, `commit`, `reset`, and `checkout` go from "why are there five ways to do this" to "each one operates on a different area."
+
+### 4.1 — The three areas
+
+**Working directory** (sometimes called the "working tree"): the actual files on your disk, the ones you edit with your editor. Fully mutable, just normal files.
+
+**Index** (also called the "staging area"): a file at `.git/index`. It holds a snapshot-in-progress — the state of the project as it *will be* in your next commit, if you commit right now. Think of it as a rehearsal stage.
+
+**Repository** (the object store + refs): the `.git/` directory itself. Committed history. Immutable.
+
+Here's the flow when you edit a file and commit:
+
+```
+  WORKING DIR         INDEX             REPOSITORY
+  (your files)    (staging area)     (.git/objects/)
+
+   edit file ──► git add ──► (blob + index entry) ──► git commit ──► (tree + commit)
+```
+
+Your edit lives in the working directory. `git add` copies that state into the index (and writes a blob into the object store as a side effect). `git commit` freezes the index into a tree and commit object.
+
+The key insight: **`git add` doesn't stage a file once and forever; it stages the file's current content.** If you edit a file, `git add` it, then edit it again, the second edit is *not* staged. The index holds a snapshot of the content *at the moment you ran add*. This is why experienced Git users run `git status` obsessively — to see what's in each area.
+
+### 4.2 — Why staging exists at all
+
+If you've come from simpler systems, staging feels like bureaucracy. Why not just commit everything that changed?
+
+The answer is: **commits should be atomic, meaningful units of change, not dumps of whatever was on your disk.** Imagine you're in the middle of fixing two bugs. You've edited `auth.py` for bug #1 and `payments.py` for bug #2. A commit message like "fix two unrelated bugs" is a code review nightmare and makes history useless. The index lets you say: "commit just `auth.py` now, with a clean message about bug #1. Then I'll stage `payments.py` and commit separately."
+
+Even more granularly: `git add -p` lets you stage *individual hunks* within a file. You can split one messy edit into multiple clean commits. This is one of the habits that separates professional Git users from casual ones, and it's only possible because the index exists as a middle ground.
+
+### 4.3 — What the commands actually do
+
+Let's map each common command to the area it touches:
+
+- `git status` — compares all three areas and shows the differences.
+- `git diff` — working dir vs. index (what's changed since last add).
+- `git diff --staged` — index vs. repository (what will be in the next commit).
+- `git add <file>` — copies file's current content from working dir to index.
+- `git commit` — turns the index into a tree + commit object in the repository, advances HEAD's branch.
+- `git checkout <branch>` — reads a commit from the repository, writes it into the index and working directory.
+- `git reset <commit>` — moves the branch pointer (repository), optionally also resets index and working dir depending on flags.
+
+The `reset` vs. `checkout` vs. `revert` confusion comes entirely from not knowing which area each touches. With the three-area model in mind:
+
+- `git checkout -- file.txt` → restore file.txt in *working directory* from the *index*.
+- `git reset HEAD file.txt` → restore file.txt in *index* from *HEAD* (unstage it).
+- `git reset --soft HEAD~1` → move branch pointer back 1 commit, leave index and working dir alone.
+- `git reset --mixed HEAD~1` → move branch + reset index, leave working dir alone. (default)
+- `git reset --hard HEAD~1` → move branch + reset index + overwrite working dir. **Destructive.**
+
+<Callout title="Destructive operation" type="warn">
+`reset --hard` is the only time Git throws away your uncommitted work. The reflog still remembers where the branch was before the reset, so even this is recoverable if you act within the reflog window (90 days by default) — but any unstaged edits are gone for good.
+</Callout>
+
+### Takeaway
+
+Git has three areas: working directory (your files), index (staging area for the next commit), repository (committed history). Commands like add, commit, checkout, and reset each operate on specific combinations of these areas. Confusion about these commands almost always comes from not knowing which area they affect. The index is a *feature*, not bureaucracy — it lets commits be clean, atomic, meaningful units rather than dumps of whatever you happened to have on disk.
+
+---
+
+## Part 5 — Remotes: Git Across Machines
+
+Everything so far has been about a single local repository. Now we extend the model to multiple computers. This is where GitHub enters the picture, and where a lot of your earlier confusion (public/private repos, forks, personal branches) lives.
+
+### 5.1 — A remote is just another Git repo somewhere
+
+A **remote** is a named URL pointing to another Git repository. That's the entire definition. The other repository might be on GitHub, on your company's server, on a colleague's laptop, on a USB stick, or in a different folder on your own machine. Git doesn't care.
+
+You can list your remotes with:
+
+```bash
+git remote -v
+# origin    git@github.com:you/project.git   (fetch)
+# origin    git@github.com:you/project.git   (push)
+```
+
+`origin` is a conventional name for "the remote I cloned from," but it's just a name. You can rename it, delete it, add others. Common conventions:
+
+- `origin` — the main remote you push to.
+- `upstream` — the original project you forked from (when working on open source).
+
+A single local repo can have as many remotes as you want. This is the piece that unlocks the "public + private fork" workflow we discussed earlier — it's not magic, it's just two remotes with different names.
+
+### 5.2 — What fetch, pull, and push actually do
+
+All three of these commands do one thing: **copy objects (and update refs) between two repositories.** They differ in *which direction* and *what they do after copying*.
+
+**`git fetch <remote>`.** Contacts the remote, figures out which commits (and their trees, blobs) the remote has that you don't, and downloads them into your local object store. It also updates your **remote-tracking branches** (more on these in 5.3). Your own branches are not touched. Your working directory is not touched. Fetch is 100% safe — it just pulls data in.
+
+**`git push <remote> <branch>`.** The opposite direction: uploads objects you have that the remote doesn't, and asks the remote to update its branch pointer. The remote will refuse if this would *lose* history (if your push isn't a "fast-forward" — we'll see what that means in Part 6). You can force it with `--force` (or safer, `--force-with-lease`), but that's a "know what you're doing" operation.
+
+**`git pull <remote> <branch>`.** A convenience command that is literally `git fetch` followed by `git merge` (or `git rebase`, if configured). Pull fetches, then integrates the fetched commits into your current branch. The reason people say "prefer fetch + merge over pull" is that pull does two things at once, and if something goes wrong you don't know which step caused it.
+
+In DAG terms: fetch *adds nodes* to your local graph from the remote. Push *adds nodes* to the remote's graph from yours. Pull adds nodes and then merges them into your current branch.
+
+### 5.3 — Remote-tracking branches
+
+This is the piece most people miss, and it's what makes multi-repo workflows coherent.
+
+When you `git fetch origin`, Git doesn't just download commits — it also records where `origin`'s branches are, as of the fetch. It does this with **remote-tracking branches**: special read-only refs named like `origin/main`, `origin/feature-x`.
+
+So after fetching, you might have:
+
+- `main` — your local branch, points at commit X.
+- `origin/main` — a remote-tracking branch, points at commit Y (where origin's main was at the last fetch).
+
+If X and Y are the same, you're in sync. If Y is ahead of X, the remote has commits you don't — you need to pull or merge. If X is ahead of Y, you have commits the remote doesn't — you need to push. If they've diverged (both have commits the other doesn't), you need to merge or rebase.
+
+`git status` shows you this relationship in plain language: "Your branch is ahead of origin/main by 2 commits" or "Your branch and origin/main have diverged."
+
+**Remote-tracking branches are your view of the remote, frozen at the last fetch.** They are not live. If a collaborator pushes to origin/main right now, your local `origin/main` doesn't update until you fetch again. This lag is a feature, not a bug — it means your view of the world is stable between fetches.
+
+### 5.4 — GitHub is not Git
+
+Let's nail this down, because confusion here poisons everything else.
+
+**Git** is the tool. It lives on your laptop. It manages the object store, the DAG, the commits, the branches. It needs nothing to function — no account, no network, no website.
+
+**GitHub** is a commercial website that:
+- Hosts Git repositories on its servers (so you have a remote you can push to).
+- Adds features Git doesn't have: pull requests, issues, code review UI, permissions, CI integration, project wikis.
+- Provides a web UI to browse commits and diffs.
+
+When you "push to GitHub," you are running the Git push command, targeting a remote URL that happens to be a GitHub server. GitHub receives the objects and updates its refs exactly like any other Git remote would. Nothing magical happens.
+
+**A pull request is not a Git concept.** It's a GitHub feature. It means: "Dear maintainer, I've pushed a branch to my fork of your repo; please consider merging my branch into your main branch." The actual merging is still a normal Git merge. The PR is just a GitHub-hosted conversation with review tools around it.
+
+**A fork on GitHub is a server-side copy of a repo.** When you click "Fork," GitHub makes a new repo on its servers, associated with your account, whose initial contents are a copy of the original. It remembers the link back. On your laptop, you can clone your fork and optionally add the original as a second remote (conventionally called `upstream`). That's the "two-remote workflow" from earlier.
+
+Once you see GitHub as "a Git host with a nice UI plus some workflow features," a lot of things stop being mysterious. The "fork vs. branch" question, for example: a fork is a separate *repo*, a branch is a pointer *inside* a repo. They're different levels entirely.
+
+### Takeaway
+
+A remote is just another Git repo somewhere, identified by a URL and a nickname. Fetch, push, and pull copy objects between repos and update refs. Remote-tracking branches (`origin/main`) are your last-fetched view of the remote's state. GitHub is a hosting service that adds features on top of Git but doesn't change what Git fundamentally is. A fork is a server-side copy of a whole repo; a branch is a pointer inside a repo. These are different levels and should not be confused.
+
+---
+
+## Part 6 — Integration: Merge and Rebase
+
+You have two divergent lines of history — your work and someone else's, or two of your own branches. You want to bring them together. Git gives you two fundamentally different ways to do this: **merge** and **rebase**. Understanding both, and when to use each, is one of the biggest jumps in Git maturity.
+
+### 6.1 — Merge: joining two histories
+
+A **merge** creates a new commit that has *two parents*, one from each branch being joined. The DAG literally gets a node where two lines converge.
+
+Starting position:
+
+```
+          A ── B ── C          ◄── main
+               │
+               └── D ── E      ◄── feature
+```
+
+After `git checkout main && git merge feature`:
+
+```
+          A ── B ── C ──────── M   ◄── main
+               │               │
+               └── D ── E ─────┘   ◄── feature
+```
+
+`M` is the **merge commit**. It has two parents: `C` and `E`. Its tree represents the combined state of both branches. `feature` still points at `E` (unchanged). `main` now points at `M`.
+
+The history is **preserved exactly**. Every commit that ever existed still exists, in its original form. You can look at the DAG and see "this work happened on a side branch, then got integrated." The merge commit is a historical record of the integration event.
+
+**Fast-forward merges.** If `main` hasn't moved since `feature` branched off, there's nothing to merge — `feature` already contains all of `main`'s commits. In this case, Git just moves the `main` pointer forward to `E`. No merge commit is created. This is a "fast-forward":
+
+Before:
+```
+    A ── B ──── main
+         │
+         └── D ── E ──── feature
+```
+
+After `git checkout main && git merge feature`:
+```
+    A ── B ── D ── E ──── main, feature
+```
+
+You can force Git to create a merge commit even when fast-forward is possible (`--no-ff`), which some teams do to preserve the record that "these commits were merged as a unit."
+
+### 6.2 — Rebase: rewriting history onto a new base
+
+A **rebase** takes your commits and replays them as if they had been made on top of a different base commit. It's surgery on the DAG.
+
+Starting position (same as before):
+
+```
+          A ── B ── C          ◄── main
+               │
+               └── D ── E      ◄── feature
+```
+
+After `git checkout feature && git rebase main`:
+
+```
+          A ── B ── C                  ◄── main
+                    │
+                    └── D' ── E'       ◄── feature
+```
+
+Look carefully at what happened. `D` and `E` are *gone* from `feature`. In their place are `D'` and `E'` — *new commits* with the same content changes and messages, but different hashes, because they have different parents now. `D'`'s parent is `C`, not `B`. The old `D` and `E` still exist in the object store for a while (reflog remembers them), but nothing points at them and they'll eventually be garbage-collected.
+
+The resulting history is **linear**. No merge commit, no fork visible. It looks as if you made `D'` and `E'` fresh, starting from the latest `main`.
+
+### 6.3 — Merge vs. rebase: when to use which
+
+Both are valid. The debate between them is partly taste, partly context. Here's the honest breakdown:
+
+**Merge preserves truth.** The history shows exactly what happened: you branched, worked, merged. Merge commits are historical artifacts. Nothing is rewritten. This matters when: you need a precise audit trail, when the fact of parallel work is itself meaningful, when branches are long-lived and shared by many people.
+
+**Rebase produces clarity.** The history reads as a clean linear story. Reviewers can walk through commits one by one without zigzagging through parallel branches. This matters when: you want a readable history, when the messy intermediate steps of your branch aren't worth preserving, when you're integrating a short-lived feature branch.
+
+**The golden rule: never rebase shared history.** If commits have been pushed to a shared remote and other people might have based their work on them, do not rebase them. Rebase rewrites history (new commits with new hashes), and anyone who had the old commits now has a divergent view of reality. Reconciling that is painful.
+
+A common team convention: rebase *your own* feature branches (before they're shared, or when you're the only one working on them) to keep them clean; merge *into shared branches* (like `main`) to preserve the integration record. This gives you clean feature histories plus a clear main-line record.
+
+### 6.4 — Conflicts: what they actually are
+
+A **conflict** happens during merge or rebase when Git can't automatically combine two changes because they modified the same region of the same file in incompatible ways.
+
+In DAG terms: Git is trying to construct a new tree (for the merge commit, or the rebased commit) from two parent trees. For each file, it looks at what changed in each parent relative to their common ancestor (for merge) or the rebase base. If only one side changed, take that change. If both changed in non-overlapping ways, combine them. If both changed the *same lines*, Git doesn't know which to pick — that's a conflict.
+
+When a conflict occurs, Git:
+1. Writes the conflicting file with both versions marked by `<<<<<<<`, `=======`, `>>>>>>>`.
+2. Stops the merge/rebase and asks you to resolve.
+3. Waits for you to edit the file, stage the resolution (`git add`), and continue (`git merge --continue` or `git rebase --continue`).
+
+Conflicts aren't bugs; they're Git honestly telling you "I don't have enough information to make this call; you have to decide." They always involve the same lines of the same files being changed on both sides. You can't have a conflict in files that only one side touched.
+
+### 6.5 — Cherry-pick: copying a single commit
+
+`git cherry-pick <commit>` takes the *changes* introduced by one commit and applies them as a new commit on your current branch.
+
+```
+          A ── B ── C                  ◄── main
+               │
+               └── D ── E              ◄── feature
+```
+
+After `git checkout main && git cherry-pick E`:
+
+```
+          A ── B ── C ── E'            ◄── main
+               │
+               └── D ── E              ◄── feature
+```
+
+`E'` is a new commit with the same diff and message as `E`, but applied on top of `C`. It has a different hash because it has a different parent.
+
+Cherry-pick is the answer to "I want *that one fix* from the other branch but not the rest." It's also, notably, exactly the mechanism that makes the "public repo + private fork" workflow work: you develop on your private branch, and when a specific commit is safe and generic, you cherry-pick it onto a clean branch for the public repo.
+
+### Takeaway
+
+Merge joins two histories with a new two-parent commit, preserving everything. Rebase rewrites your commits onto a new base, producing linear history at the cost of changing commit hashes. Use merge for shared/long-lived integration, rebase for private/cleanup. Never rebase commits others have based work on. Conflicts happen when the same lines are changed in both histories — Git needs your judgment, so it stops and asks. Cherry-pick copies a single commit's changes as a new commit elsewhere, which is how you move work surgically between branches or repos.
+
+---
+
+## Part 7 — Rewriting History Safely
+
+Git's history looks permanent, and commits are in fact immutable. But you can make the *branch pointers* move over different commits, effectively replacing the history a branch points to with new commits. This is "rewriting history," and it's extraordinarily useful — and extraordinarily dangerous if done on shared branches.
+
+### 7.1 — Amend: fixing the last commit
+
+The simplest history rewrite:
+
+```bash
+# Oops, I committed with a typo in the message
+git commit --amend -m "Correct message"
+
+# Or: I forgot to add a file
+git add forgotten.py
+git commit --amend --no-edit
+```
+
+`--amend` replaces the most recent commit with a new commit. The new commit has the *same parent* but new content and/or a new message. Its hash is different (because content changed). The old commit is abandoned in the object store.
+
+This is safe as long as the commit hadn't been pushed anywhere. If it has been pushed and someone else pulled it, amending creates a divergence that needs force-push to reconcile — and force-push on shared branches is the thing the golden rule forbids.
+
+### 7.2 — Interactive rebase: the power tool
+
+`git rebase -i <base>` opens an editor listing all the commits between `<base>` and your current position, with options for each:
+
+```
+pick a3f2b1 Add authentication
+pick b8e4d2 Fix typo in auth
+pick c1d5e9 Add password reset
+pick d2f6a3 Oops forgot import
+```
+
+You can change `pick` to:
+
+- **reword** — keep the commit, edit its message.
+- **edit** — pause at this commit so you can change its content.
+- **squash** — combine this commit into the one above, keeping both messages.
+- **fixup** — like squash, but discard this commit's message. (Used for "oops forgot import" style commits — fold them into the real commit.)
+- **drop** — remove the commit entirely.
+
+You can also reorder the lines to reorder the commits.
+
+After you save, Git replays the commits in the order and with the operations you specified, producing a fresh linear history. The above might become:
+
+```
+pick a3f2b1 Add authentication            (kept)
+fixup b8e4d2 Fix typo in auth             (folded into a3f2b1)
+pick c1d5e9 Add password reset            (kept, reparented)
+fixup d2f6a3 Oops forgot import           (folded into c1d5e9)
+```
+
+The resulting branch has two clean commits instead of four messy ones. This is how professionals keep their feature branches legible: work messily, then rebase-interactively to tell a clean story before opening a PR.
+
+### 7.3 — The golden rule, restated
+
+<Callout title="The golden rule" type="error">
+Do not rewrite history that has been shared.
+</Callout>
+
+If you amend or rebase commits that exist on a shared remote, and anyone else has pulled those commits, you have created two universes: yours (with the new commits) and theirs (with the old commits). When they try to pull, Git will see that histories have diverged and try to merge them — producing a merged history containing *both* the old and new versions of the same changes, a confusing mess.
+
+Force-push (`git push --force`) is how you tell the remote "accept my rewritten history, throw away what you had." That's fine on a branch only you use. It's a serious mistake on a shared one.
+
+A small middle ground: `git push --force-with-lease`. This force-pushes *only if* the remote is still where you last saw it. If someone else has pushed since your last fetch, it refuses. This catches the common case of "I rewrote history, but a collaborator pushed new work I didn't know about" and prevents you from stomping on their work.
+
+### 7.4 — Recovering from disaster
+
+Because of the reflog, most "disasters" are recoverable. Here are the common ones:
+
+**"I did `git reset --hard` and lost my changes."**
+```bash
+git reflog
+# find the hash of where you were before the reset
+git reset --hard <that-hash>
+```
+
+**"I deleted a branch I needed."**
+```bash
+git reflog
+# find a commit from that branch
+git branch <branch-name> <commit-hash>
+```
+
+**"I rebased and the result is wrong."**
+```bash
+git reflog
+# find the hash of HEAD before the rebase
+git reset --hard <that-hash>
+```
+
+**"I committed to the wrong branch."**
+```bash
+git log              # note the commit hash
+git reset --hard HEAD~1   # remove from wrong branch
+git checkout right-branch
+git cherry-pick <hash>    # apply to correct branch
+```
+
+The reflog is your insurance policy. Get comfortable reading it (`git reflog` shows HEAD's history; `git reflog show <branch>` shows a specific branch's history). Nearly every "I broke everything" situation resolves in 30 seconds once you know where to look.
+
+### Takeaway
+
+History rewriting — amend, rebase interactive, reset — is how you shape messy development work into a clean, meaningful history. It's safe on private branches and dangerous on shared ones. The golden rule is: don't rewrite commits anyone else has built on. The reflog records every pointer movement locally, so almost any accident is recoverable inside the reflog window (90 days by default). Force-with-lease is a safer force-push that refuses if the remote has changed since you last looked. Learn these tools on a throwaway repo first, where the stakes are zero and the reflog will bail you out.
+
+---
+
+## Part 8 — Workflows for Real Projects
+
+Everything above is Git itself. Workflows are *conventions* layered on top — how teams agree to organize branches, integrate changes, and release software. There is no universally correct workflow; there are workflows that suit different contexts. I'll keep this part deliberately lighter, because once Parts 2–7 are solid, workflows are mostly pattern recognition.
+
+### 8.1 — Solo developer
+
+For solo work on a small project, you can get away with:
+
+- One branch: `main`.
+- Commit directly when work is small and contained.
+- Create a feature branch for anything non-trivial, merge (or fast-forward) when done.
+- Push to one remote (`origin`) for backup and remote access.
+
+The main discipline: **small, meaningful commits with clear messages**. Solo developers often skip this and regret it six months later when they need to find "when did I change the auth logic?" and the git log is a wall of "fix" and "update".
+
+### 8.2 — Feature branch workflow
+
+The dominant pattern for small-to-medium teams:
+
+- `main` is always deployable.
+- For each feature or bug fix, create a branch from `main`.
+- Push the branch, open a pull request, get review, merge.
+- After merging, delete the branch.
+
+Variations: some teams require squash-merge (collapse the feature branch into one commit on main), some require rebase-and-merge (replay commits linearly), some allow merge commits. All are legitimate.
+
+### 8.3 — Trunk-based development
+
+Favored by high-velocity teams (Google, Meta, many modern startups):
+
+- Everyone works off `main` (the "trunk"), in tiny branches that live for hours or a day.
+- Integration happens constantly — multiple times a day per developer.
+- Feature flags hide incomplete features in production.
+
+This works when: you have strong automated testing, feature flag infrastructure, and a culture of small changes. It doesn't work when: changes are large, testing is weak, or deploys are slow.
+
+### 8.4 — Gitflow (and why most teams left)
+
+Gitflow was influential in the early 2010s: multiple long-lived branches (`develop`, `main`, `release/*`, `hotfix/*`) with strict rules about what flows where. It's still right for some contexts — software with infrequent releases and long support windows — but most teams found it heavyweight compared to feature-branch or trunk-based, and it's now considered legacy for typical web/app development.
+
+### 8.5 — Fork and pull request (open source)
+
+The standard for open-source contribution:
+
+- Fork the project on GitHub (server-side copy).
+- Clone your fork locally.
+- Add the original as `upstream` remote.
+- Create a feature branch, push to your fork.
+- Open a pull request from your fork's branch to the original's main branch.
+- Maintainer reviews, possibly asks for changes, merges.
+
+### 8.6 — The two-remote workflow (public + private fork)
+
+This is what you asked about originally. You have a public repo (open source) and a private fork (your personal version with secrets or customizations). On your laptop:
+
+- `origin` → private fork.
+- `upstream` → public repo.
+- `main` branch tracks `upstream/main` (clean, shareable state).
+- `personal` branch is your daily-driver, pushed only to `origin`.
+- When you build something generic, cherry-pick or branch-off-main, push a clean branch to `upstream`, open a PR.
+- When public updates happen, `git pull upstream main` to refresh, then merge `main` into `personal`.
+
+This is a specific instance of the fork-and-PR model with an extra twist: *you* are both the maintainer of the public repo and the consumer of the private fork. The discipline of keeping secrets and personal customizations in `personal` and never on branches you push upstream is what makes this safe.
+
+### Takeaway
+
+Workflows are conventions, not laws. Feature-branch is a safe default for teams. Trunk-based is high-velocity but demands infrastructure. Gitflow is mostly legacy. Fork-and-PR is how open source works. The two-remote workflow is fork-and-PR applied to your own dual role as public maintainer and private user. Pick the simplest workflow that fits your context; complicate only when you feel the pain of something simpler.
+
+---
+
+## Part 9 — Professional Habits
+
+Things that separate practiced Git users from casual ones. Adopt these gradually; trying to do all of them at once will feel like overhead.
+
+### 9.1 — Commit messages
+
+A good commit message has:
+
+- A **subject line** (50 chars or less) in imperative mood: "Add user authentication," not "Added authentication" or "Adding auth stuff."
+- A blank line.
+- A **body** (wrap at 72 chars) explaining *why*, not just *what*. The diff shows what; the message explains why it was needed and any non-obvious context.
+
+Many teams use **conventional commits**: `feat:`, `fix:`, `docs:`, `refactor:`, `chore:`, `test:`. This enables automated changelogs and semantic versioning.
+
+### 9.2 — Branch naming
+
+Conventions vary, but typical patterns:
+
+- `feat/short-description`
+- `fix/bug-summary`
+- `username/feature-name` (in larger teams, to attribute ownership)
+- Sometimes tied to issue tracker: `fix/JIRA-1234-auth-bug`.
+
+Pick a convention and stick with it. Consistency beats cleverness.
+
+### 9.3 — Config and secrets separation
+
+Never commit secrets. Not API keys, not passwords, not private URLs. Use:
+
+- Environment variables (`.env` file, added to `.gitignore`).
+- A template file (`.env.example`) showing the required variables with blank values, committed to the repo.
+- Secret managers (AWS Secrets Manager, Doppler, etc.) for production.
+
+<Callout title="Committed secrets are compromised" type="error">
+Once a secret is committed and pushed, it is considered compromised *even if you remove it in a later commit* — the secret is still in the history. Rotate it immediately.
+</Callout>
+
+### 9.4 — Code review
+
+Even solo, review your own diffs before committing. `git diff --staged` before every commit catches so many small mistakes (debug prints left in, wrong filenames, accidental formatting changes) that it's become muscle memory for experienced developers.
+
+On teams, review is the main quality bar. The habit is: review for *intent and clarity* first (is this the right change?), *correctness* second (does it work?), *style* last (and mostly let the linter handle it).
+
+### 9.5 — What "clean history" means
+
+A clean history is one where:
+
+- Each commit does one thing.
+- Commit messages explain the reasoning.
+- The log is readable as a story of how the project evolved.
+- No "WIP" or "fix typo" commits survive into main (they've been squashed or fixed up).
+
+The investment is small — a rebase before every PR — and the payoff is huge: years later, when someone asks "why did we do it this way?", the answer is in the commit history instead of lost forever.
+
+### 9.6 — Tooling around Git
+
+- **`.gitignore`** — patterns of files Git should never track. Put `node_modules/`, `__pycache__/`, `.env`, build outputs, editor config, etc. Language-specific templates exist (GitHub maintains a good collection).
+- **`.gitattributes`** — per-file settings (line endings, merge strategies, binary marking). Less common, but essential for cross-platform teams.
+- **Git hooks** — scripts that run at specific points (pre-commit, pre-push). Use them to run linters, tests, or block commits to protected branches. The `pre-commit` framework makes this easy.
+
+### Takeaway
+
+Professional habits are small investments with large compounding returns: clean commits, descriptive messages, separated secrets, self-review before pushing, readable history. None of them require advanced Git knowledge — they require discipline, and they pay off months or years later when the project's history becomes an asset rather than noise.
+
+---
+
+## Part 10 — Landing on a Serious Project
+
+When you join a team or a large open-source project, the Git mechanics are the same, but the *social layer* is new. Mistakes here feel worse than mistakes on your own code, so here's what to do.
+
+### 10.1 — First day: read before you write
+
+Before your first commit:
+
+- Read the project's `CONTRIBUTING.md` if it exists.
+- Look at recent merged PRs to see what "good" looks like for that team: commit message style, PR description format, review culture.
+- Check `git log --oneline -50` to see the history cadence: tiny focused commits? Larger thematic ones?
+- Note the branch conventions: is main called `main` or `master` or `trunk`? What do feature branches look like?
+
+Five minutes of reading saves an awkward first PR.
+
+### 10.2 — Questions to ask
+
+- Which workflow does the team use? (Feature branch? Trunk-based? Something custom?)
+- Who approves PRs? How many reviewers are needed?
+- Is the history expected to be clean (rebase/squash) or preserved (merge)?
+- Are there protected branches? (Probably yes for main.)
+- Is there CI? What must pass before a PR can merge?
+- What's the release process? Who cuts releases, and how?
+
+If the team is healthy, these answers are documented. If not, ask people directly — the answers exist in their heads.
+
+### 10.3 — What to do when you break something
+
+You will, eventually, do one of:
+
+- Push a broken commit to a shared branch.
+- Accidentally force-push over someone's work.
+- Merge something you shouldn't have.
+
+The professional response is:
+
+1. **Don't hide it.** Tell the team immediately. Silent problems get worse.
+2. **Fix forward when possible.** A revert commit is better than a rewrite, because reverts preserve history.
+3. **If you must rewrite, coordinate.** Tell everyone "I need to force-push to branch X, please stop work there for 10 minutes."
+4. **Post-mortem briefly.** Not to blame, but to update the team's defaults — add a branch protection, a pre-push hook, whatever prevents recurrence.
+
+### 10.4 — Signs of a healthy Git culture
+
+Look for:
+
+- Main is always deployable (CI enforces this).
+- Branches are short-lived.
+- PRs are small and focused.
+- Commit messages are descriptive.
+- Force-push to main is blocked by the platform.
+- Reviews happen quickly.
+- Rollbacks are rare and calm when they happen.
+
+Signs of trouble:
+
+- Long-lived branches that diverge from main for weeks.
+- Gigantic PRs ("here's 3,000 lines, LGTM please").
+- "Fix" and "update" commits everywhere.
+- Fear of the Git log.
+- People routinely force-pushing to shared branches.
+
+You can't always change a team's Git culture, but knowing what healthy looks like means you can advocate for it, or recognize when you're somewhere worth learning from.
+
+### Takeaway
+
+Joining a serious project is 10% Git mechanics (which you now know) and 90% reading the team's conventions and matching them. Be observant before you're opinionated. When you break something, surface it immediately and fix forward. Healthy Git culture looks like short branches, small PRs, readable history, and calm recoveries; unhealthy culture looks like fear and avoidance. You'll learn the most from projects with the first kind.
+
+---
+
+## Appendix A — Command Reference by Intent
+
+Organized by what you're trying to do, not by command name.
+
+**I want to see what's going on**
+- `git status` — current state of working dir and index.
+- `git log --oneline --graph --all` — visual DAG of all branches.
+- `git diff` — unstaged changes.
+- `git diff --staged` — staged changes.
+- `git show <commit>` — what a specific commit changed.
+
+**I want to save my work**
+- `git add <file>` — stage a file.
+- `git add -p` — stage individual hunks interactively.
+- `git commit -m "message"` — commit staged changes.
+- `git commit --amend` — replace the last commit.
+
+**I want to switch context**
+- `git checkout <branch>` — switch to a branch.
+- `git checkout -b <new-branch>` — create and switch.
+- `git switch <branch>` — newer alternative to `checkout` for branches.
+
+**I want to combine work**
+- `git merge <branch>` — merge a branch into current.
+- `git rebase <branch>` — replay current branch on top of another.
+- `git cherry-pick <commit>` — apply a specific commit here.
+
+**I want to sync with others**
+- `git fetch <remote>` — download new objects from remote.
+- `git pull <remote> <branch>` — fetch + merge/rebase.
+- `git push <remote> <branch>` — upload to remote.
+
+**I want to undo something**
+- `git restore <file>` — discard working-dir changes to a file.
+- `git restore --staged <file>` — unstage a file.
+- `git reset --soft HEAD~1` — uncommit, keep changes staged.
+- `git reset --mixed HEAD~1` — uncommit, unstage, keep changes in working dir.
+- `git reset --hard HEAD~1` — uncommit and throw away changes. *Destructive.*
+- `git revert <commit>` — create a new commit that undoes an old one.
+- `git reflog` — see where HEAD has been; recover almost anything.
+
+**I want to manage branches and remotes**
+- `git branch` — list branches.
+- `git branch <name>` — create a branch.
+- `git branch -d <name>` — delete a merged branch.
+- `git branch -D <name>` — delete a branch even if unmerged.
+- `git remote add <name> <url>` — add a remote.
+- `git remote -v` — list remotes.
+
+---
+
+## Appendix B — Recovery Cookbook
+
+**"I committed to the wrong branch."**
+```bash
+git log -1 --format=%H         # note the hash
+git reset --hard HEAD~1        # remove from current branch
+git checkout correct-branch
+git cherry-pick <hash>
+```
+
+**"I did `git reset --hard` and lost changes."**
+```bash
+git reflog
+git reset --hard <hash-from-reflog-before-the-reset>
+```
+
+**"I need to undo a pushed commit on a shared branch."**
+```bash
+git revert <commit>            # creates a new commit that reverses it
+git push
+```
+Do *not* reset and force-push a shared branch.
+
+**"I accidentally committed a secret."**
+Rotate the secret immediately. Remove it from the repo's history with `git filter-repo` or BFG Repo-Cleaner, then force-push — but only if you're the sole user, or coordinate carefully. The secret is still considered leaked; the cleanup is about preventing future exposure, not undoing the leak.
+
+**"I deleted a branch I needed."**
+```bash
+git reflog
+git branch <name> <hash-from-reflog>
+```
+
+**"My rebase went wrong."**
+```bash
+git rebase --abort             # while rebase is in progress
+# or, if already completed:
+git reflog
+git reset --hard <hash-before-rebase>
+```
+
+**"`git pull` created a merge I didn't want."**
+```bash
+git reset --hard ORIG_HEAD     # ORIG_HEAD points to where you were before the pull
+# then try again:
+git pull --rebase
+```
+
+---
+
+## Appendix C — Glossary
+
+- **Blob** — a Git object storing file contents (no filename, no metadata).
+- **Commit** — a Git object representing a snapshot: a tree hash, parent hashes, author, message.
+- **DAG** — Directed Acyclic Graph. The shape of Git history.
+- **Detached HEAD** — HEAD pointing directly at a commit instead of a branch.
+- **Fast-forward** — moving a branch pointer forward along existing history, no new commit created.
+- **Fork** — a server-side copy of a whole repository (a GitHub concept).
+- **HEAD** — a ref indicating the currently checked-out commit or branch.
+- **Hash** — a SHA-1 (or SHA-256) fingerprint of content; Git's ID for everything.
+- **Index (staging area)** — the file `.git/index` holding the next commit's state-in-progress.
+- **Object store** — `.git/objects/`, holding all blobs, trees, commits, and tags.
+- **Packfile** — a compressed archive combining many objects, used to reduce storage and speed transfer.
+- **PR (pull request)** — a GitHub feature for proposing and reviewing a merge; not a Git concept.
+- **Rebase** — replaying commits onto a new base, producing new commit hashes.
+- **Ref** — a named pointer to a commit (branches, tags, HEAD).
+- **Reflog** — a log of every movement of HEAD and branch pointers, kept locally.
+- **Remote** — a named URL to another Git repository.
+- **Remote-tracking branch** — a read-only ref like `origin/main` recording where the remote's branch was at the last fetch.
+- **Tag** — a ref (optionally with metadata) that doesn't move, used to mark releases.
+- **Tree** — a Git object representing a directory: a list of (name, mode, hash) entries.
+- **Working directory** — your actual files on disk.
+
+---
+
+## Appendix D — Further Reading
+
+- **Pro Git book** (free online, by Scott Chacon): the definitive comprehensive Git reference. Chapter 10 ("Git Internals") is especially recommended after finishing this document — it goes deeper on the object model with hands-on exercises.
+- **"Git from the Bottom Up"** by John Wiegley: a short essay-length treatment of the object model. Complements Part 2 of this document nicely.
+- **The Git source code itself**: unusually readable for a project its age. The `Documentation/` directory in the repo is a goldmine.
+- **`git help <command>`**: every command has excellent man pages. The habit of reading them beats searching Stack Overflow for the 50th time.
+
+---
+
+## Closing Note
+
+Git rewards a specific kind of patience. Most tools can be learned by poking; Git punishes poking and rewards understanding. The reason this document is so long is that there's no shortcut — the model has to go in fully, or you'll keep hitting walls.
+
+The payoff is real. Once you see Git as a DAG of snapshots addressed by hashes, with commands that read, write, and move pointers within that graph, you stop being scared of it. You stop memorizing incantations. You start reasoning: "if I want the result to look like this, I need to get the DAG into that state, so the command must be roughly X." That shift is what this document exists to produce.
+
+If a section didn't click, the fix is usually one part earlier. Re-read Part 2 if anything in 4–7 feels shaky. Re-read Part 3 if remotes feel abstract. The document is designed so that understanding compounds from the bottom up.
+
+Good luck. Come back to this when you need it.

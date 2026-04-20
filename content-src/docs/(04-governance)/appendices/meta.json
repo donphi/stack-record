@@ -1,0 +1,5 @@
+{
+  "title": "Appendices",
+  "icon": "Book",
+  "pages": ["templates", "glossary", "notation", "library-registry", "llm-writing-guide", "git-guide"]
+}

@@ -1,0 +1,22 @@
+{
+  "title": "Named Entity Recognition",
+  "description": "A method for identifying and classifying named entities in unstructured text.",
+  "id": "M-EXT-0001",
+  "type": "method",
+  "domain": "extraction",
+  "status": "evergreen",
+  "tags": ["method/extraction"],
+  "parent_maps": ["MAP-METHODS-0001"],
+  "uses_concepts": ["word_embeddings"],
+  "implemented_in": [],
+  "validated_by": [],
+  "related_notes": ["word_embeddings", "mesh_ontology"],
+  "related_methods": [],
+  "related_systems": [],
+  "related_projects": ["ukb_pipeline"],
+  "review_cycle": "monthly",
+  "last_reviewed": "2026-04-16",
+  "closure_score": 4,
+  "closure_status": "partial",
+  "open_questions": ["Does fine-tuning a biomedical NER model on silver-standard MeSH annotations outperform gold-standard training on small corpora?"]
+}

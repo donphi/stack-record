@@ -1,6 +1,7 @@
 {
   "title": "Notes",
   "description": "Inbox for raw captures, tool discoveries, and ideas not yet processed into typed notes.",
+  "icon": "EditPencil",
   "id": "MAP-NOTES-0001",
   "type": "map",
   "domain": "global",

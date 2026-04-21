@@ -17,3 +17,18 @@
 ## Closure fields
 
 `closure_score` is 0–6. `closure_status` is one of: `open`, `partial`, `closed`, `archived`.
+
+## File conventions
+
+Two JSON files coexist in the content tree. They do unrelated jobs and must not be confused:
+
+- `index.meta.json` — the knowledge-graph sidecar for a page. The materialiser injects it as MDX frontmatter for the adjacent `index.mdx` at build time. Fumadocs never reads it directly.
+- `meta.json` — Fumadocs folder navigation only (title, icon, `pages` order, `collapsible`, `root`). It is the only folder-level file Fumadocs sees.
+
+Add a `meta.json` only when one of these is true:
+
+1. The folder is the docs root and you need top-level layout (separators, `...(group)` extraction).
+2. The folder is a route group `(NN-name)/` whose children get extracted upward and need an explicit order.
+3. The folder is a multi-child section that needs an icon, a custom title, or a non-alphabetical order.
+
+Leaf nodes (a folder containing only `index.mdx` + `index.meta.json`, no other `.mdx` descendants) are flattened automatically by the materialiser to `<slug>.mdx` in the parent generated tree, so Fumadocs renders them as a leaf page with no disclosure chevron. Do not add a `meta.json` to a leaf folder — the build guard rejects it.

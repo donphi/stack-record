@@ -1,6 +1,7 @@
 {
   "title": "Projects",
   "description": "Project-level synthesis notes.",
+  "icon": "ReportColumns",
   "id": "MAP-PROJECTS-0001",
   "type": "map",
   "domain": "project",

@@ -8,6 +8,9 @@
  *   - Required-field validation (title, description, id, type)
  *   - Frontmatter-in-source rejection
  *   - Wiki-link resolution ([[name]] → standard markdown links in generated output)
+ *   - Leaf flattening: <slug>/index.mdx with no other .mdx descendants is emitted
+ *     as <slug>.mdx in the parent so Fumadocs renders it as a leaf page (no chevron)
+ *   - Leaf-folder meta.json guard: rejects hand-written folder meta in leaf folders
  *
  * TOUCH POINTS:
  *   - package.json "docs:materialize" script runs this
@@ -102,6 +105,35 @@ function outputPathForSourceFile(srcFile: string): string {
     throw new Error(`Page meta sidecars are not copied directly: ${srcFile}`);
   }
   return path.join(OUT_DIR, rel);
+}
+
+/**
+ * A folder is a "leaf" in the page tree when its only .mdx file is its own
+ * index.mdx (no sibling pages, no descendant pages). Such folders are emitted
+ * as a flat <slug>.mdx in the parent .generated dir so that Fumadocs renders
+ * them as a leaf page (no chevron) rather than a collapsible folder.
+ *
+ * Non-.mdx files (data.json sidecars, README.md, _template/*.template) do not
+ * affect this — they aren't part of the Fumadocs page tree.
+ */
+function leafFolderForIndex(
+  docFile: string,
+  allMdxFiles: readonly string[],
+): string | null {
+  if (path.basename(docFile) !== 'index.mdx') return null;
+  const folder = path.dirname(docFile);
+  const prefix = folder + path.sep;
+  const otherMdx = allMdxFiles.some(
+    (f) => f !== docFile && f.startsWith(prefix),
+  );
+  return otherMdx ? null : folder;
+}
+
+function flattenedOutputPath(leafFolder: string): string {
+  const parent = path.dirname(leafFolder);
+  const slug = path.basename(leafFolder);
+  const rel = path.relative(SRC_DIR, parent);
+  return path.join(OUT_DIR, rel, `${slug}.mdx`);
 }
 
 const BASE_URL = '/docs';
@@ -204,6 +236,7 @@ async function copyFolderMeta(file: string): Promise<void> {
 async function materializePage(
   docFile: string,
   wikiMap: Map<string, WikiTarget>,
+  allMdxFiles: readonly string[],
 ): Promise<void> {
   const metaFile = expectedPageMetaPath(docFile);
   try {
@@ -225,7 +258,8 @@ async function materializePage(
   const parsedMeta = parsePageMeta(JSON.parse(metaRaw), relativeFromSrc(metaFile));
   const resolved = resolveWikiLinks(body.trimStart(), wikiMap);
   const compiled = matter.stringify(resolved, parsedMeta);
-  const out = outputPathForSourceFile(docFile);
+  const leaf = leafFolderForIndex(docFile, allMdxFiles);
+  const out = leaf ? flattenedOutputPath(leaf) : outputPathForSourceFile(docFile);
   await ensureDir(path.dirname(out));
   await fs.writeFile(out, compiled, 'utf8');
 }
@@ -246,16 +280,39 @@ async function main(): Promise<void> {
     }
   }
 
+  const leafFolders = new Set<string>();
+  for (const docFile of docs) {
+    const leaf = leafFolderForIndex(docFile, docs);
+    if (leaf) leafFolders.add(leaf);
+  }
+
+  const strayLeafMetas = folderMetas.filter((f) =>
+    leafFolders.has(path.dirname(f))
+  );
+  if (strayLeafMetas.length > 0) {
+    const list = strayLeafMetas
+      .map((f) => `  - ${relativeFromSrc(f)}`)
+      .join('\n');
+    throw new Error(
+      `Leaf folders must not contain meta.json — they are flattened to <slug>.mdx ` +
+      `at build time and any folder meta would re-introduce the chevron. ` +
+      `Delete the following file(s):\n${list}`
+    );
+  }
+
   const wikiMap = await buildWikiLinkMap(pageMetas);
 
   for (const file of folderMetas) {
     await copyFolderMeta(file);
   }
   for (const docFile of docs) {
-    await materializePage(docFile, wikiMap);
+    await materializePage(docFile, wikiMap, docs);
   }
 
-  console.log(`Materialized ${docs.length} page(s) into ${OUT_DIR}`);
+  console.log(
+    `Materialized ${docs.length} page(s) into ${OUT_DIR} ` +
+    `(${leafFolders.size} flattened leaf node(s))`
+  );
 
   if (unresolvedWikiLinks.size > 0) {
     const sorted = [...unresolvedWikiLinks].sort();

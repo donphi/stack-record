@@ -11,5 +11,7 @@ __pycache__/
 obsidian/.obsidian/
 obsidian/copilot/copilot-conversations/
 obsidian/copilot/memory/
-tools/lib-registry/data/*.sqlite3
-tools/lib-registry/data/sync.log
+tools/lib-registry/data/
+tools/lib-registry/data/
+tools/doc-status/data/
+tools/kg-builder/data/

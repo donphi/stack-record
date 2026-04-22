@@ -1,4 +1,4 @@
-# config/libraries.yaml — Complete library inventory for research pipelines.
+# config/libraries.yaml — Complete library inventory for the UKB pipeline.
 #
 # PURPOSE: Single source of truth for every library, model, database,
 #          service, and ontology evaluated for the pipeline.

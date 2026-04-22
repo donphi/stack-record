@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ title }}</title>
+  <style>{{ css | safe }}</style>
+  {% if include_htmx %}
+  <script src="https://unpkg.com/htmx.org@2.0.4"></script>
+  {% endif %}
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">{{ title }}</div>
+    <div class="counts">
+      {% for bucket in color_buckets %}
+      <span class="chip" style="--chip-color: {{ bucket.css_color }}" title="{{ bucket.label }}">
+        <span class="dot"></span>{{ bucket.label }} <strong>{{ bucket_counts.get(bucket.id, 0) }}</strong>
+      </span>
+      {% endfor %}
+      <span class="chip total">Total <strong>{{ summaries|length }}</strong></span>
+      {% if include_htmx %}
+      <button type="button"
+              class="refresh-btn"
+              hx-get="/?refresh=1"
+              hx-target="body"
+              hx-swap="outerHTML"
+              hx-indicator=".refresh-indicator"
+              title="Re-scan all index.meta.json + index.mdx files and re-run every validation rule">
+        <span class="refresh-icon" aria-hidden="true">&#x21bb;</span>
+        <span class="refresh-label">Refresh</span>
+        <span class="refresh-indicator htmx-indicator">checking…</span>
+      </button>
+      {% endif %}
+    </div>
+  </header>
+
+  <main class="layout">
+    <aside class="left-pane">
+      <h2>Tree</h2>
+      <div id="tree-root">
+        {% include "tree.html.j2" %}
+      </div>
+    </aside>
+
+    <section class="right-pane">
+      {% include "filters.html.j2" %}
+      <div id="table-wrap">
+        {% include "notes_table.html.j2" %}
+      </div>
+    </section>
+  </main>
+
+  <footer class="bottombar">
+    <span>Generated {{ generated_at }}</span>
+    <span>{{ summaries|length }} notes  &middot;  {{ issue_count }} issues</span>
+  </footer>
+</body>
+</html>

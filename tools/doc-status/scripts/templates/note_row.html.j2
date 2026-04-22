@@ -1,0 +1,97 @@
+{# expects: s (NoteSummary), editable_fields, field_types, enums, include_htmx #}
+<tr id="note-{{ s.slug | replace('/', '__') }}" class="note bucket-{{ s.bucket_id }}">
+  <td><span class="bucket-pill" style="background:{{ s.bucket_color }}" title="{{ s.bucket_label }}"></span></td>
+  <td class="title-cell">
+    <strong>{{ s.title }}</strong>
+    <div class="slug">{{ s.slug or '/' }}</div>
+    {% if s.issues %}
+    <details class="issue-list">
+      <summary>{{ s.issues | length }} issue{% if s.issues|length != 1 %}s{% endif %}</summary>
+      <ul>
+        {% for issue in s.issues %}
+        <li class="severity-{{ issue.severity }}"><code>{{ issue.issue_type }}</code> · {{ issue.message }}</li>
+        {% endfor %}
+      </ul>
+    </details>
+    {% endif %}
+  </td>
+  <td>{{ s.type }}</td>
+
+  {# status #}
+  <td>
+    {% if "status" in editable_fields and include_htmx %}
+    <select hx-patch="/api/notes/{{ s.slug }}/field"
+            hx-vals='{"field":"status"}'
+            hx-trigger="change"
+            hx-target="closest tr"
+            hx-swap="outerHTML"
+            name="value">
+      {% for v in enums.get("status", []) %}
+      <option value="{{ v }}" {% if v == s.status %}selected{% endif %}>{{ v }}</option>
+      {% endfor %}
+    </select>
+    {% else %}{{ s.status or '—' }}{% endif %}
+  </td>
+
+  {# review_cycle #}
+  <td>
+    {% if "review_cycle" in editable_fields and include_htmx %}
+    <select hx-patch="/api/notes/{{ s.slug }}/field"
+            hx-vals='{"field":"review_cycle"}'
+            hx-trigger="change"
+            hx-target="closest tr"
+            hx-swap="outerHTML"
+            name="value">
+      {% for v in enums.get("review_cycle", []) %}
+      <option value="{{ v }}" {% if v == s.review_cycle %}selected{% endif %}>{{ v }}</option>
+      {% endfor %}
+    </select>
+    {% else %}{{ s.review_cycle or '—' }}{% endif %}
+  </td>
+
+  {# last_reviewed #}
+  <td>
+    {% if "last_reviewed" in editable_fields and include_htmx %}
+    <input type="date" name="value" value="{{ s.last_reviewed or '' }}"
+           hx-patch="/api/notes/{{ s.slug }}/field"
+           hx-vals='{"field":"last_reviewed"}'
+           hx-trigger="change"
+           hx-target="closest tr"
+           hx-swap="outerHTML">
+    {% else %}{{ s.last_reviewed or '—' }}{% endif %}
+  </td>
+
+  <td class="num">{% if s.days_overdue %}<span class="overdue-cell">+{{ s.days_overdue }}d</span>{% else %}—{% endif %}</td>
+
+  {# closure_score #}
+  <td class="num">
+    {% if "closure_score" in editable_fields and include_htmx %}
+    <input type="number" min="0" max="7" name="value" value="{{ s.closure_score if s.closure_score is not none else 0 }}"
+           hx-patch="/api/notes/{{ s.slug }}/field"
+           hx-vals='{"field":"closure_score"}'
+           hx-trigger="change"
+           hx-target="closest tr"
+           hx-swap="outerHTML"
+           style="width: 4em;">
+    {% else %}{{ s.closure_score if s.closure_score is not none else '—' }}{% endif %}
+  </td>
+
+  {# closure_status #}
+  <td>
+    {% if "closure_status" in editable_fields and include_htmx %}
+    <select hx-patch="/api/notes/{{ s.slug }}/field"
+            hx-vals='{"field":"closure_status"}'
+            hx-trigger="change"
+            hx-target="closest tr"
+            hx-swap="outerHTML"
+            name="value">
+      {% for v in enums.get("closure_status", []) %}
+      <option value="{{ v }}" {% if v == s.closure_status %}selected{% endif %}>{{ v }}</option>
+      {% endfor %}
+    </select>
+    {% else %}{{ s.closure_status or '—' }}{% endif %}
+  </td>
+
+  <td class="num">{{ s.open_questions_count }}</td>
+  <td class="num">{{ s.issues | length }}</td>
+</tr>

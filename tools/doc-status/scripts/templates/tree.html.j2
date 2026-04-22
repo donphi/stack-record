@@ -1,0 +1,48 @@
+{% macro render_node(node) %}
+  <li class="tree-node">
+    {% if node.kind == "folder" %}
+      <div class="folder-row">
+        <span class="folder-icon">▾</span>
+        <span class="folder-title">{{ node.title }}</span>
+        <span class="folder-counts">
+          {% for bucket_id, count in node.bucket_counts.items() %}
+            {% if count %}
+            <span class="mini-dot" style="--dot-color: {{ bucket_colors[bucket_id] }}" title="{{ bucket_id }}: {{ count }}">{{ count }}</span>
+            {% endif %}
+          {% endfor %}
+        </span>
+      </div>
+      {% if node.children %}
+      <ul>
+        {% for child in node.children %}
+          {{ render_node(child) }}
+        {% endfor %}
+      </ul>
+      {% endif %}
+    {% else %}
+      {% set s = node.summary %}
+      <div class="note-row">
+        <a href="#note-{{ s.slug | replace('/', '__') }}" class="note-link" style="--bucket: {{ s.bucket_color }}">
+          <span class="bucket-dot"></span>
+          <span class="note-title">{{ s.title }}</span>
+          <span class="note-type">{{ s.type }}</span>
+          {% if s.issues %}
+          <span class="badge issues" title="{{ s.issues | length }} issues">{{ s.issues | length }}</span>
+          {% endif %}
+          {% if s.open_questions_count %}
+          <span class="badge oq" title="open questions">?{{ s.open_questions_count }}</span>
+          {% endif %}
+          {% if s.days_overdue %}
+          <span class="badge overdue" title="overdue {{ s.days_overdue }}d">+{{ s.days_overdue }}d</span>
+          {% endif %}
+        </a>
+      </div>
+    {% endif %}
+  </li>
+{% endmacro %}
+
+<ul class="tree">
+  {% for child in tree.children %}
+    {{ render_node(child) }}
+  {% endfor %}
+</ul>

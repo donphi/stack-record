@@ -1,0 +1,138 @@
+# ============================================================================
+# FILE: dashboard.yaml
+# LOCATION: config/dashboard.yaml
+# PURPOSE: Runtime tunables for the FastAPI server, the static-html exporter,
+#          and the markdown report exporter. Zero defaults exist in code.
+# ============================================================================
+
+# ── Paths inside the container ─────────────────────────────────────────────
+paths:
+  content_src: "/app/content"
+  rules_yaml: "/app/config/rules.yaml"
+  dashboard_yaml: "/app/config/dashboard.yaml"
+  cache_json: "/app/data/cache.json"
+  output_html: "/app/output/dashboard.html"
+  output_md: "/app/output/report.md"
+
+# ── Server ─────────────────────────────────────────────────────────────────
+server:
+  host: "0.0.0.0"
+  port: 8765
+  watch_filesystem: true
+  watch_debounce_ms: 300
+  title: "doc-status"
+
+# ── Color buckets (consumed by Jinja templates and report renderer) ───────
+# A note is bucketed top-down — first matching condition wins.
+# Conditions are evaluated in order. Available booleans on each note:
+#   missing_mandatory, invalid_enum, invalid_id, invalid_date,
+#   heading_missing, overdue_error, overdue_warning,
+#   has_open_questions, low_closure, never_reviewed, is_draft,
+#   is_archived, is_closed
+color_buckets:
+  - id: "red"
+    label: "Critical"
+    css_color: "#d73a49"
+    when_any: ["missing_mandatory", "invalid_enum", "invalid_id", "invalid_date", "heading_missing", "overdue_error"]
+  - id: "amber"
+    label: "Attention"
+    css_color: "#e36209"
+    when_any: ["overdue_warning", "low_closure", "has_open_questions"]
+  - id: "gray"
+    label: "Draft"
+    css_color: "#959da5"
+    when_any: ["is_draft", "never_reviewed"]
+  - id: "green"
+    label: "Healthy"
+    css_color: "#28a745"
+    when_any: ["is_closed"]
+  - id: "blue"
+    label: "Active"
+    css_color: "#0366d6"
+    when_any: []   # default fall-through
+
+low_closure_threshold: 4
+
+# ── Sortable columns ──────────────────────────────────────────────────────
+# Each entry makes the matching table column header clickable. Click cycles:
+#   1st click  → default_direction
+#   2nd click  → opposite of default
+#   3rd click  → back to default
+# Click any other sortable column → resets to that column's default_direction.
+#
+# `field` references either a NoteSummary attribute or the special string
+# "issue_count" (derived from len(summary.issues)).
+#
+# Add a column by appending here; remove sortability by deleting the entry.
+sortable_columns:
+  - id: "last_reviewed"
+    field: "last_reviewed"
+    label: "Last reviewed"
+    default_direction: "desc"   # latest first
+  - id: "days_overdue"
+    field: "days_overdue"
+    label: "Overdue"
+    default_direction: "desc"   # most overdue first
+  - id: "open_questions"
+    field: "open_questions_count"
+    label: "Open Q"
+    default_direction: "desc"   # most questions first
+  - id: "issues"
+    field: "issue_count"
+    label: "Issues"
+    default_direction: "desc"   # most issues first
+
+# ── Filter presets shown as chips above the all-notes table ───────────────
+filter_presets:
+  - id: "all"
+    label: "All notes"
+    where: {}
+  - id: "overdue"
+    label: "Overdue reviews"
+    where: { bucket: ["red", "amber"], overdue: true }
+  - id: "missing"
+    label: "Missing mandatory fields"
+    where: { has_issue: ["missing_mandatory", "invalid_id", "invalid_enum"] }
+  - id: "headings"
+    label: "Heading conformity issues"
+    where: { has_issue: ["heading_missing"] }
+  - id: "open_questions"
+    label: "Has open questions"
+    where: { open_questions_min: 1 }
+  - id: "drafts"
+    label: "Drafts"
+    where: { status: ["draft"] }
+  - id: "archived"
+    label: "Archived"
+    where: { status: ["archived", "deprecated", "superseded"] }
+
+# ── Static export ─────────────────────────────────────────────────────────
+static_export:
+  embed_css: true
+  embed_htmx: false   # static export is read-only, no HTMX needed
+
+# ── Markdown report sections (in render order) ────────────────────────────
+report_sections:
+  - id: "summary"
+    title: "Summary"
+  - id: "overdue"
+    title: "Overdue reviews"
+    filter: { overdue: true }
+  - id: "missing_mandatory"
+    title: "Missing mandatory fields"
+    filter: { has_issue: ["missing_mandatory"] }
+  - id: "invalid_id"
+    title: "Invalid ID format"
+    filter: { has_issue: ["invalid_id"] }
+  - id: "invalid_enum"
+    title: "Invalid enum values"
+    filter: { has_issue: ["invalid_enum"] }
+  - id: "heading_conformity"
+    title: "Heading conformity failures"
+    filter: { has_issue: ["heading_missing"] }
+  - id: "open_questions"
+    title: "Open questions"
+    filter: { open_questions_min: 1 }
+  - id: "drafts"
+    title: "Drafts"
+    filter: { status: ["draft"] }

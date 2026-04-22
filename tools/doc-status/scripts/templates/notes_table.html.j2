@@ -1,0 +1,76 @@
+{# Sortable header macro. Uses HTMX to swap only the table body.
+   Shows a faint default-direction arrow when inactive so users can see
+   that the column is clickable. The arrow becomes prominent on hover
+   and fully opaque (with the live direction) when sorting is active. #}
+{% macro sort_header(label, col_id, default_direction) %}
+  {% if include_htmx and sortable_columns %}
+    {% set is_active = (active_sort == col_id) %}
+    {% set is_default = is_active and (active_sort_dir == default_direction) %}
+    {% set next_dir = "asc" if is_default else default_direction %}
+    {% if is_active %}
+      {% set arrow = "▼" if active_sort_dir == "desc" else "▲" %}
+    {% else %}
+      {% set arrow = "▼" if default_direction == "desc" else "▲" %}
+    {% endif %}
+    <a class="sort-link {% if is_active %}sort-active{% endif %}"
+       href="#"
+       hx-get="/api/table"
+       hx-target="#table-wrap"
+       hx-swap="innerHTML"
+       hx-include=".filter-form"
+       hx-vals='{"sort":"{{ col_id }}","dir":"{{ next_dir }}"}'
+       title="Click to sort {{ label | lower }} ({{ next_dir }})">
+      {{ label }}<span class="sort-indicator">{{ arrow }}</span>
+    </a>
+  {% else %}
+    {{ label }}
+  {% endif %}
+{% endmacro %}
+
+{# Lookup helper: find the configured label/default_direction for a column id. #}
+{% set _sortable_by_id = {} %}
+{% for c in (sortable_columns or []) %}
+  {% set _ = _sortable_by_id.update({c.id: c}) %}
+{% endfor %}
+
+<table class="notes-table">
+  <thead>
+    <tr>
+      <th></th>
+      <th>Title</th>
+      <th>Type</th>
+      <th>Status</th>
+      <th>Cycle</th>
+      <th>
+        {% if "last_reviewed" in _sortable_by_id %}
+          {{ sort_header(_sortable_by_id["last_reviewed"].label, "last_reviewed", _sortable_by_id["last_reviewed"].default_direction) }}
+        {% else %}Last reviewed{% endif %}
+      </th>
+      <th>
+        {% if "days_overdue" in _sortable_by_id %}
+          {{ sort_header(_sortable_by_id["days_overdue"].label, "days_overdue", _sortable_by_id["days_overdue"].default_direction) }}
+        {% else %}Overdue{% endif %}
+      </th>
+      <th>Closure</th>
+      <th>Closed?</th>
+      <th>
+        {% if "open_questions" in _sortable_by_id %}
+          {{ sort_header(_sortable_by_id["open_questions"].label, "open_questions", _sortable_by_id["open_questions"].default_direction) }}
+        {% else %}Open Q{% endif %}
+      </th>
+      <th>
+        {% if "issues" in _sortable_by_id %}
+          {{ sort_header(_sortable_by_id["issues"].label, "issues", _sortable_by_id["issues"].default_direction) }}
+        {% else %}Issues{% endif %}
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for s in filtered %}
+    {% include "note_row.html.j2" %}
+    {% endfor %}
+  </tbody>
+</table>
+{% if not filtered %}
+<p class="empty">No notes match the current filter.</p>
+{% endif %}

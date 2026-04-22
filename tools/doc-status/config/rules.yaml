@@ -1,0 +1,186 @@
+# ============================================================================
+# FILE: rules.yaml
+# LOCATION: config/rules.yaml
+# PURPOSE: Validation contract for every index.meta.json + index.mdx note in
+#          content-src/docs/. The validator engine is generic — it only knows
+#          how to read this file. Every threshold, regex, enum, and editable
+#          field lives here.
+#
+# MAXIMUM CONTROL PRINCIPLE:
+#   - Add a new note type by adding an entry under note_types
+#   - Tighten/loosen ID patterns by editing id_pattern
+#   - Override the headings the validator demands by setting
+#     mandatory_headings_override (otherwise headings are extracted live
+#     from each type's _template/example.mdx.template)
+#   - Add or remove enum values to expand what is considered valid
+#   - Whitelist a new field for inline editing by adding to editable_fields
+# ============================================================================
+
+# ── Note types ─────────────────────────────────────────────────────────────
+# template_dir is RELATIVE to content_src (resolved by scanner)
+# id_pattern is a Python regex
+# mandatory_headings_override: optional list. If absent, the validator pulls
+# the heading list from the matching _template/example.mdx.template.
+note_types:
+  map:
+    template_dir: "(01-navigation)/maps/_template"
+    id_pattern: "^(MAP-[A-Z0-9]+-\\d{4}|HOME-\\d{4})$"
+  concept:
+    template_dir: "(02-knowledge)/concepts/_template"
+    id_pattern: "^C-[A-Z0-9]+-\\d{4}$"
+  method:
+    template_dir: "(02-knowledge)/methods/_template"
+    id_pattern: "^M-[A-Z0-9]+-\\d{4}$"
+  system:
+    template_dir: "(02-knowledge)/systems/_template"
+    id_pattern: "^S-[A-Z0-9]+-\\d{4}$"
+  decision:
+    template_dir: "(03-operations)/decisions/_template"
+    id_pattern: "^D-[A-Z0-9]+-\\d{4}$"
+  experiment:
+    template_dir: "(03-operations)/experiments/_template"
+    id_pattern: "^E-[A-Z0-9]+-\\d{4}$"
+  project:
+    template_dir: "(03-operations)/projects/_template"
+    id_pattern: "^P-[A-Z0-9]+-\\d{4}$"
+  reference:
+    template_dir: "(04-governance)/appendices/_template"
+    id_pattern: "^(REF-[A-Z0-9]+-\\d{4}|NOTE-[A-Z0-9]+-\\d{4})$"
+  standard:
+    template_dir: "(04-governance)/standards/_template"
+    id_pattern: "^STD-[A-Z0-9]+-\\d{4}$"
+
+# ── Mandatory keys for every index.meta.json ──────────────────────────────
+mandatory_meta_keys:
+  - title
+  - description
+  - id
+  - type
+  - status
+  - tags
+  - review_cycle
+  - last_reviewed
+  - closure_score
+  - closure_status
+  - open_questions
+
+# Type-specific extra mandatory keys (added on top of mandatory_meta_keys)
+type_specific_mandatory_keys:
+  decision: ["decision_status", "date_decided", "deciders", "alternatives"]
+  experiment: ["date_started"]
+  project: ["domain"]
+
+# ── Allowed enum values ────────────────────────────────────────────────────
+enums:
+  status:
+    - draft
+    - active
+    - evergreen
+    - archived
+    - deprecated
+    - accepted
+    - enforced
+    - proposed
+    - superseded
+  closure_status:
+    - open
+    - in-progress
+    - closed
+  review_cycle:
+    - weekly
+    - monthly
+    - quarterly
+    - yearly
+    - never
+  decision_status:
+    - proposed
+    - accepted
+    - superseded
+    - deprecated
+
+# ── Numeric ranges ─────────────────────────────────────────────────────────
+closure_score_range: [0, 7]
+
+# ── Date format ────────────────────────────────────────────────────────────
+date_format: "%Y-%m-%d"
+date_fields:
+  - last_reviewed
+  - date_decided
+  - date_started
+  - date_completed
+
+# ── Staleness windows ──────────────────────────────────────────────────────
+# Maps review_cycle value to days. A note is "overdue" if today - last_reviewed
+# exceeds this window. "never" disables the check for that note.
+staleness_days:
+  weekly: 7
+  monthly: 31
+  quarterly: 92
+  yearly: 366
+
+# Multipliers applied to staleness_days[review_cycle] to bucket severity.
+# overdue_multipliers.warning: warning if overdue >  multiplier * window
+# overdue_multipliers.error:   error   if overdue >= multiplier * window
+overdue_multipliers:
+  warning: 1.0
+  error: 2.0
+
+# ── Heading conformity ─────────────────────────────────────────────────────
+heading_check:
+  enabled: true
+  source: "extracted_from_template"   # or "explicit_per_type"
+  enforce_order: false
+  flag_missing: true
+  flag_extra: false
+  case_sensitive: true
+  # When source == "explicit_per_type", this is the authoritative list:
+  explicit_per_type: {}
+
+# ── Tag format ─────────────────────────────────────────────────────────────
+tag_format:
+  enabled: true
+  pattern: "^[a-z0-9][a-z0-9/-]*$"
+  require_type_prefix: true
+  type_prefix_map:
+    map: "map/"
+    concept: "concept/"
+    method: "method/"
+    system: "system/"
+    decision: "decision/"
+    experiment: "experiment/"
+    project: "project/"
+    reference: "reference/"
+    standard: "standard/"
+
+# ── Editable fields whitelist (for the live web app) ──────────────────────
+# Anything not in this list is read-only in the dashboard.
+editable_fields:
+  - title
+  - description
+  - status
+  - review_cycle
+  - last_reviewed
+  - closure_score
+  - closure_status
+  - decision_status
+  - date_decided
+  - date_started
+  - date_completed
+  - tags
+  - open_questions
+
+# ── Field types (drives the input control in the UI) ──────────────────────
+field_types:
+  title: "text"
+  description: "textarea"
+  status: "enum"
+  review_cycle: "enum"
+  closure_status: "enum"
+  decision_status: "enum"
+  closure_score: "integer"
+  last_reviewed: "date"
+  date_decided: "date"
+  date_started: "date"
+  date_completed: "date"
+  tags: "string_list"
+  open_questions: "string_list"

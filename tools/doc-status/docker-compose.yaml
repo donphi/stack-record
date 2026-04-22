@@ -1,0 +1,79 @@
+# ============================================================================
+# FILE: docker-compose.yaml
+# PURPOSE: Mount content-src/docs and run the doc-status dashboard.
+# ============================================================================
+#
+# USAGE:
+#   1. Edit config/rules.yaml + config/dashboard.yaml
+#   2. Live editable web app at http://localhost:8765/:
+#        docker compose up doc-status
+#   3. One-shot static HTML export to ./output/dashboard.html:
+#        docker compose run --rm doc-status-static
+#   4. One-shot Markdown report to ./output/report.md:
+#        docker compose run --rm doc-status-report
+#   5. Run the test suite (read-only mounts, fixture tree only):
+#        docker compose run --rm test
+#
+# All extraction and validation parameters live in config/*.yaml.
+# Zero defaults exist in any Python script.
+
+services:
+  doc-status:
+    build: .
+    image: doc-status:latest
+    stdin_open: true
+    tty: true
+    ports:
+      - "8765:8765"
+    volumes:
+      - ../../content-src/docs:/app/content
+      - ./config:/app/config:ro
+      - ./data:/app/data
+      - ./output:/app/output
+    environment:
+      - DOC_STATUS_CONFIG=/app/config
+      - DOC_STATUS_CONTENT=/app/content
+    command: >
+      python3 -m uvicorn scripts.server:app
+      --host 0.0.0.0 --port 8765 --reload-dir /app/scripts
+
+  doc-status-static:
+    image: doc-status:latest
+    build: .
+    volumes:
+      - ../../content-src/docs:/app/content:ro
+      - ./config:/app/config:ro
+      - ./output:/app/output
+    environment:
+      - DOC_STATUS_CONFIG=/app/config
+      - DOC_STATUS_CONTENT=/app/content
+    command: python3 scripts/render_static.py
+
+  doc-status-report:
+    image: doc-status:latest
+    build: .
+    volumes:
+      - ../../content-src/docs:/app/content:ro
+      - ./config:/app/config:ro
+      - ./output:/app/output
+    environment:
+      - DOC_STATUS_CONFIG=/app/config
+      - DOC_STATUS_CONTENT=/app/content
+    command: python3 scripts/render_report.py
+
+  test:
+    image: doc-status:latest
+    build: .
+    volumes:
+      - ./scripts:/app/scripts:ro
+      - ./config:/app/config:ro
+      - ./tests:/app/tests
+      - ../../content-src/docs:/app/real-content:ro
+      - ../kg-builder:/app/sibling-tools/kg-builder:ro
+      - ../kg-extractor:/app/sibling-tools/kg-extractor:ro
+      - ../lib-registry:/app/sibling-tools/lib-registry:ro
+    environment:
+      - DOC_STATUS_CONFIG=/app/config
+      - PYTHONPATH=/app
+    working_dir: /app
+    command: python3 -m pytest tests/ -v

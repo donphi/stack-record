@@ -1,0 +1,44 @@
+# ============================================================================
+# FILE: tests.yaml
+# LOCATION: config/tests.yaml
+# PURPOSE: Configuration for the test suite. Test code reads this file
+#          instead of hardcoding paths or expectations.
+#
+# DESIGN: There is no static fixture tree. Tests build a synthetic content
+#         tree per-run by:
+#           1. Symlinking every _template/ directory from the REAL
+#              content-src/docs/ into a tmp_path
+#           2. Generating broken-case notes programmatically (see
+#              tests/factory.py) using those same templates
+#         Result: adding a new note type or folder to real content
+#         requires zero test changes.
+# ============================================================================
+
+# ── How to find the real content tree ────────────────────────────────────
+# First existing path wins. Lets the same tests run inside docker (mount
+# at /app/real-content) and locally (path relative to repo root).
+real_content_candidates:
+  - "/app/real-content"
+  - "../../content-src/docs"
+
+# ── Isolation roots — these MUST NOT change during a test run ─────────────
+# Each path is hashed before+after the suite runs. Drift = test failure.
+isolation_roots:
+  - "/app/sibling-tools/kg-builder"
+  - "/app/sibling-tools/kg-extractor"
+  - "/app/sibling-tools/lib-registry"
+  - "/app/real-content"
+
+# ── Synthetic note placement (no slugs hardcoded — folder + leaf only) ──
+# Tests use these to place generated notes under the type's natural folder.
+# The validator + scanner are then run on the resulting tmp tree.
+synthetic_test_root_segment: "tests-tmp"
+
+# ── Round-trip edit test parameters ───────────────────────────────────────
+# Field + value used by the inline-edit round-trip integration test.
+# Whatever field is named here MUST be in rules.yaml.editable_fields and
+# rules.yaml.field_types must declare its type.
+roundtrip:
+  field: "status"
+  new_value: "evergreen"
+  invalid_value: "bogus-not-an-enum"

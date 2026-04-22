@@ -1,0 +1,24 @@
+<div class="filters">
+  <form class="filter-form" {% if include_htmx %}hx-get="/api/table" hx-target="#table-wrap" hx-swap="innerHTML" hx-trigger="change, keyup changed delay:200ms from:input[name='q']"{% endif %}>
+    <input type="search" name="q" placeholder="Search title or id…" value="{{ q or '' }}">
+    <select name="preset">
+      {% for preset in filter_presets %}
+      <option value="{{ preset.id }}" {% if preset.id == active_preset %}selected{% endif %}>{{ preset.label }}</option>
+      {% endfor %}
+    </select>
+    <select name="type">
+      <option value="">All types</option>
+      {% for t in all_types %}
+      <option value="{{ t }}" {% if t == active_type %}selected{% endif %}>{{ t }}</option>
+      {% endfor %}
+    </select>
+    <input type="hidden" name="sort" value="{{ active_sort or '' }}">
+    <input type="hidden" name="dir" value="{{ active_sort_dir or '' }}">
+    {% if active_sort %}
+    <a class="clear-sort"
+       {% if include_htmx %}href="#" hx-get="/api/table" hx-target="#table-wrap" hx-swap="innerHTML" hx-include=".filter-form" hx-vals='{"sort":"","dir":""}'{% else %}href="?"{% endif %}
+       title="Clear sort, return to default order">clear sort ✕</a>
+    {% endif %}
+    {% if not include_htmx %}<button type="submit">Filter</button>{% endif %}
+  </form>
+</div>

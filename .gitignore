@@ -15,3 +15,4 @@ tools/lib-registry/data/
 tools/lib-registry/data/
 tools/doc-status/data/
 tools/kg-builder/data/
+.pnpm-store/

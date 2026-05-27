@@ -1,5 +1,9 @@
 # Stack Record
 
+<p>
+  <img src="docs/images/light.png" alt="Stack Record interface" width="800" />
+</p>
+
 A long-horizon personal knowledge system built on [Fumadocs](https://fumadocs.vercel.app/) and [Next.js](https://nextjs.org/). Nine structured note types, a sidecar metadata layer, closure scoring, and a materialiser pipeline that turns body-only MDX + JSON sidecars into a full documentation site with search, math rendering, and cross-linked navigation.
 
 One custom build step. Everything else is standard Fumadocs.

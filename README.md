@@ -1,9 +1,5 @@
 # Stack Record
 
-<p align="center">
-  <img src="doc/images/light-dark-split.png" alt="Stack Record interface -- light and dark mode" width="800" />
-</p>
-
 A long-horizon personal knowledge system built on [Fumadocs](https://fumadocs.vercel.app/) and [Next.js](https://nextjs.org/). Nine structured note types, a sidecar metadata layer, closure scoring, and a materialiser pipeline that turns body-only MDX + JSON sidecars into a full documentation site with search, math rendering, and cross-linked navigation.
 
 One custom build step. Everything else is standard Fumadocs.
@@ -233,7 +229,7 @@ node obsidian/scripts/create-note-pair.js concept your-domain your-concept
 Built-in full-text search across every note, with live highlighting and section context:
 
 <p align="center">
-  <img src="doc/images/search-results.png" alt="Full-text search across the knowledge base" width="800" />
+  <img src="docs/images/search-results.png" alt="Full-text search across the knowledge base" width="800" />
 </p>
 
 <p align="center"><em>Search results showing matches across concepts, methods, and systems.</em></p>

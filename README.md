@@ -1,5 +1,9 @@
 # Stack Record
 
+<p align="center">
+  <img src="doc/images/light-dark-split.png" alt="Stack Record interface -- light and dark mode" width="800" />
+</p>
+
 A long-horizon personal knowledge system built on [Fumadocs](https://fumadocs.vercel.app/) and [Next.js](https://nextjs.org/). Nine structured note types, a sidecar metadata layer, closure scoring, and a materialiser pipeline that turns body-only MDX + JSON sidecars into a full documentation site with search, math rendering, and cross-linked navigation.
 
 One custom build step. Everything else is standard Fumadocs.
@@ -226,48 +230,27 @@ node obsidian/scripts/create-note-pair.js concept your-domain your-concept
 
 ## Screenshots
 
-### Light Mode
+Built-in full-text search across every note, with live highlighting and section context:
 
 <p align="center">
-  <img src="doc/images/light-home.png" alt="Home page -- light mode" width="800" />
+  <img src="doc/images/search-results.png" alt="Full-text search across the knowledge base" width="800" />
 </p>
 
-<p align="center"><em>Home page with navigation to all sections.</em></p>
+<p align="center"><em>Search results showing matches across concepts, methods, and systems.</em></p>
+
+A full top-to-bottom scroll of the home page, so you can see the structure at a glance without cloning the repo:
 
 <p align="center">
-  <img src="doc/images/light-concept.png" alt="Concept note -- light mode" width="800" />
+  <video src="https://github.com/user-attachments/assets/a97da4d1-a801-43f7-b903-53471aa38934"
+         width="800"
+         autoplay
+         loop
+         muted
+         playsinline>
+  </video>
 </p>
 
-<p align="center"><em>A concept note with KaTeX math, callouts, and cross-links.</em></p>
-
-<p align="center">
-  <img src="doc/images/light-sidebar.png" alt="Sidebar navigation -- light mode" width="800" />
-</p>
-
-<p align="center"><em>Sidebar navigation across all nine sections.</em></p>
-
-### Dark Mode
-
-<p align="center">
-  <img src="doc/images/dark-home.png" alt="Home page -- dark mode" width="800" />
-</p>
-
-<p align="center"><em>Home page in dark mode.</em></p>
-
-<p align="center">
-  <img src="doc/images/dark-concept.png" alt="Concept note -- dark mode" width="800" />
-</p>
-
-<p align="center"><em>Same concept note in dark mode with syntax-highlighted code blocks.</em></p>
-
-<p align="center">
-  <img src="doc/images/dark-sidebar.png" alt="Sidebar navigation -- dark mode" width="800" />
-</p>
-
-<p align="center"><em>Sidebar in dark mode.</em></p>
-
-> **To add your own screenshots:** run `docker compose up --build`, take screenshots of the pages listed above in both light and dark mode, save them to `doc/images/` with the filenames shown, and they'll appear here automatically.
-
+<p align="center"><em>Full scroll of the Stack Record home page.</em></p>
 ---
 
 ## Built With
